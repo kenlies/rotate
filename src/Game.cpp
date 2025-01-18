@@ -319,8 +319,6 @@ void Game::updatePlay() {
         _view.setCenter(_player->getShape()->getPosition());
     }
 
-    //std::cout << "x: " << _player->getBody()->GetLinearVelocity().x << " y: " << _player->getBody()->GetLinearVelocity().y << "\n";
-
     // ---- draw everything ----
     _window.clear();
     _window.setView(_view);
@@ -369,8 +367,6 @@ void Game::updateEditor() {
     _window.draw(_modeText);
 
     _window.display();
-
-    //std::cout << "body count: " << _world.GetBodyCount() << "\n";
 }
 
 void Game::draw_player() {
