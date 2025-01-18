@@ -104,7 +104,11 @@ class Game : public b2ContactListener {
 
 		// ---- box color to be placed in editor ----
 		int						_boxColorIndex;
-		std::vector<sf::Color>	_boxColors;
+		std::vector<sf::Color>	_boxColors = {sf::Color::White, 
+											  sf::Color::Green,
+											  sf::Color::Red,
+											  sf::Color::Cyan,
+											  sf::Color::Yellow};
 		scrollWheelInput		_scrollWheelInput;
 
 		// ---- text things ----

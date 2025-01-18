@@ -30,13 +30,6 @@ Game::Game() :
     sf::FloatRect textBounds = _modeText.getLocalBounds();
     _modeText.setOrigin(0, textBounds.height / 2.f);
 
-    // ---- set box colors for editor ----
-    _boxColors.emplace_back(sf::Color::White);
-    _boxColors.emplace_back(sf::Color::Green);
-    _boxColors.emplace_back(sf::Color::Red);
-    _boxColors.emplace_back(sf::Color::Cyan);
-    _boxColors.emplace_back(sf::Color::Yellow);
-
     // ---- crate player ball ----
     _player = new Player(this);
     _jumpCoolDownClock.restart();
