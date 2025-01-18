@@ -5,7 +5,6 @@ Player::Player(Game *game) : _game(game) {
     bodyDef.type = b2_dynamicBody;
     // default start pos if there is no spawn point
     bodyDef.position = b2Vec2((_game->getWindowSize().x / 2) / SCALE, (_game->getWindowSize().y / 2) / SCALE);
-    //myBodyDef.bullet = true;
     bodyDef.allowSleep = false;
     b2Body* body = _game->getWorld().CreateBody(&bodyDef);
 
