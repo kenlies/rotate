@@ -14,9 +14,6 @@ class Fade : public sf::Drawable, public sf::Transformable {
 		// ---- increment/decrement ----
 		void decrementFadeCounter();
 
-		// ---- setters ----
-		void setPhase(int phase);
-
 		// ---- getters ----
 		sf::RectangleShape*	getShape() const;
 		sf::Clock			getFadeClock() const;
