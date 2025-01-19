@@ -78,7 +78,7 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : _game(game) {
 
 Box::~Box() {
 	delete _shape;
-	//delete _light;
+	delete _light;
 	delete static_cast<int *>(_body->GetUserData());
 }
 
