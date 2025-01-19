@@ -3,16 +3,8 @@
 Game::Game() : 
     _window({}, "Untitled", sf::Style::Fullscreen, sf::ContextSettings(0, 0, 8)),
     _windowSize(_window.getSize()),
-    _mode(Play),
     _world(b2Vec2(0.f, GRAVITY_MAGNITUDE)),
-    _boxColorIndex(0),
-    _scrollWheelInput(None),
-    _view(sf::Vector2f(_windowSize.x / 2, _windowSize.y / 2), sf::Vector2f()),
-    _rotateRight(false),
-    _rotateLeft(false),
-    _canJump(0),
-    _rotVel(0),
-    _currLevel(1)
+    _view(sf::Vector2f(_windowSize.x / 2, _windowSize.y / 2), sf::Vector2f())
 {
     _window.setFramerateLimit(60);
     _window.setMouseCursorVisible(false);

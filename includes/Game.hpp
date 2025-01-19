@@ -75,14 +75,14 @@ class Game : public b2ContactListener {
 			None
 		};
 
-		gameMode			_mode;
+		gameMode			_mode = Play;
 		b2World				_world;
 
 		sf::Time			_deltaTime;
 
 		std::vector<Box*> 	_boxes;
 		BoxMap*				_boxMap;
-		int					_currLevel;
+		int					_currLevel = 1;
 		Player*				_player;
 		b2Vec2				_playerSpawnPos;
 		sf::Clock			_waitTilRespawnClock;
@@ -93,7 +93,7 @@ class Game : public b2ContactListener {
 	
 		bool _letsRespawn = false;
 		sf::Clock _jumpCoolDownClock;
-		int _canJump; // how many bodies touch the ball at a time: able to jump if > 0
+		int _canJump = 0; // how many bodies touch the ball at a time: able to jump if > 0
 
 		// ---- window things ----
 		sf::RenderWindow	_window;
@@ -104,22 +104,22 @@ class Game : public b2ContactListener {
 		Fade*	_fade = nullptr;
 
 		// ---- box color to be placed in editor ----
-		int						_boxColorIndex;
+		int						_boxColorIndex = 0;
 		std::vector<sf::Color>	_boxColors = {sf::Color::White, 
 											  sf::Color::Green,
 											  sf::Color::Red,
 											  sf::Color::Cyan,
 											  sf::Color::Yellow};
-		scrollWheelInput		_scrollWheelInput;
+		scrollWheelInput		_scrollWheelInput = None;
 
 		// ---- text things ----
 		sf::Font			_modeFont;
 		sf::Text			_modeText;
 
 		// ---- rotate the world ----
-		bool _rotateRight;
-		bool _rotateLeft;
-		float _rotVel; // rotation speed where x: left y: right
+		bool _rotateRight = false;
+		bool _rotateLeft = false;
+		float _rotVel = 0; // rotation speed where x: left y: right
 		
 		// ---- move level editor view ----
 		bool _moveViewLeft = false;
