@@ -286,9 +286,8 @@ void Game::updatePlay() {
     _view.rotate(_rotVel * _deltaTime.asSeconds()); // frame rate independent
     _rotVel *= 0.92; // smoothing rotation
 
-    float rotation = _view.getRotation();
     // convert rotation angle to radians for trigonometric calculations
-    float radians = rotation * (b2_pi / 180.0f);
+    float radians = _view.getRotation() * (b2_pi / 180.0f);
 
     // calculate gravity direction in world space to always point to window bottom
     b2Vec2 gravity;
