@@ -53,6 +53,7 @@ class Game : public b2ContactListener {
 		void EndContact(b2Contact* contact) override;	// override the base class functions
 
 	private:
+		void updateEvents();
 		void updatePlay();
 		void updateEditor();
 		void draw_boxes();

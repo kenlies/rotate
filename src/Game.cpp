@@ -54,96 +54,100 @@ Game::~Game() {
     _boxes.clear();
 }
 
+void Game::updateEvents() {
+    _scrollWheelInput = None;
+    for (auto event = sf::Event(); _window.pollEvent(event);) {
+        switch (event.type) {
+            // window closed
+            case sf::Event::Closed:
+                _window.close();
+                break;
+
+            // key pressed
+            case sf::Event::KeyPressed:
+                if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::Q) {
+                    _window.close();
+                }
+                else if (event.key.code == sf::Keyboard::Space) {
+                    _jump = true;
+                }
+                else if (event.key.code == sf::Keyboard::A) {
+                    _mode == Editor ? _moveViewLeft = true : _rotateLeft = true;
+                }
+                else if (event.key.code == sf::Keyboard::D) {
+                    _mode == Editor ? _moveViewRight = true : _rotateRight = true;
+                }
+                else if ((event.key.code == sf::Keyboard::W) && _mode == Editor) {
+                    _moveViewUp = true;
+                }
+                else if ((event.key.code == sf::Keyboard::S) && _mode == Editor) {
+                    _moveViewDown = true;
+                }
+                else if (event.key.code == sf::Keyboard::M) {
+                    _mode == Play ? _mode = Editor : _mode = Play; // toggle between editor and play
+                }
+                else if (event.key.code == sf::Keyboard::Up && _mode == Editor) {
+                    // change colors of box in editor mode
+                    _boxColorIndex++;
+                    if (_boxColorIndex >= _boxColors.size()) {
+                        _boxColorIndex = 0;
+                    }
+                }
+                else if (event.key.code == sf::Keyboard::Down && _mode == Editor) {
+                    // change colors of box in editor mode
+                    _boxColorIndex--;
+                    if (_boxColorIndex < 0) {
+                        _boxColorIndex = _boxColors.size() - 1;
+                    }
+                }
+                else if (event.key.code == sf::Keyboard::Comma && _mode == Editor) {
+                    std::cout << "Saving map\n";
+                    _boxMap->saveMap(ResourceManager::getLevelFilePath("tmp"));
+                }
+                else if (event.key.code == sf::Keyboard::Period && _mode == Editor) {
+                    std::cout << "Loading map\n";
+                    _boxMap->loadMap(ResourceManager::getLevelFilePath("tmp"));
+                    _player->getBody()->SetTransform(_playerSpawnPos, 0);
+                }
+                break;
+            case sf::Event::KeyReleased:
+                if (event.key.code == sf::Keyboard::Space) {
+                    _jump = false;
+                } else if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
+                    _mode == Editor ? _moveViewLeft = false : _rotateLeft = false;
+                }
+                else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
+                    _mode == Editor ? _moveViewRight = false : _rotateRight = false;
+                }
+                else if ((event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) && _mode == Editor) {
+                    _moveViewUp = false;
+                }
+                else if ((event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) && _mode == Editor) {
+                    _moveViewDown = false;
+                }
+                break;
+            case sf::Event::MouseWheelScrolled:
+                if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
+                    if (event.mouseWheelScroll.delta > 0) {
+                        _scrollWheelInput = ScrollUp;
+                    } else {
+                        _scrollWheelInput = ScrollDown;
+                    }
+                }
+                break; // added this check if actaully works
+
+            default:
+                break;
+        }
+    }
+}
+
 void Game::run() {
     sf::Clock frameClock;
 
     while (_window.isOpen()) {
-        // ---- handle event ----
-        _scrollWheelInput = None;
-        for (auto event = sf::Event(); _window.pollEvent(event);) {
-            switch (event.type) {
-                // window closed
-                case sf::Event::Closed:
-                    _window.close();
-                    break;
-
-                // key pressed
-                case sf::Event::KeyPressed:
-                    if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::Q) {
-                        _window.close();
-                    }
-                    else if (event.key.code == sf::Keyboard::Space) {
-                        _jump = true;
-                    }
-                    else if (event.key.code == sf::Keyboard::A) {
-                        _mode == Editor ? _moveViewLeft = true : _rotateLeft = true;
-                    }
-                    else if (event.key.code == sf::Keyboard::D) {
-                        _mode == Editor ? _moveViewRight = true : _rotateRight = true;
-                    }
-                    else if ((event.key.code == sf::Keyboard::W) && _mode == Editor) {
-                        _moveViewUp = true;
-                    }
-                    else if ((event.key.code == sf::Keyboard::S) && _mode == Editor) {
-                        _moveViewDown = true;
-                    }
-                    else if (event.key.code == sf::Keyboard::M) {
-                        _mode == Play ? _mode = Editor : _mode = Play; // toggle between editor and play
-                    }
-                    else if (event.key.code == sf::Keyboard::Up && _mode == Editor) {
-                        // change colors of box in editor mode
-                        _boxColorIndex++;
-                        if (_boxColorIndex >= _boxColors.size()) {
-                            _boxColorIndex = 0;
-                        }
-                    }
-                    else if (event.key.code == sf::Keyboard::Down && _mode == Editor) {
-                        // change colors of box in editor mode
-                        _boxColorIndex--;
-                        if (_boxColorIndex < 0) {
-                            _boxColorIndex = _boxColors.size() - 1;
-                        }
-                    }
-                    else if (event.key.code == sf::Keyboard::Comma && _mode == Editor) {
-                        std::cout << "Saving map\n";
-                        _boxMap->saveMap(ResourceManager::getLevelFilePath("tmp"));
-                    }
-                    else if (event.key.code == sf::Keyboard::Period && _mode == Editor) {
-                        std::cout << "Loading map\n";
-                        _boxMap->loadMap(ResourceManager::getLevelFilePath("tmp"));
-                        _player->getBody()->SetTransform(_playerSpawnPos, 0);
-                    }
-                    break;
-                case sf::Event::KeyReleased:
-                    if (event.key.code == sf::Keyboard::Space) {
-                        _jump = false;
-                    } else if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
-                        _mode == Editor ? _moveViewLeft = false : _rotateLeft = false;
-                    }
-                    else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
-                        _mode == Editor ? _moveViewRight = false : _rotateRight = false;
-                    }
-                    else if ((event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) && _mode == Editor) {
-                        _moveViewUp = false;
-                    }
-                    else if ((event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) && _mode == Editor) {
-                        _moveViewDown = false;
-                    }
-                    break;
-                case sf::Event::MouseWheelScrolled:
-                    if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
-                        if (event.mouseWheelScroll.delta > 0) {
-                            _scrollWheelInput = ScrollUp;
-                        } else {
-                            _scrollWheelInput = ScrollDown;
-                        }
-                    }
-                    break; // added this check if actaully works
-
-                default:
-                    break;
-            }
-        }
+        // ---- handle events ----
+        updateEvents();
 
         _deltaTime = frameClock.restart();
 
