@@ -18,7 +18,6 @@ class Fade : public sf::Drawable, public sf::Transformable {
 		sf::RectangleShape*	getShape() const;
 		sf::Clock			getFadeClock() const;
 		int					getFadeCounter() const;
-		int					getPhase() const;
 		
 	private:
 		Game*				_game;
