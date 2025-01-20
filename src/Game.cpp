@@ -434,9 +434,9 @@ void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {
     // then floow to round down example:
     // if mouseX = 63 then 63 / 32 ≈ 1.9
     // then we take floor(1.9) which gives us 1, so we are in the second tile
-    float mouseX = std::floor(mousePosConverted.x / 32.0f);
-    float mouseY = std::floor(mousePosConverted.y / 32.0f);
-    b2Vec2 checkPos((mouseX * 32 + 16) / SCALE, (mouseY * 32 + 16) / SCALE);
+    float mouseX = std::floor(mousePosConverted.x / BOX_WIDTH);
+    float mouseY = std::floor(mousePosConverted.y / BOX_WIDTH);
+    b2Vec2 checkPos((mouseX * BOX_WIDTH + BOX_WIDTH / 2) / SCALE, (mouseY * BOX_WIDTH + BOX_WIDTH / 2) / SCALE);
 
     // check that the spot isn't already occupied or
     // if there is already a spawn box in the world
@@ -460,10 +460,10 @@ void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {
 
 void Game::removeBox(const sf::Vector2i &mousePos) {
     sf::Vector2f mousePosConverted = _window.mapPixelToCoords(mousePos, _view);
-    float mouseX = std::floor(mousePosConverted.x / 32.0f);
-    float mouseY = std::floor(mousePosConverted.y / 32.0f);
+    float mouseX = std::floor(mousePosConverted.x / BOX_WIDTH);
+    float mouseY = std::floor(mousePosConverted.y / BOX_WIDTH);
 
-    b2Vec2 checkPos((mouseX * 32 + 16) / SCALE, (mouseY * 32 + 16) / SCALE); // tiled position (grid)
+    b2Vec2 checkPos((mouseX * BOX_WIDTH + BOX_WIDTH / 2) / SCALE, (mouseY * BOX_WIDTH + BOX_WIDTH / 2) / SCALE); // tiled position (grid)
 
     for (int i = 0; i < _boxes.size(); i++) {
         if (_boxes[i]->getBody()->GetPosition() == checkPos) {
