@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
 #include <iostream>
+#include <memory>
 #include "ResourceManager.h"
 #include "Player.hpp"
 #include "Box.hpp"
@@ -81,7 +82,7 @@ class Game : public b2ContactListener {
 		sf::Time			_deltaTime;
 
 		std::vector<Box*> 	_boxes;
-		BoxMap*				_boxMap;
+		std::unique_ptr<BoxMap> _boxMap;
 		int					_currLevel = 1;
 		Player*				_player;
 		b2Vec2				_playerSpawnPos;

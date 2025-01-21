@@ -27,7 +27,7 @@ Game::Game() :
     _jumpCoolDownClock.restart();
 
     // ---- create boxmap ----
-    _boxMap = new BoxMap(this);
+    _boxMap = std::unique_ptr<BoxMap>(new BoxMap(this));
 
     // ---- set the listenr for object contacts ----
     _world.SetContactListener(this);
@@ -39,7 +39,6 @@ Game::Game() :
 
 Game::~Game() {
     delete _player;
-    delete _boxMap;
     for (Box* box : _boxes) {
         delete box; 
     }
