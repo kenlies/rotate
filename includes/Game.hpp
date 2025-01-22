@@ -84,7 +84,7 @@ class Game : public b2ContactListener {
 		std::vector<Box*> 	_boxes;
 		std::unique_ptr<BoxMap> _boxMap;
 		int					_currLevel = 1;
-		Player*				_player;
+		std::unique_ptr<Player> _player;
 		b2Vec2				_playerSpawnPos;
 		sf::Clock			_waitTilRespawnClock;
 		

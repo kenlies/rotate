@@ -23,7 +23,7 @@ Game::Game() :
     _modeText.setOrigin(0, textBounds.height / 2.f);
 
     // ---- crate player ball ----
-    _player = new Player(this);
+    _player = std::unique_ptr<Player>(new Player(this));
     _jumpCoolDownClock.restart();
 
     // ---- create boxmap ----
@@ -38,7 +38,6 @@ Game::Game() :
 }
 
 Game::~Game() {
-    delete _player;
     for (Box* box : _boxes) {
         delete box; 
     }
