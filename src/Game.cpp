@@ -38,10 +38,7 @@ Game::Game() :
 }
 
 Game::~Game() {
-    for (Box* box : _boxes) {
-        delete box; 
-    }
-    _boxes.clear();
+
 }
 
 void Game::updateEvents() {
@@ -451,7 +448,7 @@ void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {
         if (color == sf::Color::Cyan)
             _playerSpawnPos = checkPos;
 
-        Box *box = new Box(this, checkPos, color);
+        std::shared_ptr<Box> box = std::shared_ptr<Box>(new Box(this, checkPos, color));
         _boxes.push_back(box);
     }
 }
@@ -466,7 +463,6 @@ void Game::removeBox(const sf::Vector2i &mousePos) {
     for (int i = 0; i < _boxes.size(); i++) {
         if (_boxes[i]->getBody()->GetPosition() == checkPos) {
             _world.DestroyBody(_boxes[i]->getBody());
-            delete _boxes[i];
             _boxes[i] = _boxes.back();
             _boxes.pop_back();
             std::cout << "remove block\n";
@@ -552,7 +548,7 @@ sf::Vector2u &Game::getWindowSize() {
     return _windowSize;
 }
 
-std::vector<Box*> &Game::getBoxes() {
+std::vector<std::shared_ptr<Box>> &Game::getBoxes() {
     return _boxes;
 }
 

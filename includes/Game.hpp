@@ -46,7 +46,7 @@ class Game : public b2ContactListener {
 		// ---- getters ----
 		b2World 				&getWorld();
 		sf::Vector2u 			&getWindowSize();
-		std::vector<Box*> 		&getBoxes();
+		std::vector<std::shared_ptr<Box>> 		&getBoxes();
 		sf::View				&getView();
 
 		// ---- listeners ----
@@ -81,7 +81,7 @@ class Game : public b2ContactListener {
 
 		sf::Time			_deltaTime;
 
-		std::vector<Box*> 	_boxes;
+		std::vector<std::shared_ptr<Box>> 	_boxes;
 		std::unique_ptr<BoxMap> _boxMap;
 		int					_currLevel = 1;
 		std::unique_ptr<Player> _player;

@@ -12,10 +12,9 @@ void BoxMap::loadMap(const std::string &path) {
     std::ifstream map_file(path);
     std::string line;
 
-	std::vector<Box *> &boxes = _game->getBoxes();
-	for (Box* box : boxes) {
+	std::vector<std::shared_ptr<Box>> &boxes = _game->getBoxes();
+	for (std::shared_ptr<Box> box : boxes) {
 		_game->getWorld().DestroyBody(box->getBody());
-		delete box;
 	}
 	boxes.clear();
 
