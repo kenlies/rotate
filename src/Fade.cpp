@@ -15,7 +15,7 @@ Fade::~Fade() {
 
 void Fade::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	_shape->setFillColor(sf::Color(0, 0, 0, _fadeCounter));
-	target.draw(*_shape);
+	target.draw(*_shape, states);
 }
 
 // ---- increment/decrement ----
