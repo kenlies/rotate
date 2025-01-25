@@ -102,7 +102,7 @@ class Game : public b2ContactListener {
 		sf::View			_view;
 
 		// ---- fade effect level transition ----
-		Fade*	_fade = nullptr;
+		std::unique_ptr<Fade> _fade;
 
 		// ---- box color to be placed in editor ----
 		int						_boxColorIndex = 0;

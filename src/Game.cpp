@@ -163,7 +163,7 @@ void Game::updatePlay() {
             _player->getBody()->SetAngularVelocity(0);
             _letsRespawn = false;
             cameraOnPlayer = true;
-            _fade = new Fade(this);
+            _fade = std::unique_ptr<Fade>(new Fade(this));
             _fade->getFadeClock().restart();
             _boxMap->loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(_currLevel));
         }
@@ -175,7 +175,6 @@ void Game::updatePlay() {
             _fade->decrementFadeCounter();
             _fade->getFadeClock().restart();
             if (_fade->getFadeCounter() <= 0) {
-                delete _fade;
                 _fade = nullptr;
             }
         }
