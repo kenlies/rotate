@@ -9,6 +9,7 @@
 #include "Box.hpp"
 #include "Fade.hpp"
 #include "BoxMap.hpp"
+#include "BoxParticles.hpp"
 #include "Candle/RadialLight.hpp"
 
 #define GRAVITY_MAGNITUDE 18.f
@@ -33,6 +34,7 @@ class Player;
 class Box;
 class Fade;
 class BoxMap;
+class BoxParticles;
 
 class Game : public b2ContactListener {
 	public:
@@ -59,6 +61,8 @@ class Game : public b2ContactListener {
 		void updateEditor();
 		void draw_boxes();
 		void draw_player();
+
+		bool isInView(const sf::FloatRect& box);
 
 		// ---- editor ----
 		void draw_grid();
@@ -103,6 +107,9 @@ class Game : public b2ContactListener {
 
 		// ---- fade effect level transition ----
 		std::unique_ptr<Fade> _fade;
+
+		// ---- particles ----
+		std::vector<std::shared_ptr<BoxParticles>> _boxParticles;
 
 		// ---- box color to be placed in editor ----
 		int						_boxColorIndex = 0;

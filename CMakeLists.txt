@@ -32,6 +32,7 @@ add_executable(rotate
     src/Player.cpp 
     src/Box.cpp 
     src/BoxMap.cpp
+    src/BoxParticles.cpp
     src/Fade.cpp
     src/ResourceManager.cpp)
 

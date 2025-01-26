@@ -304,6 +304,17 @@ void Game::updatePlay() {
     // ---- draw everything ----
     _window.clear();
     _window.setView(_view);
+    for (auto it = _boxParticles.begin(); it != _boxParticles.end();) {
+        (*it)->update(_deltaTime);
+        _window.draw(*(*it));
+        if ((*it)->getCurrLife().asSeconds() > 3) {
+            it = _boxParticles.erase(it);
+            std::cout << "removed particles from vector" << "\n";
+            continue;
+        }
+        ++it;
+    }
+
     draw_boxes();
     draw_player();
     if (_fade) {
@@ -357,26 +368,58 @@ void Game::draw_player() {
     _window.draw(*(_player->getShape()));
 }
 
+bool Game::isInView(const sf::FloatRect& box) {
+
+    sf::Vector2f viewCenter = _view.getCenter();
+    sf::Vector2f halfSize(_view.getSize().x / 2.f, _view.getSize().y / 2.f);
+
+    sf::Transform viewTransform;
+    viewTransform.rotate(_view.getRotation(), viewCenter);
+    sf::Vector2f topLeft = viewTransform.transformPoint(viewCenter.x - halfSize.x, viewCenter.y - halfSize.y);
+    sf::Vector2f topRight = viewTransform.transformPoint(viewCenter.x + halfSize.x, viewCenter.y - halfSize.y);
+    sf::Vector2f bottomLeft = viewTransform.transformPoint(viewCenter.x - halfSize.x, viewCenter.y + halfSize.y);
+    sf::Vector2f bottomRight = viewTransform.transformPoint(viewCenter.x + halfSize.x, viewCenter.y + halfSize.y);
+
+    sf::ConvexShape rotatedView(4);
+    rotatedView.setPoint(0, topLeft);
+    rotatedView.setPoint(1, topRight);
+    rotatedView.setPoint(2, bottomRight);
+    rotatedView.setPoint(3, bottomLeft);
+
+    return rotatedView.getGlobalBounds().intersects(box);
+}
+
+
 void Game::draw_boxes() {
     // ---- draw boxes ----
     // this draws the oldest boxes first, rather that newest which could be an issue
-    for (auto it : _boxes) {
-        if (it->getShape()->getFillColor() == sf::Color::Cyan && _mode == Play) {
+    for (auto it = _boxes.begin(); it != _boxes.end(); ) {
+        if ((*it)->getShape()->getFillColor() == sf::Color::Cyan && _mode == Play) {
+            ++it;
             continue;
         }
-        it->getShape()->setPosition(SCALE * it->getBody()->GetPosition().x, SCALE * it->getBody()->GetPosition().y);
-        if (it->getShape()->getFillColor() == sf::Color::Yellow && _mode == Play) {
-            it->getShape()->rotate(50.f * _deltaTime.asSeconds());
+        (*it)->getShape()->setPosition(SCALE * (*it)->getBody()->GetPosition().x, SCALE * (*it)->getBody()->GetPosition().y);
+        if ((*it)->getShape()->getFillColor() == sf::Color::Yellow && _mode == Play) {
+            (*it)->getShape()->rotate(50.f * _deltaTime.asSeconds());
+            if ((*it)->getBody()->GetType() == b2_dynamicBody && !isInView((*it)->getShape()->getGlobalBounds())) {
+                // emit particles!!
+                std::cout << "emit particles" << "\n";
+                _boxParticles.emplace_back(std::unique_ptr<BoxParticles>(new BoxParticles(this, 150, (*it)->getShape()->getPosition())));
+                _world.DestroyBody((*it)->getBody());
+                it = _boxes.erase(it);
+                continue;
+            }
         } else {
-            it->getShape()->setRotation(it->getBody()->GetAngle() * 180 / b2_pi);
+            (*it)->getShape()->setRotation((*it)->getBody()->GetAngle() * 180 / b2_pi);
         }
-        _window.draw(*(it->getShape()));
+        _window.draw(*((*it)->getShape()));
 
         // ---- draw lighting ----
         if (_mode == Play) {
-            it->getLight()->setPosition(SCALE * it->getBody()->GetPosition().x, SCALE * it->getBody()->GetPosition().y);
-            _window.draw(*(it->getLight()));
+            (*it)->getLight()->setPosition(SCALE * (*it)->getBody()->GetPosition().x, SCALE * (*it)->getBody()->GetPosition().y);
+            _window.draw(*((*it)->getLight()));
         }
+        ++it;
     }
 }
 
