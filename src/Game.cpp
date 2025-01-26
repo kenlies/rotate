@@ -368,28 +368,6 @@ void Game::draw_player() {
     _window.draw(*(_player->getShape()));
 }
 
-bool Game::isInView(const sf::FloatRect& box) {
-
-    sf::Vector2f viewCenter = _view.getCenter();
-    sf::Vector2f halfSize(_view.getSize().x / 2.f, _view.getSize().y / 2.f);
-
-    sf::Transform viewTransform;
-    viewTransform.rotate(_view.getRotation(), viewCenter);
-    sf::Vector2f topLeft = viewTransform.transformPoint(viewCenter.x - halfSize.x, viewCenter.y - halfSize.y);
-    sf::Vector2f topRight = viewTransform.transformPoint(viewCenter.x + halfSize.x, viewCenter.y - halfSize.y);
-    sf::Vector2f bottomLeft = viewTransform.transformPoint(viewCenter.x - halfSize.x, viewCenter.y + halfSize.y);
-    sf::Vector2f bottomRight = viewTransform.transformPoint(viewCenter.x + halfSize.x, viewCenter.y + halfSize.y);
-
-    sf::ConvexShape rotatedView(4);
-    rotatedView.setPoint(0, topLeft);
-    rotatedView.setPoint(1, topRight);
-    rotatedView.setPoint(2, bottomRight);
-    rotatedView.setPoint(3, bottomLeft);
-
-    return rotatedView.getGlobalBounds().intersects(box);
-}
-
-
 void Game::draw_boxes() {
     // ---- draw boxes ----
     // this draws the oldest boxes first, rather that newest which could be an issue
@@ -401,7 +379,7 @@ void Game::draw_boxes() {
         (*it)->getShape()->setPosition(SCALE * (*it)->getBody()->GetPosition().x, SCALE * (*it)->getBody()->GetPosition().y);
         if ((*it)->getShape()->getFillColor() == sf::Color::Yellow && _mode == Play) {
             (*it)->getShape()->rotate(50.f * _deltaTime.asSeconds());
-            if ((*it)->getBody()->GetType() == b2_dynamicBody && !isInView((*it)->getShape()->getGlobalBounds())) {
+            if ((*it)->getBody()->GetType() == b2_dynamicBody && !(*it)->isInView(_view)) {
                 // emit particles!!
                 std::cout << "emit particles" << "\n";
                 _boxParticles.emplace_back(std::unique_ptr<BoxParticles>(new BoxParticles(this, 150, (*it)->getShape()->getPosition())));

@@ -76,6 +76,27 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : _game(game) {
 	_light->setColor(color);
 }
 
+bool Box::isInView(const sf::View &view) const {
+
+    sf::Vector2f viewCenter = view.getCenter();
+    sf::Vector2f halfSize(view.getSize().x / 2.f, view.getSize().y / 2.f);
+
+    sf::Transform viewTransform;
+    viewTransform.rotate(view.getRotation(), viewCenter);
+    sf::Vector2f topLeft = viewTransform.transformPoint(viewCenter.x - halfSize.x, viewCenter.y - halfSize.y);
+    sf::Vector2f topRight = viewTransform.transformPoint(viewCenter.x + halfSize.x, viewCenter.y - halfSize.y);
+    sf::Vector2f bottomLeft = viewTransform.transformPoint(viewCenter.x - halfSize.x, viewCenter.y + halfSize.y);
+    sf::Vector2f bottomRight = viewTransform.transformPoint(viewCenter.x + halfSize.x, viewCenter.y + halfSize.y);
+
+    sf::ConvexShape rotatedView(4);
+    rotatedView.setPoint(0, topLeft);
+    rotatedView.setPoint(1, topRight);
+    rotatedView.setPoint(2, bottomRight);
+    rotatedView.setPoint(3, bottomLeft);
+
+    return rotatedView.getGlobalBounds().intersects(_shape->getGlobalBounds());
+}
+
 Box::~Box() {
 	delete _shape;
 	delete _light;

@@ -62,8 +62,6 @@ class Game : public b2ContactListener {
 		void draw_boxes();
 		void draw_player();
 
-		bool isInView(const sf::FloatRect& box);
-
 		// ---- editor ----
 		void draw_grid();
 		void draw_box_at_cursor(const sf::Vector2i &mousePos);

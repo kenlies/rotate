@@ -10,6 +10,8 @@ class Box {
 		Box(Game *game, b2Vec2 &checkPos, const sf::Color &color);
 		~Box();
 
+		bool isInView(const sf::View &view) const;
+
 		// ---- getters ----
 		b2Body*				getBody() const;
 		sf::RectangleShape*	getShape() const;
