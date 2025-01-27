@@ -77,24 +77,19 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : _game(game) {
 }
 
 bool Box::isInView(const sf::View &view) const {
-
-    sf::Vector2f viewCenter = view.getCenter();
-    sf::Vector2f halfSize(view.getSize().x / 2.f, view.getSize().y / 2.f);
-
     sf::Transform viewTransform;
-    viewTransform.rotate(view.getRotation(), viewCenter);
-    sf::Vector2f topLeft = viewTransform.transformPoint(viewCenter.x - halfSize.x, viewCenter.y - halfSize.y);
-    sf::Vector2f topRight = viewTransform.transformPoint(viewCenter.x + halfSize.x, viewCenter.y - halfSize.y);
-    sf::Vector2f bottomLeft = viewTransform.transformPoint(viewCenter.x - halfSize.x, viewCenter.y + halfSize.y);
-    sf::Vector2f bottomRight = viewTransform.transformPoint(viewCenter.x + halfSize.x, viewCenter.y + halfSize.y);
+    viewTransform.translate(view.getCenter());
+    viewTransform.rotate(view.getRotation());
+    viewTransform.scale(view.getSize().x / 2.f, view.getSize().y / 2.f); // normalize size to (-1, 1)
 
-    sf::ConvexShape rotatedView(4);
-    rotatedView.setPoint(0, topLeft);
-    rotatedView.setPoint(1, topRight);
-    rotatedView.setPoint(2, bottomRight);
-    rotatedView.setPoint(3, bottomLeft);
+    // invert the transformation to go from world space to local view space
+    sf::Transform inverseViewTransform = viewTransform.getInverse();
 
-    return rotatedView.getGlobalBounds().intersects(_shape->getGlobalBounds());
+    // transform the object's position into the view's local space
+    sf::Vector2f localPos = inverseViewTransform.transformPoint(_shape->getPosition());
+
+    // check if the object is within the view's local bounds (-1 to 1 in both x and y)
+    return (localPos.x >= -1.05f && localPos.x <= 1.05f && localPos.y >= -1.05f && localPos.y <= 1.05f);
 }
 
 Box::~Box() {
