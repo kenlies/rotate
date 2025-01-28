@@ -35,6 +35,9 @@ Game::Game() :
     // ---- load the first map ----
     _boxMap->loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(_currLevel));
     _player->getBody()->SetTransform(_playerSpawnPos, 0);
+
+    // ---- create hud ----
+    _hud = std::unique_ptr<Hud>(new Hud(this));
 }
 
 Game::~Game() {
@@ -165,7 +168,10 @@ void Game::updatePlay() {
             cameraOnPlayer = true;
             _fade = std::unique_ptr<Fade>(new Fade(this));
             _fade->getFadeClock().restart();
+            _levelCoins = 0;
+            _levelScore = 0;
             _boxMap->loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(_currLevel));
+            _hud->updateScore(_levelScore);
         }
     }
 
@@ -199,8 +205,10 @@ void Game::updatePlay() {
         cameraOnPlayer = false;
         _letsRespawn = true;
         _currLevel++;
+        _totalScore += _levelScore;
         if (_currLevel >= 4) {
             _currLevel = 1;
+            _totalScore = 0;
         }
         float rotation = _view.getRotation();
         float radians = rotation * (b2_pi / 180.0f);
@@ -303,7 +311,6 @@ void Game::updatePlay() {
 
     // ---- draw everything ----
     _window.clear();
-    _window.setView(_view);
     for (auto it = _boxParticles.begin(); it != _boxParticles.end();) {
         (*it)->update(_deltaTime);
         _window.draw(*(*it));
@@ -314,12 +321,14 @@ void Game::updatePlay() {
         }
         ++it;
     }
-
     draw_boxes();
     draw_player();
     if (_fade) {
         _fade->draw(_window, sf::RenderStates::Default);
     }
+    _window.setView(_window.getDefaultView()); // set the default view before draw 
+    _window.draw(*_hud);
+    _window.setView(_view); // set the actualy view
     _window.display();
 }
 
@@ -379,12 +388,14 @@ void Game::draw_boxes() {
         (*it)->getShape()->setPosition(SCALE * (*it)->getBody()->GetPosition().x, SCALE * (*it)->getBody()->GetPosition().y);
         if ((*it)->getShape()->getFillColor() == sf::Color::Yellow && _mode == Play) {
             (*it)->getShape()->rotate(50.f * _deltaTime.asSeconds());
-            if ((*it)->getBody()->GetType() == b2_dynamicBody && !(*it)->isInView(_view)) {
+            if ((*it)->getBody()->GetType() == b2_dynamicBody && !_letsRespawn && !(*it)->isInView(_view)) {
                 // emit particles!!
                 std::cout << "emit particles" << "\n";
                 _boxParticles.emplace_back(std::unique_ptr<BoxParticles>(new BoxParticles(this, 150, (*it)->getShape()->getPosition())));
                 _world.DestroyBody((*it)->getBody());
                 it = _boxes.erase(it);
+                _levelScore++;
+                _hud->updateScore(_levelScore);
                 continue;
             }
         } else {
@@ -465,8 +476,11 @@ void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {
 
     // create the box
     if (available) {
-        if (color == sf::Color::Cyan)
+        if (color == sf::Color::Cyan) {
             _playerSpawnPos = checkPos;
+        } else if (color == sf::Color::Yellow) {
+            _levelCoins++;
+        }
 
         std::shared_ptr<Box> box = std::shared_ptr<Box>(new Box(this, checkPos, color));
         _boxes.push_back(box);
@@ -574,4 +588,8 @@ std::vector<std::shared_ptr<Box>> &Game::getBoxes() {
 
 sf::View &Game::getView() {
     return _view;
+}
+
+int	Game::getLevelCoins() const {
+    return _levelCoins;
 }
