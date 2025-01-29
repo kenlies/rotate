@@ -52,7 +52,7 @@ class Game : public b2ContactListener {
 		sf::Vector2u 			&getWindowSize();
 		std::vector<std::shared_ptr<Box>> 		&getBoxes();
 		sf::View				&getView();
-		int						getLevelCoins() const;
+		unsigned short			getLevelCoins() const;
 
 		// ---- listeners ----
 		void BeginContact(b2Contact* contact) override; // override the base class functions
@@ -88,10 +88,10 @@ class Game : public b2ContactListener {
 
 		std::vector<std::shared_ptr<Box>> 	_boxes;
 		std::unique_ptr<BoxMap> _boxMap;
-		int					_currLevel = 1;
-		int					_levelCoins = 0;
-		int					_levelScore = 0;
-		int					_totalScore = 0;
+		unsigned short			_currLevel = 1;
+		unsigned short			_levelCoins = 0;
+		unsigned short			_levelScore = 0;
+		unsigned short			_totalScore = 0;
 		std::unique_ptr<Player> _player;
 		b2Vec2				_playerSpawnPos;
 		sf::Clock			_waitTilRespawnClock;
