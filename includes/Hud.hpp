@@ -9,7 +9,7 @@ class Hud : public sf::Drawable, public sf::Transformable {
 		Hud(Game *game);
 		~Hud();
 
-		void updateScore(int score);
+		void updateScore(unsigned short score);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	private:
 		Game *_game;

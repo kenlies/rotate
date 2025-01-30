@@ -25,7 +25,7 @@ Hud::~Hud() {
 
 }
 
-void Hud::updateScore(int score) {
+void Hud::updateScore(unsigned short score) {
     _scoreText.setString(std::to_string(score));
     _scoreAvailableText.setString("/ " + std::to_string(_game->getLevelCoins()));
     if (std::stoi(std::string((_scoreText.getString()))) >= 20) {
