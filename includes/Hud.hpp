@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Game.hpp"
+#include "Candle/RadialLight.hpp"
 
 class Game;
 
@@ -15,6 +16,8 @@ class Hud : public sf::Drawable, public sf::Transformable {
 		Game *_game;
 		sf::Font _scoreFont;
 		sf::Text _scoreText;
-		sf::Font _scoreAvailableFont;
 		sf::Text _scoreAvailableText;
+		sf::Text _scoreSlash;
+
+		std::unique_ptr<candle::RadialLight> _scoreLight;
 };
