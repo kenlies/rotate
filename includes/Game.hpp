@@ -52,7 +52,7 @@ class Game : public b2ContactListener {
 		sf::Vector2u 			&getWindowSize();
 		std::vector<std::shared_ptr<Box>> 		&getBoxes();
 		sf::View				&getView();
-		unsigned short			getLevelCoins() const;
+		const unsigned short			&getLevelCoins() const;
 
 		// ---- listeners ----
 		void BeginContact(b2Contact* contact) override; // override the base class functions
