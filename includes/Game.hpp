@@ -4,7 +4,7 @@
 #include <box2d/box2d.h>
 #include <iostream>
 #include <memory>
-#include "ResourceManager.h"
+#include "ResourceManager.hpp"
 #include "Player.hpp"
 #include "Box.hpp"
 #include "Hud.hpp"
