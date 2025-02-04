@@ -1,9 +1,11 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <box2d/box2d.h>
 #include <iostream>
 #include <memory>
+#include <random>
 #include "ResourceManager.hpp"
 #include "Player.hpp"
 #include "Box.hpp"
@@ -68,6 +70,10 @@ class Game : public b2ContactListener {
 		// ---- editor ----
 		void draw_grid();
 		void draw_box_at_cursor(const sf::Vector2i &mousePos);
+		
+		// ---- helper/other ----
+		void playSounds(const std::vector<std::shared_ptr<sf::SoundBuffer>> &soundBuffers,
+							std::deque<sf::Sound> &sounds, float volume);
 
 		// ---- enums ----
 		enum gameMode {
@@ -88,6 +94,10 @@ class Game : public b2ContactListener {
 
 		std::vector<std::shared_ptr<Box>> 	_boxes;
 		std::unique_ptr<BoxMap> _boxMap;
+		std::vector<std::shared_ptr<sf::SoundBuffer>>	_coinSoundBuffers;
+		std::deque<sf::Sound>							_coinSounds;
+		std::vector<std::shared_ptr<sf::SoundBuffer>>	_coinExplosionSoundBuffers;
+		std::deque<sf::Sound>							_coinExplosionSounds;
 		unsigned short			_currLevel = 1;
 		unsigned short			_levelCoins = 0;
 		unsigned short			_levelScore = 0;

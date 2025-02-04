@@ -40,7 +40,7 @@ add_executable(rotate
 target_include_directories(rotate PRIVATE ${box2d_SOURCE_DIR}/include)
 target_include_directories(rotate PRIVATE ${candle_SOURCE_DIR}/include)
 
-target_link_libraries(rotate PRIVATE sfml-graphics sfml-window sfml-system box2d Candle-s)
+target_link_libraries(rotate PRIVATE sfml-audio sfml-graphics sfml-window sfml-system box2d Candle-s)
 target_compile_features(rotate PRIVATE cxx_std_17)
 
 add_custom_command(

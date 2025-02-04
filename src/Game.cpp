@@ -22,6 +22,24 @@ Game::Game() :
     sf::FloatRect textBounds = _modeText.getLocalBounds();
     _modeText.setOrigin(0, textBounds.height / 2.f);
 
+    // ---- create sound buffers ----
+    std::shared_ptr<sf::SoundBuffer> bufSoundOne = std::make_shared<sf::SoundBuffer>();
+    std::shared_ptr<sf::SoundBuffer> bufSoundTwo = std::make_shared<sf::SoundBuffer>();
+    std::shared_ptr<sf::SoundBuffer> bufSoundThree = std::make_shared<sf::SoundBuffer>();
+    std::shared_ptr<sf::SoundBuffer> bufExplosionSoundOne = std::make_shared<sf::SoundBuffer>();
+    if (bufSoundOne->loadFromFile(ResourceManager::getAssetFilePath("coin_collect1.ogg")) &&
+        bufSoundTwo->loadFromFile(ResourceManager::getAssetFilePath("coin_collect2.ogg")) &&
+        bufSoundThree->loadFromFile(ResourceManager::getAssetFilePath("coin_collect3.ogg")) &&
+        bufExplosionSoundOne->loadFromFile(ResourceManager::getAssetFilePath("coin_explosion.ogg"))) {
+        _coinSoundBuffers.push_back(bufSoundOne);
+        _coinSoundBuffers.push_back(bufSoundTwo);
+        _coinSoundBuffers.push_back(bufSoundThree);
+        _coinExplosionSoundBuffers.push_back(bufExplosionSoundOne);
+    } else {
+        std::cout << "Error: Could not load coin sound buffers" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
     // ---- crate player ball ----
     _player = std::unique_ptr<Player>(new Player(this));
     _jumpCoolDownClock.restart();
@@ -188,6 +206,9 @@ void Game::updatePlay() {
 
     // ---- collect yellow box ----
     if (_touchYellowoBox) {
+        if (_touchYellowoBox->GetType() != b2_dynamicBody) {
+            playSounds(_coinSoundBuffers, _coinSounds, 20.f);
+        }
 
         float rotation = _view.getRotation();
         float radians = rotation * (b2_pi / 180.0f);
@@ -396,6 +417,7 @@ void Game::draw_boxes() {
                 it = _boxes.erase(it);
                 _levelScore++;
                 _hud->updateScore(_levelScore);
+                playSounds(_coinExplosionSoundBuffers, _coinExplosionSounds, 15);
                 continue;
             }
         } else {
@@ -569,6 +591,24 @@ void Game::EndContact(b2Contact* contact) {
     }
 
     _canJump--;
+}
+
+// --- helper/other ----
+void Game::playSounds(const std::vector<std::shared_ptr<sf::SoundBuffer>> &soundBuffers, 
+                        std::deque<sf::Sound> &sounds, float volume) {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(0, soundBuffers.size() - 1);
+    int rnum = distrib(gen);
+    sounds.emplace_back();
+    sf::Sound& sound = sounds.back();
+    sound.setBuffer(*soundBuffers[rnum]);
+    sound.setVolume(volume);
+    sounds.back().play();
+    // remove stopped sounds
+    while (sounds.front().getStatus() == sf::Sound::Stopped) {
+        sounds.pop_front();
+    }
 }
 
 // --- getters ----
