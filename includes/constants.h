@@ -1,19 +1,19 @@
 #pragma once
 
-#define GRAVITY_MAGNITUDE 18.f
-#define JUMP_FORCE 20.f
-#define SCALE 30.f
-#define BOX_WIDTH 32.f
-#define CIRCLE_RADIUS 16.f
-#define ROTATE_SPEED 2.f
-#define EXPLOSION_FORCE 15.f
-#define WIN_FORCE 10.f
-#define PICKUP_FORCE 1.f
+constexpr float GRAVITY_MAGNITUDE = 18.f;
+constexpr float JUMP_FORCE = 20.f;
+constexpr float SCALE = 30.f;
+constexpr float BOX_WIDTH = 32.f;
+constexpr float CIRCLE_RADIUS = 16.f;
+constexpr float ROTATE_SPEED = 2.f;
+constexpr float EXPLOSION_FORCE = 15.f;
+constexpr float WIN_FORCE = 10.f;
+constexpr float PICKUP_FORCE = 1.f;
 
 // identifiers
-#define RED 1
-#define WHITE 2
-#define CYAN 3
-#define GREEN 4
-#define YELLOW 5
-#define PLAYER 6
+constexpr short RED = 1;
+constexpr short WHITE = 2;
+constexpr short CYAN = 3;
+constexpr short GREEN = 4;
+constexpr short YELLOW = 5;
+constexpr short PLAYER = 6;
