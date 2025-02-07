@@ -51,20 +51,19 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : _game(game) {
 	}
 
 	// ---- drawing attributes ----
-	sf::RectangleShape *rectangle = new sf::RectangleShape();
+	_shape = std::unique_ptr<sf::RectangleShape>(new sf::RectangleShape);
 	// make yellow boxes half the size
 	if (color == sf::Color::Yellow) {
-		rectangle->setOrigin(BOX_WIDTH / 4, BOX_WIDTH / 4);
-		rectangle->setSize({BOX_WIDTH / 2, BOX_WIDTH / 2});
+		_shape->setOrigin(BOX_WIDTH / 4, BOX_WIDTH / 4);
+		_shape->setSize({BOX_WIDTH / 2, BOX_WIDTH / 2});
 	} else {
-		rectangle->setOrigin(BOX_WIDTH / 2, BOX_WIDTH / 2);
-		rectangle->setSize({BOX_WIDTH, BOX_WIDTH});
+		_shape->setOrigin(BOX_WIDTH / 2, BOX_WIDTH / 2);
+		_shape->setSize({BOX_WIDTH, BOX_WIDTH});
 	}
-	rectangle->setFillColor(color);
+	_shape->setFillColor(color);
 
 	// ---- store them in one data structure ----a
 	_body = body;
-	_shape = rectangle;
 
 	// ---- set lights ----
 	_light = new candle::RadialLight;
@@ -93,7 +92,6 @@ bool Box::isInView(const sf::View &view) const {
 }
 
 Box::~Box() {
-	delete _shape;
 	delete _light;
 	delete static_cast<int *>(_body->GetUserData());
 }
@@ -104,7 +102,7 @@ b2Body*	Box::getBody() const {
 	return _body;
 }
 
-sf::RectangleShape* Box::getShape() const {
+const std::unique_ptr<sf::RectangleShape> &Box::getShape() const {
 	return _shape;
 }
 
