@@ -630,6 +630,6 @@ sf::View &Game::getView() {
     return _view;
 }
 
-const unsigned short &Game::getLevelCoins() const {
+const int &Game::getLevelCoins() const {
     return _levelCoins;
 }

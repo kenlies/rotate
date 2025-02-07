@@ -37,7 +37,7 @@ class Game : public b2ContactListener {
 		sf::Vector2u 			&getWindowSize();
 		std::vector<std::shared_ptr<Box>> 		&getBoxes();
 		sf::View				&getView();
-		const unsigned short			&getLevelCoins() const;
+		const int				&getLevelCoins() const;
 
 		// ---- listeners ----
 		void BeginContact(b2Contact* contact) override; // override the base class functions
@@ -81,10 +81,10 @@ class Game : public b2ContactListener {
 		std::deque<sf::Sound>							_coinSounds;
 		std::vector<std::shared_ptr<sf::SoundBuffer>>	_coinExplosionSoundBuffers;
 		std::deque<sf::Sound>							_coinExplosionSounds;
-		unsigned short			_currLevel = 1;
-		unsigned short			_levelCoins = 0;
-		unsigned short			_levelScore = 0;
-		unsigned short			_totalScore = 0;
+		int			_currLevel = 1;
+		int			_levelCoins = 0;
+		int			_levelScore = 0;
+		int			_totalScore = 0;
 		std::unique_ptr<Player> _player;
 		b2Vec2				_playerSpawnPos;
 		sf::Clock			_waitTilRespawnClock;
