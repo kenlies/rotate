@@ -43,6 +43,7 @@ void Hud::updateScore(unsigned short score) {
     _scoreAvailableText.setString(std::to_string(_game->getLevelCoins()));
     if (std::stoi(std::string((_scoreText.getString()))) == 0) {
         _scoreText.setPosition(_game->getWindowSize().x / 2, _game->getWindowSize().y - _game->getWindowSize().y / 8);
+        _scoreLight->setPosition(_scoreText.getPosition().x, _scoreText.getPosition().y);
     } else if (std::stoi(std::string((_scoreText.getString()))) == 10) {
         _scoreText.setPosition(_scoreText.getPosition().x + 7 - _scoreText.getString().getSize() * 10, _scoreText.getPosition().y);
         _scoreLight->setPosition(_scoreText.getPosition().x, _scoreText.getPosition().y);
