@@ -66,7 +66,7 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : _game(game) {
 	_body = body;
 
 	// ---- set lights ----
-	_light = new candle::RadialLight;
+	_light = std::unique_ptr<candle::RadialLight>(new candle::RadialLight);
 	if (color == sf::Color::Yellow) {
 		_light->setRange(30);
 	} else {
@@ -92,7 +92,6 @@ bool Box::isInView(const sf::View &view) const {
 }
 
 Box::~Box() {
-	delete _light;
 	delete static_cast<int *>(_body->GetUserData());
 }
 
@@ -106,6 +105,6 @@ const std::unique_ptr<sf::RectangleShape> &Box::getShape() const {
 	return _shape;
 }
 
-candle::RadialLight* Box::getLight() const {
+const std::unique_ptr<candle::RadialLight> &Box::getLight() const {
 	return _light;
 }

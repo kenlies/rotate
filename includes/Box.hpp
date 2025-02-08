@@ -15,11 +15,11 @@ class Box {
 		// ---- getters ----
 		b2Body*				getBody() const;
 		const std::unique_ptr<sf::RectangleShape>	&getShape() const;
-		candle::RadialLight* getLight() const;
+		const std::unique_ptr<candle::RadialLight> &getLight() const;
 		
 	private:
 		Game*				_game;
 		b2Body* 			_body;
 		std::unique_ptr<sf::RectangleShape>	_shape;
-		candle::RadialLight* _light;
+		std::unique_ptr<candle::RadialLight> _light;
 };
