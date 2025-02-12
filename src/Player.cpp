@@ -22,17 +22,15 @@ Player::Player(Game *game) : _game(game) {
 	identifier = new int(PLAYER);
 	body->SetUserData(identifier);
 
-    sf::CircleShape *circle = new sf::CircleShape();
-    circle->setRadius(CIRCLE_RADIUS);
-    circle->setFillColor(sf::Color::Cyan);
-    circle->setOrigin({CIRCLE_RADIUS, CIRCLE_RADIUS});
+    _shape = std::unique_ptr<sf::CircleShape>(new sf::CircleShape());
+    _shape->setRadius(CIRCLE_RADIUS);
+    _shape->setFillColor(sf::Color::Cyan);
+    _shape->setOrigin({CIRCLE_RADIUS, CIRCLE_RADIUS});
 
 	_body = body;
-    _shape = circle;
 }
 
 Player::~Player() {
-	delete _shape;
     delete static_cast<int *>(_body->GetUserData());
 }
 
@@ -42,6 +40,6 @@ b2Body*	Player::getBody() const {
 	return _body;
 }
 
-sf::CircleShape* Player::getShape() const {
+const std::unique_ptr<sf::CircleShape> &Player::getShape() const {
 	return _shape;
 }
