@@ -17,5 +17,4 @@ class BoxMap {
 		
 	private:
 		Game *_game;
-
 };
