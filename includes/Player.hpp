@@ -10,12 +10,11 @@ class Player {
 		~Player();
 
 		// ---- getters ----
-		b2Body*				getBody() const;
+		b2Body*									getBody() const;
 		const std::unique_ptr<sf::CircleShape>	&getShape() const;
 		
-
 	private:
-		Game*				_game;
-		b2Body* 			_body;
+		Game*								_game;
+		b2Body* 							_body;
 		std::unique_ptr<sf::CircleShape>	_shape;
 };
