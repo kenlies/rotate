@@ -409,7 +409,7 @@ void Game::draw_boxes() {
         (*it)->getShape()->setPosition(SCALE * (*it)->getBody()->GetPosition().x, SCALE * (*it)->getBody()->GetPosition().y);
         if ((*it)->getShape()->getFillColor() == sf::Color::Yellow && _mode == Play) {
             (*it)->getShape()->rotate(50.f * _deltaTime.asSeconds());
-            if ((*it)->getBody()->GetType() == b2_dynamicBody && !_letsRespawn && !(*it)->isInView(_view)) {
+            if ((*it)->getBody()->GetType() == b2_dynamicBody && !(*it)->isInView(_view)) {
                 // emit particles!!
                 std::cout << "emit particles" << "\n";
                 _boxParticles.emplace_back(std::unique_ptr<BoxParticles>(new BoxParticles(this, 150, (*it)->getShape()->getPosition())));
