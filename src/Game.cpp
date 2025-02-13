@@ -41,11 +41,11 @@ Game::Game() :
     }
 
     // ---- crate player ball ----
-    _player = std::unique_ptr<Player>(new Player(this));
+    _player = std::make_unique<Player>(this);
     _jumpCoolDownClock.restart();
 
     // ---- create boxmap ----
-    _boxMap = std::unique_ptr<BoxMap>(new BoxMap(this));
+    _boxMap = std::make_unique<BoxMap>(this);
 
     // ---- set the listenr for object contacts ----
     _world.SetContactListener(this);
@@ -55,7 +55,7 @@ Game::Game() :
     _player->getBody()->SetTransform(_playerSpawnPos, 0);
 
     // ---- create hud ----
-    _hud = std::unique_ptr<Hud>(new Hud(this));
+    _hud = std::make_unique<Hud>(this);
 }
 
 Game::~Game() {
@@ -184,7 +184,7 @@ void Game::updatePlay() {
             _player->getBody()->SetAngularVelocity(0);
             _letsRespawn = false;
             cameraOnPlayer = true;
-            _fade = std::unique_ptr<Fade>(new Fade(this));
+            _fade = std::make_unique<Fade>(this);
             _levelCoins = 0;
             _levelScore = 0;
             _boxMap->loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(_currLevel));
@@ -410,7 +410,7 @@ void Game::draw_boxes() {
             if ((*it)->getBody()->GetType() == b2_dynamicBody && !(*it)->isInView(_view)) {
                 // emit particles!!
                 std::cout << "emit particles" << "\n";
-                _boxParticles.emplace_back(std::unique_ptr<BoxParticles>(new BoxParticles(150, (*it)->getShape()->getPosition())));
+                _boxParticles.emplace_back(std::make_unique<BoxParticles>(150, (*it)->getShape()->getPosition()));
                 _world.DestroyBody((*it)->getBody());
                 it = _boxes.erase(it);
                 _levelScore++;
@@ -501,9 +501,7 @@ void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {
         } else if (color == sf::Color::Yellow) {
             _levelCoins++;
         }
-
-        std::shared_ptr<Box> box = std::shared_ptr<Box>(new Box(this, checkPos, color));
-        _boxes.push_back(box);
+        _boxes.emplace_back(std::make_shared<Box>(this, checkPos, color));
     }
 }
 
