@@ -185,7 +185,6 @@ void Game::updatePlay() {
             _letsRespawn = false;
             cameraOnPlayer = true;
             _fade = std::unique_ptr<Fade>(new Fade(this));
-            _fade->getFadeClock().restart();
             _levelCoins = 0;
             _levelScore = 0;
             _boxMap->loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(_currLevel));
@@ -197,7 +196,6 @@ void Game::updatePlay() {
     if (_fade) {
         if (_fade->getFadeClock().getElapsedTime().asMilliseconds() > 1) {
             _fade->decrementFadeCounter();
-            _fade->getFadeClock().restart();
             if (_fade->getFadeCounter() <= 0) {
                 _fade = nullptr;
             }

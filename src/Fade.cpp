@@ -20,7 +20,7 @@ void Fade::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 // ---- increment/decrement ----
 
 void Fade::decrementFadeCounter() {
-	_fadeCounter -= 4;
+	_fadeCounter -= 3;
 }
 
 // ---- getters ----
@@ -29,7 +29,7 @@ const std::unique_ptr<sf::RectangleShape> &Fade::getShape() const {
 	return _shape;
 }
 
-sf::Clock Fade::getFadeClock() const {
+const sf::Clock &Fade::getFadeClock() const {
 	return _fadeClock;
 }
 
