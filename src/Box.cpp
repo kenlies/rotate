@@ -54,7 +54,7 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : _game(game) {
 	}
 
 	// ---- drawing attributes ----
-	_shape = std::unique_ptr<sf::RectangleShape>(new sf::RectangleShape);
+	_shape = std::make_unique<sf::RectangleShape>();
 	// make yellow boxes half the size
 	if (color == sf::Color::Yellow) {
 		_shape->setOrigin(BOX_WIDTH / 4, BOX_WIDTH / 4);
@@ -69,7 +69,7 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : _game(game) {
 	_body = body;
 
 	// ---- set lights ----
-	_light = std::unique_ptr<candle::RadialLight>(new candle::RadialLight);
+	_light = std::make_unique<candle::RadialLight>();
 	if (color == sf::Color::Yellow) {
 		_light->setRange(30);
 	} else {
