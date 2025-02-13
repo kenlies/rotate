@@ -410,7 +410,7 @@ void Game::draw_boxes() {
             if ((*it)->getBody()->GetType() == b2_dynamicBody && !(*it)->isInView(_view)) {
                 // emit particles!!
                 std::cout << "emit particles" << "\n";
-                _boxParticles.emplace_back(std::unique_ptr<BoxParticles>(new BoxParticles(this, 150, (*it)->getShape()->getPosition())));
+                _boxParticles.emplace_back(std::unique_ptr<BoxParticles>(new BoxParticles(150, (*it)->getShape()->getPosition())));
                 _world.DestroyBody((*it)->getBody());
                 it = _boxes.erase(it);
                 _levelScore++;

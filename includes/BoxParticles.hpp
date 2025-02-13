@@ -6,7 +6,7 @@ class Game;
 
 class BoxParticles : public sf::Drawable, public sf::Transformable {
 	public:
-		BoxParticles(Game *game, unsigned int count, sf::Vector2f position);
+		BoxParticles(unsigned int count, sf::Vector2f position);
 		~BoxParticles();
 
 		void update(sf::Time elapsed);
@@ -23,8 +23,6 @@ class BoxParticles : public sf::Drawable, public sf::Transformable {
 			sf::Vector2f velocity;
 			sf::Time lifetime;
 		};
-
-		Game *_game;
 
 		std::vector<Particle> m_particles;
 		sf::VertexArray m_vertices;

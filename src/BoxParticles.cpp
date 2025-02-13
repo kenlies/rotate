@@ -1,7 +1,6 @@
 #include "../includes/BoxParticles.hpp"
 
-BoxParticles::BoxParticles(Game *game, unsigned int count, sf::Vector2f position) :
-	_game(game),
+BoxParticles::BoxParticles(unsigned int count, sf::Vector2f position) :
     m_particles(count),
     m_vertices(sf::Points, count),
     m_lifetime(sf::seconds(0.3f)),
