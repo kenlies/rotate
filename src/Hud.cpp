@@ -26,7 +26,7 @@ Hud::Hud(Game *game) : _game(game) {
     _scoreAvailableText.setOrigin(_scoreAvailableText.getGlobalBounds().width / 2, _scoreAvailableText.getGlobalBounds().height / 2);
     _scoreAvailableText.setPosition(_scoreText.getPosition().x + 32, _scoreText.getPosition().y + 40);
 
-    _scoreLight = std::unique_ptr<candle::RadialLight>(new candle::RadialLight);
+    _scoreLight = std::make_unique<candle::RadialLight>();
     _scoreLight->setColor(sf::Color::White);
     _scoreLight->setRange(90);
     _scoreLight->setPosition(_scoreText.getPosition().x, _scoreText.getPosition().y);
