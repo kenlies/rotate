@@ -424,7 +424,7 @@ void Game::draw_boxes() {
         _window.draw(*((*it)->getShape()));
 
         // ---- draw lighting ----
-        if (_mode == Play) {
+        if (_mode == Play && (*it)->getShape()->getFillColor() != sf::Color(25, 25, 25)) {  // don't draw lighting on dark gray boxes
             (*it)->getLight()->setPosition(SCALE * (*it)->getBody()->GetPosition().x, SCALE * (*it)->getBody()->GetPosition().y);
             _window.draw(*((*it)->getLight()));
         }

@@ -20,8 +20,8 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : _game(game) {
 	}
 	b2FixtureDef fixtureDef;
 
-	// make spawn boxes anad yellow boxes not collide
-	if (color == sf::Color::Cyan || color == sf::Color::Yellow) {
+	// make spawn boxes, yellow and gray boxes not collide
+	if (color == sf::Color::Cyan || color == sf::Color::Yellow || color == sf::Color(25, 25, 25)) {
 		fixtureDef.isSensor = true;
 	}
 	fixtureDef.shape = &Shape;
@@ -62,7 +62,7 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : _game(game) {
 	}
 	_shape->setFillColor(color);
 
-	// ---- store them in one data structure ----a
+	// ---- store them in one data structure ----
 	_body = body;
 
 	// ---- set lights ----

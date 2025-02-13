@@ -117,7 +117,8 @@ class Game : public b2ContactListener {
 											  sf::Color::Green,
 											  sf::Color::Red,
 											  sf::Color::Cyan,
-											  sf::Color::Yellow};
+											  sf::Color::Yellow,
+											  sf::Color(25, 25, 25)}; // <-- dark gray
 		scrollWheelInput		_scrollWheelInput = None;
 
 		// ---- text things ----
