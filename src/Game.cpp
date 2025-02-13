@@ -1,7 +1,7 @@
 #include "../includes/Game.hpp"
 
 Game::Game() : 
-    _window({}, "Untitled", sf::Style::Fullscreen, sf::ContextSettings(0, 0, 8)),
+    _window({}, "rotate", sf::Style::Fullscreen, sf::ContextSettings(0, 0, 8)),
     _windowSize(_window.getSize()),
     _world(b2Vec2(0.f, GRAVITY_MAGNITUDE)),
     _view(sf::Vector2f(_windowSize.x / 2, _windowSize.y / 2), sf::Vector2f())
