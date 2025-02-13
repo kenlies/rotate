@@ -16,12 +16,12 @@ class Fade : public sf::Drawable, public sf::Transformable {
 
 		// ---- getters ----
 		const std::unique_ptr<sf::RectangleShape>	&getShape() const;
-		const sf::Clock			&getFadeClock() const;
-		int					getFadeCounter() const;
+		const sf::Clock								&getFadeClock() const;
+		int											getFadeCounter() const;
 		
 	private:
-		Game*				_game;
+		Game*								_game;
 		std::unique_ptr<sf::RectangleShape>	_shape;
-		sf::Clock			_fadeClock;
-		int					_fadeCounter = 255;
+		sf::Clock							_fadeClock;
+		int									_fadeCounter = 255;
 };
