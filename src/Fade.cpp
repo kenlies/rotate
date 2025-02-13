@@ -1,7 +1,7 @@
 #include "../includes/Fade.hpp"
 
 Fade::Fade(Game *game) : _game(game) {
-    _shape = std::unique_ptr<sf::RectangleShape>(new sf::RectangleShape);
+	_shape = std::make_unique<sf::RectangleShape>();
     _shape->setFillColor(sf::Color::Black);
 	_shape->setSize({static_cast<float>(_game->getWindowSize().x * 4), static_cast<float>(_game->getWindowSize().y * 4)});
 	_shape->setOrigin(_shape->getSize().y / 2, _shape->getSize().x / 2);
