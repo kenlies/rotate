@@ -33,11 +33,11 @@ class Game : public b2ContactListener {
 		void removeBox(const sf::Vector2i &mousePos);
 
 		// ---- getters ----
-		b2World 				&getWorld();
-		sf::Vector2u 			&getWindowSize();
-		std::vector<std::shared_ptr<Box>> 		&getBoxes();
-		sf::View				&getView();
-		int				getLevelCoins() const;
+		b2World 							&getWorld();
+		sf::Vector2u 						&getWindowSize();
+		std::vector<std::shared_ptr<Box>>	&getBoxes();
+		sf::View							&getView();
+		int									getLevelCoins() const;
 
 		// ---- listeners ----
 		void BeginContact(b2Contact* contact) override; // override the base class functions
@@ -75,27 +75,31 @@ class Game : public b2ContactListener {
 
 		sf::Time			_deltaTime;
 
-		std::vector<std::shared_ptr<Box>> 	_boxes;
-		std::unique_ptr<BoxMap> _boxMap;
+		std::vector<std::shared_ptr<Box>> 				_boxes;
+		std::unique_ptr<BoxMap>							_boxMap;
 		std::vector<std::shared_ptr<sf::SoundBuffer>>	_coinSoundBuffers;
 		std::deque<sf::Sound>							_coinSounds;
 		std::vector<std::shared_ptr<sf::SoundBuffer>>	_coinExplosionSoundBuffers;
 		std::deque<sf::Sound>							_coinExplosionSounds;
-		int			_currLevel = 1;
-		int			_levelCoins = 0;
-		int			_levelScore = 0;
-		int			_totalScore = 0;
-		std::unique_ptr<Player> _player;
-		b2Vec2				_playerSpawnPos;
-		sf::Clock			_waitTilRespawnClock;
+		int												_currLevel = 1;
+		int												_levelCoins = 0;
+		int												_levelScore = 0;
+		int												_totalScore = 0;
+
+		// ---- player ----
+		std::unique_ptr<Player>	_player;
+		bool 					_letsRespawn = false;
+		b2Vec2					_playerSpawnPos;
+		sf::Clock				_waitTilRespawnClock;
+
+		bool 					_jump = false;
+		sf::Clock				_jumpCoolDownClock;
+		int						_canJump = 0; // how many bodies touch the ball at a time: able to jump if > 0
 		
-		b2Body *_touchRedBox = nullptr;
-		b2Body *_touchGreenBox = nullptr;
-		b2Body *_touchYellowoBox = nullptr;
-	
-		bool _letsRespawn = false;
-		sf::Clock _jumpCoolDownClock;
-		int _canJump = 0; // how many bodies touch the ball at a time: able to jump if > 0
+		b2Body 					*_touchRedBox = nullptr;
+		b2Body 					*_touchGreenBox = nullptr;
+		b2Body 					*_touchYellowoBox = nullptr;
+
 
 		// ---- window things ----
 		sf::RenderWindow	_window;
@@ -135,6 +139,4 @@ class Game : public b2ContactListener {
 		bool _moveViewRight = false;
 		bool _moveViewUp = false;
 		bool _moveViewDown = false;
-
-		bool _jump = false;
 };
