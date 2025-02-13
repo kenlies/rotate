@@ -46,7 +46,7 @@ void BoxMap::loadMap(const std::string &path) {
 			case 5:
 				color = sf::Color::Yellow;
 				break;
-            case 7:
+            case 6:
                 color = sf::Color(25, 25, 25);
                 break;
         }
