@@ -22,7 +22,7 @@ Player::Player(Game *game) : _game(game) {
 	identifier = new int(PLAYER);
 	body->SetUserData(identifier);
 
-    _shape = std::unique_ptr<sf::CircleShape>(new sf::CircleShape());
+    _shape = std::make_unique<sf::CircleShape>();
     _shape->setRadius(CIRCLE_RADIUS);
     _shape->setFillColor(sf::Color::Cyan);
     _shape->setOrigin({CIRCLE_RADIUS, CIRCLE_RADIUS});
