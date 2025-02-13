@@ -17,3 +17,4 @@ constexpr short CYAN = 3;
 constexpr short GREEN = 4;
 constexpr short YELLOW = 5;
 constexpr short PLAYER = 6;
+constexpr short GRAY = 7;

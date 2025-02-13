@@ -48,6 +48,9 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : _game(game) {
 	} else if (color == sf::Color::Yellow) {
 		colorIdentifier = new int(YELLOW);
 		body->SetUserData(colorIdentifier);
+	} else if (color == sf::Color(25, 25, 25)) {
+		colorIdentifier = new int(GRAY);
+		body->SetUserData(colorIdentifier);
 	}
 
 	// ---- drawing attributes ----
