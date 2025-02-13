@@ -11,10 +11,10 @@ constexpr float WIN_FORCE = 10.f;
 constexpr float PICKUP_FORCE = 1.f;
 
 // identifiers
-constexpr short RED = 1;
-constexpr short WHITE = 2;
-constexpr short CYAN = 3;
-constexpr short GREEN = 4;
-constexpr short YELLOW = 5;
-constexpr short GRAY = 6;
-constexpr short PLAYER = 99;
+constexpr int RED = 1;
+constexpr int WHITE = 2;
+constexpr int CYAN = 3;
+constexpr int GREEN = 4;
+constexpr int YELLOW = 5;
+constexpr int GRAY = 6;
+constexpr int PLAYER = 99;
