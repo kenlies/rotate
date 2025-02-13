@@ -55,6 +55,7 @@ class Game : public b2ContactListener {
 		void draw_box_at_cursor(const sf::Vector2i &mousePos);
 		
 		// ---- helper/other ----
+		b2Vec2 createForce(float force) const;
 		void playSounds(const std::vector<std::shared_ptr<sf::SoundBuffer>> &soundBuffers,
 							std::deque<sf::Sound> &sounds, float volume);
 

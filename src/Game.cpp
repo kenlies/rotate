@@ -207,15 +207,8 @@ void Game::updatePlay() {
         if (_touchYellowoBox->GetType() != b2_dynamicBody) {
             playSounds(_coinSoundBuffers, _coinSounds, 20.f);
         }
-
-        float rotation = _view.getRotation();
-        float radians = rotation * (b2_pi / 180.0f);
-        b2Vec2 force;
-        force.x = PICKUP_FORCE * sin(radians);
-        force.y = -PICKUP_FORCE * cos(radians);
-
         _touchYellowoBox->SetType(b2_dynamicBody);
-        _touchYellowoBox->ApplyLinearImpulseToCenter(force, true);
+        _touchYellowoBox->ApplyLinearImpulseToCenter(createForce(-PICKUP_FORCE), true);
         _touchYellowoBox = nullptr;
     }
 
@@ -229,14 +222,8 @@ void Game::updatePlay() {
             _currLevel = 1;
             _totalScore = 0;
         }
-        float rotation = _view.getRotation();
-        float radians = rotation * (b2_pi / 180.0f);
-        b2Vec2 force;
-        force.x = WIN_FORCE * sin(radians);
-        force.y = -WIN_FORCE * cos(radians);
-
         _touchGreenBox->SetType(b2_dynamicBody);
-        _touchGreenBox->ApplyLinearImpulseToCenter(force, true);
+        _touchGreenBox->ApplyLinearImpulseToCenter(createForce(-WIN_FORCE), true);
         _touchGreenBox->ApplyTorque(_player->getBody()->GetAngle(), true);
         _touchGreenBox = nullptr;
         std::cout << "LEVEL CLEAR\n";
@@ -246,12 +233,7 @@ void Game::updatePlay() {
     if (_touchRedBox) {
         cameraOnPlayer = false;
         _letsRespawn = true;
-        float rotation = _view.getRotation();
-        float radians = rotation * (b2_pi / 180.0f);
-        b2Vec2 force;
-        force.x = EXPLOSION_FORCE * sin(radians);
-        force.y = -EXPLOSION_FORCE * cos(radians);
-
+        b2Vec2 explosionForce = createForce(-EXPLOSION_FORCE);
         b2ContactEdge* contacts = _touchRedBox->GetContactList();
 
         // apply the world breaking effect: break things!!!
@@ -270,14 +252,14 @@ void Game::updatePlay() {
                         
                     b2Body* whiteBox = (*fixtureA_Color == WHITE) ? fixtureA->GetBody() : fixtureB->GetBody();
                     whiteBox->SetType(b2_dynamicBody);
-                    whiteBox->ApplyLinearImpulseToCenter(force, true);
+                    whiteBox->ApplyLinearImpulseToCenter(explosionForce, true);
                     whiteBox->ApplyTorque(_player->getBody()->GetAngle(), true);
                     whiteBox->SetSleepingAllowed(false);
                 }
             }
             contacts = contacts->next;
         }
-        _touchRedBox->ApplyLinearImpulseToCenter(force, true);
+        _touchRedBox->ApplyLinearImpulseToCenter(explosionForce, true);
         _touchRedBox->ApplyTorque(_player->getBody()->GetAngle(), true);
         _touchRedBox = nullptr;
         std::cout << "DEATH BY RED BOX\n";
@@ -303,25 +285,14 @@ void Game::updatePlay() {
     _view.rotate(_rotVel * _deltaTime.asSeconds()); // frame rate independent
     _rotVel *= 0.92; // smoothing rotation
 
-    // convert rotation angle to radians for trigonometric calculations
-    float radians = _view.getRotation() * (b2_pi / 180.0f);
-
-    // calculate gravity direction in world space to always point to window bottom
-    b2Vec2 gravity;
-    gravity.x = -GRAVITY_MAGNITUDE * sin(radians);
-    gravity.y = GRAVITY_MAGNITUDE * cos(radians);
-
     // ---- jump ----
     if (_jump && _canJump > 0 && !_letsRespawn && _jumpCoolDownClock.getElapsedTime().asSeconds() > 1.5f) {
-        b2Vec2 force;
-        force.x = -JUMP_FORCE * sin(radians);
-        force.y = JUMP_FORCE * cos(radians); 
-        _player->getBody()->ApplyLinearImpulseToCenter(force, false);
+        _player->getBody()->ApplyLinearImpulseToCenter(createForce(JUMP_FORCE), false);
         _jumpCoolDownClock.restart();
     }
 
     // set the adjusted gravity in the Box2D world
-    _world.SetGravity(gravity);
+    _world.SetGravity(createForce(GRAVITY_MAGNITUDE));
 
     // make camera follow player
     if (cameraOnPlayer) {
@@ -590,6 +561,16 @@ void Game::EndContact(b2Contact* contact) {
 }
 
 // --- helper/other ----
+// calculate force direction in world space to acoount for rotated world
+b2Vec2 Game::createForce(float forcePower) const {
+    float radians = _view.getRotation() * (b2_pi / 180.0f);
+
+    b2Vec2 force;
+    force.x = -forcePower * sin(radians);
+    force.y = forcePower * cos(radians);
+    return force;
+}
+
 void Game::playSounds(const std::vector<std::shared_ptr<sf::SoundBuffer>> &soundBuffers, 
                         std::deque<sf::Sound> &sounds, float volume) {
     static std::random_device rd;
