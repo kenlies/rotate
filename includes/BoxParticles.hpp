@@ -14,7 +14,7 @@ class BoxParticles : public sf::Drawable, public sf::Transformable {
 
 		// ---- getters ----
 
-		sf::Time getCurrLife();
+		const sf::Time &getCurrLife() const;
 		
 	private:
 
