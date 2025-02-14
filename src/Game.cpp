@@ -301,16 +301,8 @@ void Game::updatePlay() {
 
     // ---- draw everything ----
     _window.clear();
-    for (auto it = _boxParticles.begin(); it != _boxParticles.end();) {
-        (*it)->update(_deltaTime);
-        _window.draw(*(*it));
-        if ((*it)->getCurrLife().asSeconds() > 3) {
-            it = _boxParticles.erase(it);
-            std::cout << "removed particles from vector" << "\n";
-            continue;
-        }
-        ++it;
-    }
+
+    draw_particles();
     draw_boxes();
     draw_player();
     if (_fade) {
@@ -319,6 +311,7 @@ void Game::updatePlay() {
     _window.setView(_window.getDefaultView()); // set the default view before draw 
     _window.draw(*_hud);
     _window.setView(_view); // set the actualy view
+
     _window.display();
 }
 
@@ -365,6 +358,19 @@ void Game::draw_player() {
     _player->getShape()->setPosition(SCALE * _player->getBody()->GetPosition().x, SCALE * _player->getBody()->GetPosition().y);
     _player->getShape()->setRotation(_player->getBody()->GetAngle() * 180 / b2_pi);
     _window.draw(*(_player->getShape()));
+}
+
+void Game::draw_particles() {
+    for (auto it = _boxParticles.begin(); it != _boxParticles.end();) {
+        (*it)->update(_deltaTime);
+        _window.draw(*(*it));
+        if ((*it)->getCurrLife().asSeconds() > 3) {
+            it = _boxParticles.erase(it);
+            std::cout << "removed particles from vector" << "\n";
+            continue;
+        }
+        ++it;
+    }
 }
 
 void Game::draw_boxes() {
