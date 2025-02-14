@@ -304,7 +304,7 @@ void Game::updatePlay() {
 
     draw_particles();
     draw_boxes();
-    draw_player();
+    _window.draw(*_player);
     if (_fade) { _window.draw(*_fade); }
     _window.setView(_window.getDefaultView()); // set the default view before draw 
     _window.draw(*_hud);
@@ -350,12 +350,6 @@ void Game::updateEditor() {
     _window.draw(_modeText);
 
     _window.display();
-}
-
-void Game::draw_player() {
-    _player->getShape()->setPosition(SCALE * _player->getBody()->GetPosition().x, SCALE * _player->getBody()->GetPosition().y);
-    _player->getShape()->setRotation(_player->getBody()->GetAngle() * 180 / b2_pi);
-    _window.draw(*(_player->getShape()));
 }
 
 void Game::draw_particles() {

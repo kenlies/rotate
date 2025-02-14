@@ -4,10 +4,12 @@
 
 class Game;
 
-class Player {
+class Player : public sf::Drawable {
 	public:
 		Player(Game *game);
 		~Player();
+
+		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 		// ---- getters ----
 		b2Body*									getBody() const;

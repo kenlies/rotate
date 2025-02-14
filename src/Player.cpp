@@ -34,8 +34,13 @@ Player::~Player() {
     delete static_cast<int *>(_body->GetUserData());
 }
 
-// ---- getters ----
+void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    _shape->setPosition(SCALE * _body->GetPosition().x, SCALE * _body->GetPosition().y);
+    _shape->setRotation(_body->GetAngle() * 180 / b2_pi);
+    target.draw(*_shape, states);
+}
 
+// ---- getters ----
 b2Body*	Player::getBody() const {
 	return _body;
 }

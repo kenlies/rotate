@@ -49,7 +49,6 @@ class Game : public b2ContactListener {
 		void updateEditor();
 		void draw_particles();
 		void draw_boxes();
-		void draw_player();
 
 		// ---- editor ----
 		void draw_grid();
