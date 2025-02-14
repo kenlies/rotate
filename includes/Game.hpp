@@ -28,15 +28,19 @@ class Game : public b2ContactListener {
 		Game();
 		~Game();
 
+		enum gameMode { Play, Editor };
+
 		void run();
 		void createBox(const sf::Vector2i &mousePos, const sf::Color &color);
 		void removeBox(const sf::Vector2i &mousePos);
 
 		// ---- getters ----
 		b2World 							&getWorld();
+		sf::RenderWindow					&getWindow();
 		sf::Vector2u 						&getWindowSize();
 		std::vector<std::shared_ptr<Box>>	&getBoxes();
 		sf::View							&getView();
+		gameMode 							getMode() const;
 		int									getLevelCoins() const;
 
 		// ---- listeners ----
@@ -58,12 +62,6 @@ class Game : public b2ContactListener {
 		b2Vec2 createForce(float force) const;
 		void playSounds(const std::vector<std::shared_ptr<sf::SoundBuffer>> &soundBuffers,
 							std::deque<sf::Sound> &sounds, float volume);
-
-		// ---- enums ----
-		enum gameMode {
-			Play,
-			Editor
-		};
 
 		enum scrollWheelInput {
 			ScrollUp,
@@ -125,10 +123,6 @@ class Game : public b2ContactListener {
 											  sf::Color::Yellow,
 											  sf::Color(25, 25, 25)}; // <-- dark gray
 		scrollWheelInput		_scrollWheelInput = None;
-
-		// ---- text things ----
-		sf::Font			_modeFont;
-		sf::Text			_modeText;
 
 		// ---- rotate the world ----
 		bool _rotateRight = false;

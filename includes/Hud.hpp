@@ -15,6 +15,10 @@ class Hud : public sf::Drawable {
 
 	private:
 		Game		*_game;
+
+		sf::Font	_modeFont;
+		sf::Text	_modeText;
+	
 		sf::Font	_scoreFont;
 		sf::Text	_scoreText;
 		sf::Text	_scoreAvailableText;

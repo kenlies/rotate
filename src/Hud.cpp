@@ -1,6 +1,15 @@
 #include "../includes/Hud.hpp"
 
 Hud::Hud(Game *game) : _game(game) {
+    if (!_modeFont.loadFromFile(ResourceManager::getAssetFilePath("BebasNeue-Regular.ttf"))) {
+        std::cerr << "Error: Could not load font 'BebasNeue-Regular.ttf' from assets." << std::endl;
+    }
+    _modeText.setPosition({5, static_cast<float>(_game->getWindowSize().y / 64)}); // set position to top left
+    _modeText.setString("Editor");
+    _modeText.setFillColor(sf::Color::Red);
+    _modeText.setFont(_modeFont);
+    sf::FloatRect textBounds = _modeText.getLocalBounds();
+    _modeText.setOrigin(0, textBounds.height / 2.f);
     if (!_scoreFont.loadFromFile(ResourceManager::getAssetFilePath("Even Stevens.ttf"))) {
         std::cerr << "Error: Could not load font 'Even Stevens' from assets." << std::endl;
     }
@@ -57,9 +66,19 @@ void Hud::updateScore(unsigned short score) {
 }
 
 void Hud::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    _scoreLight->setIntensity(_scoreLight->getIntensity() - 0.02f);
-    target.draw(*_scoreLight, states);
-	target.draw(_scoreText, states);
-    target.draw(_scoreSlash, states);
-    target.draw(_scoreAvailableText, states);
+    sf::RenderWindow& window = _game->getWindow();
+
+    window.setView(window.getDefaultView());  // set default view before drawing
+
+    if (_game->getMode() == Game::Play) {
+        _scoreLight->setIntensity(_scoreLight->getIntensity() - 0.02f);
+        target.draw(*_scoreLight, states);
+        target.draw(_scoreText, states);
+        target.draw(_scoreSlash, states);
+        target.draw(_scoreAvailableText, states);
+    } else {
+        target.draw(_modeText, states);
+    }
+
+    window.setView(_game->getView());  // restore the actual game view
 }

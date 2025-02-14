@@ -10,18 +10,6 @@ Game::Game() :
     _window.setMouseCursorVisible(false);
     _view.setSize(sf::Vector2f(_windowSize.x, _windowSize.y));
 
-    // ---- load fonts and setup texts ----
-    if (!_modeFont.loadFromFile(ResourceManager::getAssetFilePath("BebasNeue-Regular.ttf"))) {
-        std::cerr << "Error: Could not load font 'BebasNeue-Regular.ttf' from assets." << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    _modeText.setPosition({5, static_cast<float>(_windowSize.y / 64)}); // set position to top left
-    _modeText.setString("Editor");
-    _modeText.setFillColor(sf::Color::Red);
-    _modeText.setFont(_modeFont);
-    sf::FloatRect textBounds = _modeText.getLocalBounds();
-    _modeText.setOrigin(0, textBounds.height / 2.f);
-
     // ---- create sound buffers ----
     std::shared_ptr<sf::SoundBuffer> bufSoundOne = std::make_shared<sf::SoundBuffer>();
     std::shared_ptr<sf::SoundBuffer> bufSoundTwo = std::make_shared<sf::SoundBuffer>();
@@ -306,9 +294,7 @@ void Game::updatePlay() {
     draw_boxes();
     _window.draw(*_player);
     if (_fade) { _window.draw(*_fade); }
-    _window.setView(_window.getDefaultView()); // set the default view before draw 
     _window.draw(*_hud);
-    _window.setView(_view); // set the actualy view
 
     _window.display();
 }
@@ -339,15 +325,12 @@ void Game::updateEditor() {
         removeBox(mousePos);
     }
 
-    // adjust editor text poistion for view movement
-    _modeText.setPosition({_view.getCenter().x - _view.getSize().x / 2 + 10, _view.getCenter().y - _view.getSize().y / 2 + 10}); // add padding
-
     // ---- draw everything ----
     _window.clear();
     draw_boxes();
     draw_grid();
     draw_box_at_cursor(mousePos); // draw the box to be placed
-    _window.draw(_modeText);
+    _window.draw(*_hud);
 
     _window.display();
 }
@@ -590,6 +573,10 @@ b2World &Game::getWorld() {
     return _world;
 }
 
+sf::RenderWindow &Game::getWindow() {
+    return _window;
+}
+
 sf::Vector2u &Game::getWindowSize() {
     return _windowSize;
 }
@@ -600,6 +587,10 @@ std::vector<std::shared_ptr<Box>> &Game::getBoxes() {
 
 sf::View &Game::getView() {
     return _view;
+}
+
+Game::gameMode Game::getMode() const {
+    return _mode;
 }
 
 int Game::getLevelCoins() const {
