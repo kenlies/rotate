@@ -373,7 +373,6 @@ void Game::draw_boxes() {
             ++it;
             continue;
         }
-        (*it)->getShape()->setPosition(SCALE * (*it)->getBody()->GetPosition().x, SCALE * (*it)->getBody()->GetPosition().y);
         if ((*it)->getShape()->getFillColor() == sf::Color::Yellow && _mode == Play) {
             (*it)->getShape()->rotate(50.f * _deltaTime.asSeconds());
             if ((*it)->getBody()->GetType() == b2_dynamicBody && !(*it)->isInView(_view)) {
@@ -387,10 +386,8 @@ void Game::draw_boxes() {
                 playSounds(_coinExplosionSoundBuffers, _coinExplosionSounds, 15);
                 continue;
             }
-        } else {
-            (*it)->getShape()->setRotation((*it)->getBody()->GetAngle() * 180 / b2_pi);
-        }
-        _window.draw(*((*it)->getShape()));
+        } 
+        _window.draw(*(*it));
 
         // ---- draw lighting ----
         if (_mode == Play && (*it)->getShape()->getFillColor() != sf::Color(25, 25, 25)) {  // don't draw lighting on dark gray boxes

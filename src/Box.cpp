@@ -98,8 +98,16 @@ Box::~Box() {
 	delete static_cast<int *>(_body->GetUserData());
 }
 
-// ---- getters ----
+void Box::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	_shape->setPosition(SCALE * _body->GetPosition().x, SCALE * _body->GetPosition().y);
+	// don't get rotation for yellow boxes from Box2D, since their shapes are rotated in Game.cpp where this was called
+	if (_shape->getFillColor() != sf::Color::Yellow) {
+    	_shape->setRotation(_body->GetAngle() * 180 / b2_pi);
+	}
+	target.draw(*_shape, states);
+}
 
+// ---- getters ----
 b2Body*	Box::getBody() const {
 	return _body;
 }

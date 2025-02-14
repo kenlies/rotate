@@ -5,12 +5,13 @@
 
 class Game;
 
-class Box {
+class Box : public sf::Drawable {
 	public:
 		Box(Game *game, b2Vec2 &checkPos, const sf::Color &color);
 		~Box();
 
-		bool isInView(const sf::View &view) const;
+		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		bool 			isInView(const sf::View &view) const;
 
 		// ---- getters ----
 		b2Body*										getBody() const;
