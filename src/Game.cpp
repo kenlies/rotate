@@ -305,9 +305,7 @@ void Game::updatePlay() {
     draw_particles();
     draw_boxes();
     draw_player();
-    if (_fade) {
-        _fade->draw(_window, sf::RenderStates::Default);
-    }
+    if (_fade) { _window.draw(*_fade); }
     _window.setView(_window.getDefaultView()); // set the default view before draw 
     _window.draw(*_hud);
     _window.setView(_view); // set the actualy view
