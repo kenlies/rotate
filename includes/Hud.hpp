@@ -5,7 +5,7 @@
 
 class Game;
 
-class Hud : public sf::Drawable, public sf::Transformable {
+class Hud : public sf::Drawable {
 	public:
 		Hud(Game *game);
 		~Hud();
