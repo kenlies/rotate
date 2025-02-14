@@ -4,7 +4,7 @@
 
 class Game;
 
-class Fade : public sf::Drawable, public sf::Transformable {
+class Fade : public sf::Drawable {
 	public:
 		Fade(Game *game);
 		~Fade();
