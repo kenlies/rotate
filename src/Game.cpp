@@ -560,8 +560,7 @@ void Game::EndContact(b2Contact* contact) {
 // --- helper/other ----
 // calculate force direction in world space to acoount for rotated world
 b2Vec2 Game::createForce(float forcePower) const {
-    float radians = _view.getRotation() * (b2_pi / 180.0f);
-
+    float radians = _view.getRotation() * DEG_TO_RAD;
     b2Vec2 force;
     force.x = -forcePower * sin(radians);
     force.y = forcePower * cos(radians);

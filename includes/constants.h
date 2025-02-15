@@ -1,5 +1,6 @@
 #pragma once
-
+constexpr float RAD_TO_DEG = 180 / 3.14159265359f;
+constexpr float DEG_TO_RAD = 3.14159265359f / 180;
 constexpr float TIME_STEP = 1.0f / 60.f;
 constexpr float GRAVITY_MAGNITUDE = 18.f;
 constexpr float JUMP_FORCE = 20.f;

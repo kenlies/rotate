@@ -106,12 +106,12 @@ void Box::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		// don't get rotation for yellow boxes from Box2D, since their shapes are rotated in Game.cpp where this was called
 		if (_shape->getFillColor() != sf::Color::Yellow) {
 			const float interpolatedAngle = (1.0f - alpha) * _lerpData._prevAngle + alpha * _body->GetAngle();
-			_shape->setRotation(interpolatedAngle * 180 / b2_pi);
+			_shape->setRotation(interpolatedAngle * RAD_TO_DEG);
 		}
 	} else {
 		_shape->setPosition(SCALE * _body->GetPosition().x, SCALE * _body->GetPosition().y);
 		if (_shape->getFillColor() != sf::Color::Yellow) {
-			_shape->setRotation(_body->GetAngle() * 180 / b2_pi);
+			_shape->setRotation(_body->GetAngle() * RAD_TO_DEG);
 		}
 	}
 	target.draw(*_shape, states);

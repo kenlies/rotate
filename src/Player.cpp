@@ -40,7 +40,7 @@ void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     const float interpolatedAngle = (1.0f - alpha) * _lerpData._prevAngle + alpha * _body->GetAngle();
 
     _shape->setPosition(SCALE * interpolatedPos.x, SCALE * interpolatedPos.y);
-    _shape->setRotation(interpolatedAngle * 180 / b2_pi);
+    _shape->setRotation(interpolatedAngle * RAD_TO_DEG);
 
     target.draw(*_shape, states);
 }
