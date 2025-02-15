@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <random>
+#include <algorithm>
 #include "constants.h"
 #include "ResourceManager.hpp"
 #include "Player.hpp"
@@ -42,12 +43,14 @@ class Game : public b2ContactListener {
 		sf::View							&getView();
 		gameMode 							getMode() const;
 		int									getLevelCoins() const;
+		float								getLerpAlpha() const;
 
 		// ---- listeners ----
 		void BeginContact(b2Contact* contact) override; // override the base class functions
 		void EndContact(b2Contact* contact) override;	// override the base class functions
 
 	private:
+		void doPhysicsStep();
 		void updateEvents();
 		void updatePlay();
 		void updateEditor();
@@ -73,6 +76,10 @@ class Game : public b2ContactListener {
 		b2World				_world;
 
 		sf::Time			_deltaTime;
+
+		// ---- interpolation ----
+		float				_accumulator = 0;
+		float				_lerpAlpha;
 
 		std::vector<std::shared_ptr<Box>> 				_boxes;
 		std::unique_ptr<BoxMap>							_boxMap;

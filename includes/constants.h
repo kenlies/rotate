@@ -1,5 +1,6 @@
 #pragma once
 
+constexpr float TIME_STEP = 1.0f / 60.f;
 constexpr float GRAVITY_MAGNITUDE = 18.f;
 constexpr float JUMP_FORCE = 20.f;
 constexpr float SCALE = 30.f;

@@ -158,11 +158,26 @@ void Game::run() {
     }
 }
 
+void Game::doPhysicsStep() {
+    // fixed time step
+    // max frame time to avoid spiral of death (on slow devices)
+    float frameTime = std::min(_deltaTime.asSeconds(), 0.25f);
+
+    _accumulator += frameTime;
+    while (_accumulator >= TIME_STEP) {
+        b2Body *body = _player->getBody();
+        _player->setInterpolationData(body->GetPosition(), body->GetAngle());
+        _world.Step(TIME_STEP, 8, 2);
+        _accumulator -= TIME_STEP;
+    }
+    _lerpAlpha = _accumulator / TIME_STEP;
+}
+
 void Game::updatePlay() {
     static bool cameraOnPlayer = true;
 
     // ---- update the physics world ----
-    _world.Step(_deltaTime.asSeconds(), 8, 3); // read somewhere the Box2d should use fixed timestep, so maybe change
+    doPhysicsStep();
 
     // ---- spawn player at spawn position ----
     if (_letsRespawn) {
@@ -595,4 +610,8 @@ Game::gameMode Game::getMode() const {
 
 int Game::getLevelCoins() const {
     return _levelCoins;
+}
+
+float Game::getLerpAlpha() const {
+    return _lerpAlpha;
 }

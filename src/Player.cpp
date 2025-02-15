@@ -35,9 +35,20 @@ Player::~Player() {
 }
 
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    _shape->setPosition(SCALE * _body->GetPosition().x, SCALE * _body->GetPosition().y);
-    _shape->setRotation(_body->GetAngle() * 180 / b2_pi);
+    const float alpha = _game->getLerpAlpha();
+    const b2Vec2 interpolatedPos = (1.0f - alpha) * _lerpData._prevPos + alpha * _body->GetPosition();
+    const float interpolatedAngle = (1.0f - alpha) * _lerpData._prevAngle + alpha * _body->GetAngle();
+
+    _shape->setPosition(SCALE * interpolatedPos.x, SCALE * interpolatedPos.y);
+    _shape->setRotation(interpolatedAngle * 180 / b2_pi);
+
     target.draw(*_shape, states);
+}
+
+// ---- setters ----
+void Player::setInterpolationData(b2Vec2 prevPos, float prevAngle) {
+    _lerpData._prevPos = prevPos;
+    _lerpData._prevAngle = prevAngle;
 }
 
 // ---- getters ----
