@@ -165,8 +165,12 @@ void Game::doPhysicsStep() {
 
     _accumulator += frameTime;
     while (_accumulator >= TIME_STEP) {
-        b2Body *body = _player->getBody();
-        _player->setInterpolationData(body->GetPosition(), body->GetAngle());
+        b2Body *playerBody = _player->getBody();
+        _player->setInterpolationData(playerBody->GetPosition(), playerBody->GetAngle());
+        for (auto& box : _boxes) {
+            b2Body *boxBody = box->getBody();
+            box->setInterpolationData(boxBody->GetPosition(), boxBody->GetAngle());
+        }
         _world.Step(TIME_STEP, 8, 2);
         _accumulator -= TIME_STEP;
     }

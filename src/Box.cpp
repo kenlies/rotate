@@ -99,12 +99,28 @@ Box::~Box() {
 }
 
 void Box::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	_shape->setPosition(SCALE * _body->GetPosition().x, SCALE * _body->GetPosition().y);
-	// don't get rotation for yellow boxes from Box2D, since their shapes are rotated in Game.cpp where this was called
-	if (_shape->getFillColor() != sf::Color::Yellow) {
-    	_shape->setRotation(_body->GetAngle() * 180 / b2_pi);
+	if (_game->getMode() == Game::Play) {
+		const float alpha = _game->getLerpAlpha();
+		const b2Vec2 interpolatedPos = (1.0f - alpha) * _lerpData._prevPos + alpha * _body->GetPosition();
+		_shape->setPosition(SCALE * interpolatedPos.x, SCALE * interpolatedPos.y);
+		// don't get rotation for yellow boxes from Box2D, since their shapes are rotated in Game.cpp where this was called
+		if (_shape->getFillColor() != sf::Color::Yellow) {
+			const float interpolatedAngle = (1.0f - alpha) * _lerpData._prevAngle + alpha * _body->GetAngle();
+			_shape->setRotation(interpolatedAngle * 180 / b2_pi);
+		}
+	} else {
+		_shape->setPosition(SCALE * _body->GetPosition().x, SCALE * _body->GetPosition().y);
+		if (_shape->getFillColor() != sf::Color::Yellow) {
+			_shape->setRotation(_body->GetAngle() * 180 / b2_pi);
+		}
 	}
 	target.draw(*_shape, states);
+}
+
+// ---- setters ----
+void Box::setInterpolationData(b2Vec2 prevPos, float prevAngle) {
+	_lerpData._prevPos = prevPos;
+	_lerpData._prevAngle = prevAngle;
 }
 
 // ---- getters ----
