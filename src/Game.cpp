@@ -290,8 +290,8 @@ void Game::updatePlay() {
     // ---- draw everything ----
     _window.clear();
 
-    draw_particles();
-    draw_boxes();
+    drawParticles();
+    drawBoxes();
     _window.draw(*_player);
     if (_fade) { _window.draw(*_fade); }
     _window.draw(*_hud);
@@ -327,15 +327,15 @@ void Game::updateEditor() {
 
     // ---- draw everything ----
     _window.clear();
-    draw_boxes();
-    draw_grid();
-    draw_box_at_cursor(mousePos); // draw the box to be placed
+    drawBoxes();
+    drawGrid();
+    drawBoxAtCursor(mousePos); // draw the box to be placed
     _window.draw(*_hud);
 
     _window.display();
 }
 
-void Game::draw_particles() {
+void Game::drawParticles() {
     for (auto it = _boxParticles.begin(); it != _boxParticles.end();) {
         (*it)->update(_deltaTime);
         _window.draw(*(*it));
@@ -348,7 +348,7 @@ void Game::draw_particles() {
     }
 }
 
-void Game::draw_boxes() {
+void Game::drawBoxes() {
     // ---- draw boxes ----
     // this draws the oldest boxes first, rather that newest which could be an issue
     for (auto it = _boxes.begin(); it != _boxes.end(); ) {
@@ -381,7 +381,7 @@ void Game::draw_boxes() {
     }
 }
 
-void Game::draw_grid() {
+void Game::drawGrid() {
     sf::Vector2f topLeft = _window.mapPixelToCoords(sf::Vector2i(0, 0));
     sf::Vector2f bottomRight = _window.mapPixelToCoords(sf::Vector2i(_windowSize.x, _windowSize.y));
 
@@ -404,7 +404,7 @@ void Game::draw_grid() {
     _window.draw(gridLines);
 }
 
-void Game::draw_box_at_cursor(const sf::Vector2i &mousePos) {
+void Game::drawBoxAtCursor(const sf::Vector2i &mousePos) {
     sf::RectangleShape rectangle;
 
     rectangle.setFillColor(_boxColors[_boxColorIndex]);

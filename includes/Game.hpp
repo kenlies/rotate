@@ -51,12 +51,12 @@ class Game : public b2ContactListener {
 		void updateEvents();
 		void updatePlay();
 		void updateEditor();
-		void draw_particles();
-		void draw_boxes();
+		void drawParticles();
+		void drawBoxes();
 
 		// ---- editor ----
-		void draw_grid();
-		void draw_box_at_cursor(const sf::Vector2i &mousePos);
+		void drawGrid();
+		void drawBoxAtCursor(const sf::Vector2i &mousePos);
 		
 		// ---- helper/other ----
 		b2Vec2 createForce(float force) const;
