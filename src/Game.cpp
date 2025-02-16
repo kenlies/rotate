@@ -201,11 +201,9 @@ void Game::updatePlay() {
 
     // ---- do the fadeout effect ----
     if (_fade) {
-        if (_fade->getFadeClock().getElapsedTime().asMilliseconds() > 1) {
-            _fade->decrementFadeCounter();
-            if (_fade->getFadeCounter() <= 0) {
-                _fade = nullptr;
-            }
+        _fade->decrementFadeCounter(_deltaTime.asSeconds());
+        if (_fade->getFadeCounter() <= 0.f) {
+            _fade = nullptr;
         }
     }
 

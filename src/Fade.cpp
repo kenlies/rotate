@@ -13,14 +13,14 @@ Fade::~Fade() {
 }
 
 void Fade::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	_shape->setFillColor(sf::Color(0, 0, 0, _fadeCounter));
+	_shape->setFillColor(sf::Color(0, 0, 0, static_cast<int>(_fadeCounter)));
 	target.draw(*_shape, states);
 }
 
 // ---- increment/decrement ----
 
-void Fade::decrementFadeCounter() {
-	_fadeCounter -= 3;
+void Fade::decrementFadeCounter(float deltaTime) {
+	_fadeCounter -= 200.f * deltaTime;
 }
 
 // ---- getters ----
@@ -33,6 +33,6 @@ const sf::Clock &Fade::getFadeClock() const {
 	return _fadeClock;
 }
 
-int Fade::getFadeCounter() const {
+float Fade::getFadeCounter() const {
 	return _fadeCounter;
 }

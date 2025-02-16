@@ -12,16 +12,16 @@ class Fade : public sf::Drawable {
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 		// ---- increment/decrement ----
-		void decrementFadeCounter();
+		void decrementFadeCounter(float deltaTime);
 
 		// ---- getters ----
 		const std::unique_ptr<sf::RectangleShape>	&getShape() const;
 		const sf::Clock								&getFadeClock() const;
-		int											getFadeCounter() const;
+		float										getFadeCounter() const;
 		
 	private:
 		Game*								_game;
 		std::unique_ptr<sf::RectangleShape>	_shape;
 		sf::Clock							_fadeClock;
-		int									_fadeCounter = 255;
+		float								_fadeCounter = 255.f;
 };
