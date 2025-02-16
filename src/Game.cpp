@@ -299,9 +299,15 @@ void Game::updatePlay() {
     // set the adjusted gravity in the Box2D world
     _world.SetGravity(createForce(Constants::GRAVITY_MAGNITUDE));
 
-    // make camera follow player
+    // make camera follow player with lerp
     if (cameraOnPlayer) {
-        _view.setCenter(_player->getShape()->getPosition());
+        sf::Vector2f playerPos = _player->getShape()->getPosition();
+        sf::Vector2f currentCenter = _view.getCenter();
+        float k = 4.0f;
+        float lerpFactor = 1 - std::exp(-k * _deltaTime.asSeconds());
+
+        sf::Vector2f interpolatedPos = currentCenter + lerpFactor * (playerPos - currentCenter);
+        _view.setCenter(interpolatedPos);
     }
 
     // ---- draw everything ----
