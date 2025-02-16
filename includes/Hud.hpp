@@ -11,10 +11,20 @@ class Hud : public sf::Drawable {
 		~Hud();
 
 		void			updateScore(unsigned short score);
+		void 			updateFPS();
+
 		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+		// ---- getters ----
+		const unsigned int getFPS() const;
 
 	private:
 		Game		*_game;
+
+		unsigned int mFrame;
+		unsigned int mFps;
+		sf::Clock mFPSClock;
+		sf::Text	_FPSText;
 
 		sf::Font	_modeFont;
 		sf::Text	_modeText;

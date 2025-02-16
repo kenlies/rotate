@@ -6,7 +6,6 @@ Game::Game() :
     _world(b2Vec2(0.f, Constants::GRAVITY_MAGNITUDE)),
     _view(sf::Vector2f(_windowSize.x / 2, _windowSize.y / 2), sf::Vector2f())
 {
-    _window.setFramerateLimit(60);
     _window.setMouseCursorVisible(false);
     _view.setSize(sf::Vector2f(_windowSize.x, _windowSize.y));
 
@@ -145,6 +144,7 @@ void Game::run() {
         // ---- handle events ----
         updateEvents();
 
+        _hud->updateFPS();
         _deltaTime = frameClock.restart();
 
         switch(_mode) {

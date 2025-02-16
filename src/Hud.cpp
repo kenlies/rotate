@@ -1,6 +1,6 @@
 #include "../includes/Hud.hpp"
 
-Hud::Hud(Game *game) : _game(game) {
+Hud::Hud(Game *game) : _game(game), mFrame(0), mFps(0) {
     if (!_modeFont.loadFromFile(ResourceManager::getAssetFilePath("BebasNeue-Regular.ttf"))) {
         std::cerr << "Error: Could not load font 'BebasNeue-Regular.ttf' from assets." << std::endl;
     }
@@ -10,6 +10,13 @@ Hud::Hud(Game *game) : _game(game) {
     _modeText.setFont(_modeFont);
     sf::FloatRect textBounds = _modeText.getLocalBounds();
     _modeText.setOrigin(0, textBounds.height / 2.f);
+
+    _FPSText.setFont(_modeFont);
+    _FPSText.setFillColor(sf::Color::White);
+    _FPSText.setString("fps: 999");
+    _FPSText.setScale({0.5f, 0.5f});
+    _FPSText.setPosition({static_cast<float>(_game->getWindowSize().x - 60), static_cast<float>(_game->getWindowSize().y - 30)});
+
     if (!_scoreFont.loadFromFile(ResourceManager::getAssetFilePath("Even Stevens.ttf"))) {
         std::cerr << "Error: Could not load font 'Even Stevens' from assets." << std::endl;
     }
@@ -47,6 +54,21 @@ Hud::~Hud() {
 
 }
 
+void Hud::updateFPS() {
+	if (mFPSClock.getElapsedTime().asSeconds() >= 1.f) {
+        mFps = mFrame;
+		mFrame = 0;
+        _FPSText.setString("fps: " + std::to_string(mFps));
+		mFPSClock.restart();
+	}
+	++mFrame;
+}
+
+// ---- getters ----
+const unsigned int Hud::getFPS() const { 
+	return mFps; 
+}
+
 void Hud::updateScore(unsigned short score) {
     _scoreText.setString(std::to_string(score));
     _scoreAvailableText.setString(std::to_string(_game->getLevelCoins()));
@@ -79,6 +101,7 @@ void Hud::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     } else {
         target.draw(_modeText, states);
     }
+    target.draw(_FPSText, states);
 
     window.setView(_game->getView());  // restore the actual game view
 }
