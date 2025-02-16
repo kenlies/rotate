@@ -50,7 +50,7 @@ void BoxMap::loadMap(const std::string &path) {
                 color = sf::Color(25, 25, 25);
                 break;
         }
-        b2Vec2 position(x / SCALE, y / SCALE); // convert back
+        b2Vec2 position(x / Constants::SCALE, y / Constants::SCALE); // convert back
         _game->createBox(sf::Vector2i(x, y), color);
     }
 }
@@ -61,9 +61,9 @@ void BoxMap::saveMap(const std::string &path) {
 	map_file << "x y color\n\n";
     for (auto box : _game->getBoxes()) {
         b2Vec2 pos = box->getBody()->GetPosition();
-        map_file << pos.x * SCALE 
+        map_file << pos.x * Constants::SCALE 
                 << " " 
-                << pos.y * SCALE 
+                << pos.y * Constants::SCALE 
                 << " "
                 << *(static_cast<int *>(box->getBody()->GetUserData()))
                 << "\n";

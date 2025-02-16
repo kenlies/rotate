@@ -4,13 +4,13 @@ Player::Player(Game *game) : _game(game) {
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     // default start pos if there is no spawn point
-    bodyDef.position = b2Vec2((_game->getWindowSize().x / 2) / SCALE, (_game->getWindowSize().y / 2) / SCALE);
+    bodyDef.position = b2Vec2((_game->getWindowSize().x / 2) / Constants::SCALE, (_game->getWindowSize().y / 2) / Constants::SCALE);
     bodyDef.allowSleep = false;
     b2Body* body = _game->getWorld().CreateBody(&bodyDef);
 
     b2CircleShape circleShape;
     circleShape.m_p.Set(0, 0); 
-    circleShape.m_radius = (CIRCLE_RADIUS - 1) / SCALE;
+    circleShape.m_radius = (Constants::CIRCLE_RADIUS - 1) / Constants::SCALE;
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &circleShape;
     fixtureDef.density = 1;
@@ -19,13 +19,13 @@ Player::Player(Game *game) : _game(game) {
     body->CreateFixture(&fixtureDef);
 
 	int* identifier;
-	identifier = new int(PLAYER);
+	identifier = new int(Constants::PLAYER);
 	body->SetUserData(identifier);
 
     _shape = std::make_unique<sf::CircleShape>();
-    _shape->setRadius(CIRCLE_RADIUS);
+    _shape->setRadius(Constants::CIRCLE_RADIUS);
     _shape->setFillColor(sf::Color::Cyan);
-    _shape->setOrigin({CIRCLE_RADIUS, CIRCLE_RADIUS});
+    _shape->setOrigin({Constants::CIRCLE_RADIUS, Constants::CIRCLE_RADIUS});
 
 	_body = body;
 }
@@ -39,8 +39,8 @@ void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     const b2Vec2 interpolatedPos = (1.0f - alpha) * _lerpData._prevPos + alpha * _body->GetPosition();
     const float interpolatedAngle = (1.0f - alpha) * _lerpData._prevAngle + alpha * _body->GetAngle();
 
-    _shape->setPosition(SCALE * interpolatedPos.x, SCALE * interpolatedPos.y);
-    _shape->setRotation(interpolatedAngle * RAD_TO_DEG);
+    _shape->setPosition(Constants::SCALE * interpolatedPos.x, Constants::SCALE * interpolatedPos.y);
+    _shape->setRotation(interpolatedAngle * Constants::RAD_TO_DEG);
 
     target.draw(*_shape, states);
 }

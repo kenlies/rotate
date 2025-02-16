@@ -3,7 +3,7 @@
 Game::Game() : 
     _window({}, "rotate", sf::Style::Fullscreen, sf::ContextSettings(0, 0, 8)),
     _windowSize(_window.getSize()),
-    _world(b2Vec2(0.f, GRAVITY_MAGNITUDE)),
+    _world(b2Vec2(0.f, Constants::GRAVITY_MAGNITUDE)),
     _view(sf::Vector2f(_windowSize.x / 2, _windowSize.y / 2), sf::Vector2f())
 {
     _window.setFramerateLimit(60);
@@ -164,17 +164,17 @@ void Game::doPhysicsStep() {
     float frameTime = std::min(_deltaTime.asSeconds(), 0.25f);
 
     _accumulator += frameTime;
-    while (_accumulator >= TIME_STEP) {
+    while (_accumulator >= Constants::TIME_STEP) {
         b2Body *playerBody = _player->getBody();
         _player->setInterpolationData(playerBody->GetPosition(), playerBody->GetAngle());
         for (auto& box : _boxes) {
             b2Body *boxBody = box->getBody();
             box->setInterpolationData(boxBody->GetPosition(), boxBody->GetAngle());
         }
-        _world.Step(TIME_STEP, 8, 2);
-        _accumulator -= TIME_STEP;
+        _world.Step(Constants::TIME_STEP, 8, 2);
+        _accumulator -= Constants::TIME_STEP;
     }
-    _lerpAlpha = _accumulator / TIME_STEP;
+    _lerpAlpha = _accumulator / Constants::TIME_STEP;
 }
 
 void Game::updatePlay() {
@@ -215,7 +215,7 @@ void Game::updatePlay() {
             playSounds(_coinSoundBuffers, _coinSounds, 20.f);
         }
         _touchYellowoBox->SetType(b2_dynamicBody);
-        _touchYellowoBox->ApplyLinearImpulseToCenter(createForce(-PICKUP_FORCE), true);
+        _touchYellowoBox->ApplyLinearImpulseToCenter(createForce(-Constants::PICKUP_FORCE), true);
         _touchYellowoBox = nullptr;
     }
 
@@ -230,7 +230,7 @@ void Game::updatePlay() {
             _totalScore = 0;
         }
         _touchGreenBox->SetType(b2_dynamicBody);
-        _touchGreenBox->ApplyLinearImpulseToCenter(createForce(-WIN_FORCE), true);
+        _touchGreenBox->ApplyLinearImpulseToCenter(createForce(-Constants::WIN_FORCE), true);
         _touchGreenBox->ApplyTorque(_player->getBody()->GetAngle(), true);
         _touchGreenBox = nullptr;
         std::cout << "LEVEL CLEAR\n";
@@ -240,7 +240,7 @@ void Game::updatePlay() {
     if (_touchRedBox) {
         cameraOnPlayer = false;
         _letsRespawn = true;
-        b2Vec2 explosionForce = createForce(-EXPLOSION_FORCE);
+        b2Vec2 explosionForce = createForce(-Constants::EXPLOSION_FORCE);
         b2ContactEdge* contacts = _touchRedBox->GetContactList();
 
         // apply the world breaking effect: break things!!!
@@ -254,10 +254,10 @@ void Game::updatePlay() {
                 int* fixtureA_Color = static_cast<int*>(fixtureA->GetBody()->GetUserData());
                 int* fixtureB_Color = static_cast<int*>(fixtureB->GetBody()->GetUserData());
 
-                if ((fixtureA_Color && *fixtureA_Color == RED && fixtureB_Color && *fixtureB_Color == WHITE) ||
-                    fixtureA_Color && *fixtureA_Color == WHITE && fixtureB_Color && *fixtureB_Color == RED) {
+                if ((fixtureA_Color && *fixtureA_Color == Constants::RED && fixtureB_Color && *fixtureB_Color == Constants::WHITE) ||
+                    fixtureA_Color && *fixtureA_Color == Constants::WHITE && fixtureB_Color && *fixtureB_Color == Constants::RED) {
                         
-                    b2Body* whiteBox = (*fixtureA_Color == WHITE) ? fixtureA->GetBody() : fixtureB->GetBody();
+                    b2Body* whiteBox = (*fixtureA_Color == Constants::WHITE) ? fixtureA->GetBody() : fixtureB->GetBody();
                     whiteBox->SetType(b2_dynamicBody);
                     whiteBox->ApplyLinearImpulseToCenter(explosionForce, true);
                     whiteBox->ApplyTorque(_player->getBody()->GetAngle(), true);
@@ -284,22 +284,22 @@ void Game::updatePlay() {
 
     // ---- rotate the view ----
     if (_rotateLeft && !_letsRespawn) {
-        _rotVel += ROTATE_SPEED;
+        _rotVel += Constants::ROTATE_SPEED;
     }
     if (_rotateRight && !_letsRespawn) {
-        _rotVel -= ROTATE_SPEED;
+        _rotVel -= Constants::ROTATE_SPEED;
     }
     _view.rotate(_rotVel * _deltaTime.asSeconds()); // frame rate independent
     _rotVel *= 0.92; // smoothing rotation
 
     // ---- jump ----
     if (_jump && _canJump > 0 && !_letsRespawn && _jumpCoolDownClock.getElapsedTime().asSeconds() > 1.5f) {
-        _player->getBody()->ApplyLinearImpulseToCenter(createForce(JUMP_FORCE), false);
+        _player->getBody()->ApplyLinearImpulseToCenter(createForce(Constants::JUMP_FORCE), false);
         _jumpCoolDownClock.restart();
     }
 
     // set the adjusted gravity in the Box2D world
-    _world.SetGravity(createForce(GRAVITY_MAGNITUDE));
+    _world.SetGravity(createForce(Constants::GRAVITY_MAGNITUDE));
 
     // make camera follow player
     if (cameraOnPlayer) {
@@ -393,7 +393,7 @@ void Game::drawBoxes() {
 
         // ---- draw lighting ----
         if (_mode == Play && (*it)->getShape()->getFillColor() != sf::Color(25, 25, 25)) {  // don't draw lighting on dark gray boxes
-            (*it)->getLight()->setPosition(SCALE * (*it)->getBody()->GetPosition().x, SCALE * (*it)->getBody()->GetPosition().y);
+            (*it)->getLight()->setPosition(Constants::SCALE * (*it)->getBody()->GetPosition().x, Constants::SCALE * (*it)->getBody()->GetPosition().y);
             _window.draw(*((*it)->getLight()));
         }
         ++it;
@@ -408,13 +408,13 @@ void Game::drawGrid() {
     sf::VertexArray gridLines(sf::Lines);
 
     // calculate the vertical lines to be drawn
-    for (int x = static_cast<int>(topLeft.x / BOX_WIDTH) * BOX_WIDTH; x <= bottomRight.x; x += BOX_WIDTH) {
+    for (int x = static_cast<int>(topLeft.x / Constants::BOX_WIDTH) * Constants::BOX_WIDTH; x <= bottomRight.x; x += Constants::BOX_WIDTH) {
         gridLines.append(sf::Vertex(sf::Vector2f(x, topLeft.y), sf::Color::Red));
         gridLines.append(sf::Vertex(sf::Vector2f(x, bottomRight.y), sf::Color::Red));
     }
 
     // calculate the horizontal lines to be drawn
-    for (int y = static_cast<int>(topLeft.y / BOX_WIDTH) * BOX_WIDTH; y <= bottomRight.y; y += BOX_WIDTH) {
+    for (int y = static_cast<int>(topLeft.y / Constants::BOX_WIDTH) * Constants::BOX_WIDTH; y <= bottomRight.y; y += Constants::BOX_WIDTH) {
         gridLines.append(sf::Vertex(sf::Vector2f(topLeft.x, y), sf::Color::Red));
         gridLines.append(sf::Vertex(sf::Vector2f(bottomRight.x, y), sf::Color::Red));
     }
@@ -428,11 +428,11 @@ void Game::drawBoxAtCursor(const sf::Vector2i &mousePos) {
 
     rectangle.setFillColor(_boxColors[_boxColorIndex]);
     if (_boxColors[_boxColorIndex] == sf::Color::Yellow) {
-        rectangle.setOrigin(BOX_WIDTH / 4, BOX_WIDTH / 4);
-        rectangle.setSize({BOX_WIDTH / 2, BOX_WIDTH / 2});
+        rectangle.setOrigin(Constants::BOX_WIDTH / 4, Constants::BOX_WIDTH / 4);
+        rectangle.setSize({Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2});
     } else {
-        rectangle.setOrigin(BOX_WIDTH / 2, BOX_WIDTH / 2);
-        rectangle.setSize({BOX_WIDTH, BOX_WIDTH});
+        rectangle.setOrigin(Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2);
+        rectangle.setSize({Constants::BOX_WIDTH, Constants::BOX_WIDTH});
     }
     // need to use mapPixelToCoords to account for distrortion on location after using _view.move()
     rectangle.setPosition(_window.mapPixelToCoords(mousePos));
@@ -448,9 +448,9 @@ void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {
     // then floow to round down example:
     // if mouseX = 63 then 63 / 32 ≈ 1.9
     // then we take floor(1.9) which gives us 1, so we are in the second tile
-    float mouseX = std::floor(mousePosConverted.x / BOX_WIDTH);
-    float mouseY = std::floor(mousePosConverted.y / BOX_WIDTH);
-    b2Vec2 checkPos((mouseX * BOX_WIDTH + BOX_WIDTH / 2) / SCALE, (mouseY * BOX_WIDTH + BOX_WIDTH / 2) / SCALE);
+    float mouseX = std::floor(mousePosConverted.x / Constants::BOX_WIDTH);
+    float mouseY = std::floor(mousePosConverted.y / Constants::BOX_WIDTH);
+    b2Vec2 checkPos((mouseX * Constants::BOX_WIDTH + Constants::BOX_WIDTH / 2) / Constants::SCALE, (mouseY * Constants::BOX_WIDTH + Constants::BOX_WIDTH / 2) / Constants::SCALE);
 
     // check that the spot isn't already occupied or
     // if there is already a spawn box in the world
@@ -475,10 +475,10 @@ void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {
 
 void Game::removeBox(const sf::Vector2i &mousePos) {
     sf::Vector2f mousePosConverted = _window.mapPixelToCoords(mousePos, _view);
-    float mouseX = std::floor(mousePosConverted.x / BOX_WIDTH);
-    float mouseY = std::floor(mousePosConverted.y / BOX_WIDTH);
+    float mouseX = std::floor(mousePosConverted.x / Constants::BOX_WIDTH);
+    float mouseY = std::floor(mousePosConverted.y / Constants::BOX_WIDTH);
 
-    b2Vec2 checkPos((mouseX * BOX_WIDTH + BOX_WIDTH / 2) / SCALE, (mouseY * BOX_WIDTH + BOX_WIDTH / 2) / SCALE); // tiled position (grid)
+    b2Vec2 checkPos((mouseX * Constants::BOX_WIDTH + Constants::BOX_WIDTH / 2) / Constants::SCALE, (mouseY * Constants::BOX_WIDTH + Constants::BOX_WIDTH / 2) / Constants::SCALE); // tiled position (grid)
 
     for (int i = 0; i < _boxes.size(); i++) {
         if (_boxes[i]->getBody()->GetPosition() == checkPos) {
@@ -505,25 +505,25 @@ void Game::BeginContact(b2Contact* contact) {
     int* color;
 
     b2Body* box = nullptr;
-    if (fixtureA_UserData && *fixtureA_UserData == PLAYER) {
+    if (fixtureA_UserData && *fixtureA_UserData == Constants::PLAYER) {
         box = contact->GetFixtureB()->GetBody();
         color = fixtureB_UserData;
-    } else if (fixtureB_UserData && *fixtureB_UserData == PLAYER) {
+    } else if (fixtureB_UserData && *fixtureB_UserData == Constants::PLAYER) {
         box = contact->GetFixtureA()->GetBody();
         color = fixtureA_UserData;
     }
 
     // don't don anything if in contact with spawn point
-    if (color && *color == CYAN) {
+    if (color && *color == Constants::CYAN) {
         return;
     }
-    else if (color && *color == YELLOW) {
+    else if (color && *color == Constants::YELLOW) {
         _touchYellowoBox = box;
         return;
-    } else if (color && *color == RED && !_letsRespawn) {
+    } else if (color && *color == Constants::RED && !_letsRespawn) {
         _waitTilRespawnClock.restart();
         _touchRedBox = box;
-    } else if (color && *color == GREEN && !_letsRespawn) {
+    } else if (color && *color == Constants::GREEN && !_letsRespawn) {
         _waitTilRespawnClock.restart();
         _touchGreenBox = box;
     }
@@ -542,15 +542,15 @@ void Game::EndContact(b2Contact* contact) {
     int* color;
 
     b2Body* box = nullptr;
-    if (fixtureA_UserData && *fixtureA_UserData == PLAYER) {
+    if (fixtureA_UserData && *fixtureA_UserData == Constants::PLAYER) {
         box = contact->GetFixtureB()->GetBody();
         color = fixtureB_UserData;
-    } else if (fixtureB_UserData && *fixtureB_UserData == PLAYER) {
+    } else if (fixtureB_UserData && *fixtureB_UserData == Constants::PLAYER) {
         box = contact->GetFixtureB()->GetBody();
         color = fixtureA_UserData;
     }
 
-    if (color && *color == CYAN || color && *color == YELLOW) {
+    if (color && *color == Constants::CYAN || color && *color == Constants::YELLOW) {
         return ;
     }
 
@@ -560,7 +560,7 @@ void Game::EndContact(b2Contact* contact) {
 // --- helper/other ----
 // calculate force direction in world space to acoount for rotated world
 b2Vec2 Game::createForce(float forcePower) const {
-    float radians = _view.getRotation() * DEG_TO_RAD;
+    float radians = _view.getRotation() * Constants::DEG_TO_RAD;
     b2Vec2 force;
     force.x = -forcePower * sin(radians);
     force.y = forcePower * cos(radians);
