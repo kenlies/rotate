@@ -321,16 +321,16 @@ void Game::updatePlay() {
 void Game::updateEditor() {
 
     if (_moveViewLeft) {
-        _view.move({-400 * _deltaTime.asSeconds(), 0});
+        _view.move({-Constants::EDITOR_MOVE_SPEED * _deltaTime.asSeconds(), 0});
     }
     if (_moveViewRight) {
-        _view.move({400 * _deltaTime.asSeconds(), 0});
+        _view.move({Constants::EDITOR_MOVE_SPEED * _deltaTime.asSeconds(), 0});
     }
     if (_moveViewUp) {
-        _view.move({0, -400 * _deltaTime.asSeconds()});
+        _view.move({0, -Constants::EDITOR_MOVE_SPEED * _deltaTime.asSeconds()});
     }
     if (_moveViewDown) {
-        _view.move({0, 400 * _deltaTime.asSeconds()});
+        _view.move({0, Constants::EDITOR_MOVE_SPEED * _deltaTime.asSeconds()});
     }
     _window.setView(_view);
 

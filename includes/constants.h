@@ -10,6 +10,7 @@ namespace Constants {
 	constexpr float BOX_WIDTH = 32.f;
 	constexpr float CIRCLE_RADIUS = 16.f;
 	constexpr float ROTATE_SPEED = 2.f;
+	constexpr float EDITOR_MOVE_SPEED = 400.f;
 	constexpr float EXPLOSION_FORCE = 15.f;
 	constexpr float WIN_FORCE = 10.f;
 	constexpr float PICKUP_FORCE = 1.f;
