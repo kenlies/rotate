@@ -10,8 +10,6 @@ class Fade : public sf::Drawable {
 		~Fade();
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
-		// ---- increment/decrement ----
 		void decrementFadeCounter(float deltaTime);
 
 		// ---- getters ----
