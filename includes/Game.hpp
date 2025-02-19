@@ -26,10 +26,10 @@ class BoxParticles;
 
 class Game : public b2ContactListener {
 	public:
+		enum gameMode { Play, Editor };
+	public:
 		Game();
 		~Game();
-
-		enum gameMode { Play, Editor };
 
 		void run();
 		void createBox(const sf::Vector2i &mousePos, const sf::Color &color);
@@ -65,7 +65,7 @@ class Game : public b2ContactListener {
 		b2Vec2 createForce(float force) const;
 		void playSounds(const std::vector<std::shared_ptr<sf::SoundBuffer>> &soundBuffers,
 							std::deque<sf::Sound> &sounds, float volume);
-
+	private:
 		enum scrollWheelInput {
 			ScrollUp,
 			ScrollDown,
