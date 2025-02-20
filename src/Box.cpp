@@ -1,6 +1,6 @@
 #include "../includes/Box.hpp"
 
-Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : _game(game) {
+Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : m_Game(game) {
 
     // ---- physics attributes ----
     b2BodyDef bodyDef;
@@ -10,7 +10,7 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : _game(game) {
 		bodyDef.allowSleep = false;
 	}
 	
-	b2Body* body = _game->getWorld().CreateBody(&bodyDef);
+	b2Body* body = m_Game->getWorld().CreateBody(&bodyDef);
 	
 	b2PolygonShape Shape;
 	if (color == sf::Color::Yellow ) {
@@ -54,28 +54,28 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : _game(game) {
 	}
 
 	// ---- drawing attributes ----
-	_shape = std::make_unique<sf::RectangleShape>();
+	m_Shape = std::make_unique<sf::RectangleShape>();
 	// make yellow boxes half the size
 	if (color == sf::Color::Yellow) {
-		_shape->setOrigin(Constants::BOX_WIDTH / 4, Constants::BOX_WIDTH / 4);
-		_shape->setSize({Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2});
+		m_Shape->setOrigin(Constants::BOX_WIDTH / 4, Constants::BOX_WIDTH / 4);
+		m_Shape->setSize({Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2});
 	} else {
-		_shape->setOrigin(Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2);
-		_shape->setSize({Constants::BOX_WIDTH, Constants::BOX_WIDTH});
+		m_Shape->setOrigin(Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2);
+		m_Shape->setSize({Constants::BOX_WIDTH, Constants::BOX_WIDTH});
 	}
-	_shape->setFillColor(color);
+	m_Shape->setFillColor(color);
 
 	// ---- store them in one data structure ----
-	_body = body;
+	m_Body = body;
 
 	// ---- set lights ----
-	_light = std::make_unique<candle::RadialLight>();
+	m_Light = std::make_unique<candle::RadialLight>();
 	if (color == sf::Color::Yellow) {
-		_light->setRange(30);
+		m_Light->setRange(30);
 	} else {
-		_light->setRange(43);
+		m_Light->setRange(43);
 	}
-	_light->setColor(color);
+	m_Light->setColor(color);
 }
 
 bool Box::isInView(const sf::View &view) const {
@@ -88,50 +88,50 @@ bool Box::isInView(const sf::View &view) const {
     sf::Transform inverseViewTransform = viewTransform.getInverse();
 
     // transform the object's position into the view's local space
-    sf::Vector2f localPos = inverseViewTransform.transformPoint(_shape->getPosition());
+    sf::Vector2f localPos = inverseViewTransform.transformPoint(m_Shape->getPosition());
 
     // check if the object is within the view's local bounds (-1 to 1 in both x and y)
     return (localPos.x >= -1.05f && localPos.x <= 1.05f && localPos.y >= -1.05f && localPos.y <= 1.05f);
 }
 
 Box::~Box() {
-	delete static_cast<int *>(_body->GetUserData());
+	delete static_cast<int *>(m_Body->GetUserData());
 }
 
 void Box::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	if (_game->getMode() == Game::Play) {
-		const float alpha = _game->getLerpAlpha();
-		const b2Vec2 interpolatedPos = (1.0f - alpha) * _lerpData._prevPos + alpha * _body->GetPosition();
-		_shape->setPosition(Constants::SCALE * interpolatedPos.x, Constants::SCALE * interpolatedPos.y);
+	if (m_Game->getMode() == Game::Play) {
+		const float alpha = m_Game->getLerpAlpha();
+		const b2Vec2 interpolatedPos = (1.0f - alpha) * m_LerpData._prevPos + alpha * m_Body->GetPosition();
+		m_Shape->setPosition(Constants::SCALE * interpolatedPos.x, Constants::SCALE * interpolatedPos.y);
 		// don't get rotation for yellow boxes from Box2D, since their shapes are rotated in Game.cpp where this was called
-		if (_shape->getFillColor() != sf::Color::Yellow) {
-			const float interpolatedAngle = (1.0f - alpha) * _lerpData._prevAngle + alpha * _body->GetAngle();
-			_shape->setRotation(interpolatedAngle * Constants::RAD_TO_DEG);
+		if (m_Shape->getFillColor() != sf::Color::Yellow) {
+			const float interpolatedAngle = (1.0f - alpha) * m_LerpData._prevAngle + alpha * m_Body->GetAngle();
+			m_Shape->setRotation(interpolatedAngle * Constants::RAD_TO_DEG);
 		}
 	} else {
-		_shape->setPosition(Constants::SCALE * _body->GetPosition().x, Constants::SCALE * _body->GetPosition().y);
-		if (_shape->getFillColor() != sf::Color::Yellow) {
-			_shape->setRotation(_body->GetAngle() * Constants::RAD_TO_DEG);
+		m_Shape->setPosition(Constants::SCALE * m_Body->GetPosition().x, Constants::SCALE * m_Body->GetPosition().y);
+		if (m_Shape->getFillColor() != sf::Color::Yellow) {
+			m_Shape->setRotation(m_Body->GetAngle() * Constants::RAD_TO_DEG);
 		}
 	}
-	target.draw(*_shape, states);
+	target.draw(*m_Shape, states);
 }
 
 // ---- setters ----
 void Box::setInterpolationData(b2Vec2 prevPos, float prevAngle) {
-	_lerpData._prevPos = prevPos;
-	_lerpData._prevAngle = prevAngle;
+	m_LerpData._prevPos = prevPos;
+	m_LerpData._prevAngle = prevAngle;
 }
 
 // ---- getters ----
 b2Body*	Box::getBody() const {
-	return _body;
+	return m_Body;
 }
 
 const std::unique_ptr<sf::RectangleShape> &Box::getShape() const {
-	return _shape;
+	return m_Shape;
 }
 
 const std::unique_ptr<candle::RadialLight> &Box::getLight() const {
-	return _light;
+	return m_Light;
 }

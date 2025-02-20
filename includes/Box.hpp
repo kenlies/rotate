@@ -28,9 +28,9 @@ class Box : public sf::Drawable {
 		};
 
 	private:
-		InterpolationData						_lerpData;
-		Game*									_game;
-		b2Body* 								_body;
-		std::unique_ptr<sf::RectangleShape>		_shape;
-		std::unique_ptr<candle::RadialLight>	_light;
+		InterpolationData						m_LerpData;
+		Game*									m_Game;
+		b2Body* 								m_Body;
+		std::unique_ptr<sf::RectangleShape>		m_Shape;
+		std::unique_ptr<candle::RadialLight>	m_Light;
 };
