@@ -10,6 +10,6 @@ public:
     static std::string getLevelFilePath(const std::string& fileName);
 
 private:
-    static inline std::string m_assetPath;
-    static inline std::string m_levelPath;
+    static inline std::string m_AssetPath;
+    static inline std::string m_LevelPath;
 };
