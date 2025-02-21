@@ -1,12 +1,12 @@
 #include "../includes/Player.hpp"
 
-Player::Player(Game *game) : _game(game) {
+Player::Player(Game *game) : m_Game(game) {
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     // default start pos if there is no spawn point
-    bodyDef.position = b2Vec2((_game->getWindowSize().x / 2) / Constants::SCALE, (_game->getWindowSize().y / 2) / Constants::SCALE);
+    bodyDef.position = b2Vec2((m_Game->getWindowSize().x / 2) / Constants::SCALE, (m_Game->getWindowSize().y / 2) / Constants::SCALE);
     bodyDef.allowSleep = false;
-    b2Body* body = _game->getWorld().CreateBody(&bodyDef);
+    b2Body* body = m_Game->getWorld().CreateBody(&bodyDef);
 
     b2CircleShape circleShape;
     circleShape.m_p.Set(0, 0); 
@@ -22,40 +22,40 @@ Player::Player(Game *game) : _game(game) {
 	identifier = new int(Constants::PLAYER);
 	body->SetUserData(identifier);
 
-    _shape = std::make_unique<sf::CircleShape>();
-    _shape->setRadius(Constants::CIRCLE_RADIUS);
-    _shape->setFillColor(sf::Color::Cyan);
-    _shape->setOrigin({Constants::CIRCLE_RADIUS, Constants::CIRCLE_RADIUS});
+    m_Shape = std::make_unique<sf::CircleShape>();
+    m_Shape->setRadius(Constants::CIRCLE_RADIUS);
+    m_Shape->setFillColor(sf::Color::Cyan);
+    m_Shape->setOrigin({Constants::CIRCLE_RADIUS, Constants::CIRCLE_RADIUS});
 
-	_body = body;
+	m_Body = body;
 }
 
 Player::~Player() {
-    delete static_cast<int *>(_body->GetUserData());
+    delete static_cast<int *>(m_Body->GetUserData());
 }
 
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    const float alpha = _game->getLerpAlpha();
-    const b2Vec2 interpolatedPos = (1.0f - alpha) * _lerpData._prevPos + alpha * _body->GetPosition();
-    const float interpolatedAngle = (1.0f - alpha) * _lerpData._prevAngle + alpha * _body->GetAngle();
+    const float alpha = m_Game->getLerpAlpha();
+    const b2Vec2 interpolatedPos = (1.0f - alpha) * m_LerpData._prevPos + alpha * m_Body->GetPosition();
+    const float interpolatedAngle = (1.0f - alpha) * m_LerpData._prevAngle + alpha * m_Body->GetAngle();
 
-    _shape->setPosition(Constants::SCALE * interpolatedPos.x, Constants::SCALE * interpolatedPos.y);
-    _shape->setRotation(interpolatedAngle * Constants::RAD_TO_DEG);
+    m_Shape->setPosition(Constants::SCALE * interpolatedPos.x, Constants::SCALE * interpolatedPos.y);
+    m_Shape->setRotation(interpolatedAngle * Constants::RAD_TO_DEG);
 
-    target.draw(*_shape, states);
+    target.draw(*m_Shape, states);
 }
 
 // ---- setters ----
 void Player::setInterpolationData(b2Vec2 prevPos, float prevAngle) {
-    _lerpData._prevPos = prevPos;
-    _lerpData._prevAngle = prevAngle;
+    m_LerpData._prevPos = prevPos;
+    m_LerpData._prevAngle = prevAngle;
 }
 
 // ---- getters ----
 b2Body*	Player::getBody() const {
-	return _body;
+	return m_Body;
 }
 
 const std::unique_ptr<sf::CircleShape> &Player::getShape() const {
-	return _shape;
+	return m_Shape;
 }
