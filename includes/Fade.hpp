@@ -13,13 +13,13 @@ class Fade : public sf::Drawable {
 		void decrementFadeCounter(float deltaTime);
 
 		// ---- getters ----
-		const std::unique_ptr<sf::RectangleShape>	&getShape() const;
+		const sf::RectangleShape					&getShape() const;
 		const sf::Clock								&getFadeClock() const;
 		float										getFadeCounter() const;
 		
 	private:
 		Game*								m_Game;
-		std::unique_ptr<sf::RectangleShape>	m_Shape;
+		sf::RectangleShape					m_Shape;
 		sf::Clock							m_FadeClock;
 		float								m_FadeCounter = 255.f;
 };
