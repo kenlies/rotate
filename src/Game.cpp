@@ -397,8 +397,8 @@ void Game::drawBoxes() {
 
         // ---- draw lighting ----
         if (m_Mode == Play && (*it)->getShape()->getFillColor() != sf::Color(25, 25, 25)) {  // don't draw lighting on dark gray boxes
-            (*it)->getLight()->setPosition(Constants::SCALE * (*it)->getBody()->GetPosition().x, Constants::SCALE * (*it)->getBody()->GetPosition().y);
-            m_Window.draw(*((*it)->getLight()));
+            (*it)->updateLightPosition();
+            m_Window.draw(((*it)->getLight()));
         }
         ++it;
     }

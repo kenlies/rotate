@@ -12,6 +12,7 @@ class Box : public sf::Drawable {
 
 		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 		bool 			isInView(const sf::View &view) const;
+		void			updateLightPosition();
 
 		// ---- setters ----
 		void	setInterpolationData(b2Vec2 prevPos, float prevAngle);
@@ -19,8 +20,7 @@ class Box : public sf::Drawable {
 		// ---- getters ----
 		b2Body*										getBody() const;
 		const std::unique_ptr<sf::RectangleShape>	&getShape() const;
-		const std::unique_ptr<candle::RadialLight>	&getLight() const;
-
+		const candle::RadialLight					&getLight() const;
 	public:
 		struct InterpolationData {
 			b2Vec2 _prevPos;
@@ -32,5 +32,5 @@ class Box : public sf::Drawable {
 		Game*									m_Game;
 		b2Body* 								m_Body;
 		std::unique_ptr<sf::RectangleShape>		m_Shape;
-		std::unique_ptr<candle::RadialLight>	m_Light;
+		candle::RadialLight						m_Light;
 };

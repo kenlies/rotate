@@ -69,13 +69,12 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : m_Game(game) {
 	m_Body = body;
 
 	// ---- set lights ----
-	m_Light = std::make_unique<candle::RadialLight>();
 	if (color == sf::Color::Yellow) {
-		m_Light->setRange(30);
+		m_Light.setRange(30);
 	} else {
-		m_Light->setRange(43);
+		m_Light.setRange(43);
 	}
-	m_Light->setColor(color);
+	m_Light.setColor(color);
 }
 
 bool Box::isInView(const sf::View &view) const {
@@ -117,6 +116,11 @@ void Box::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(*m_Shape, states);
 }
 
+void Box::updateLightPosition() {
+	m_Light.setPosition(Constants::SCALE * m_Body->GetPosition().x,
+		Constants::SCALE * m_Body->GetPosition().y);
+}
+
 // ---- setters ----
 void Box::setInterpolationData(b2Vec2 prevPos, float prevAngle) {
 	m_LerpData._prevPos = prevPos;
@@ -132,6 +136,6 @@ const std::unique_ptr<sf::RectangleShape> &Box::getShape() const {
 	return m_Shape;
 }
 
-const std::unique_ptr<candle::RadialLight> &Box::getLight() const {
+const candle::RadialLight &Box::getLight() const {
 	return m_Light;
 }
