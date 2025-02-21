@@ -1,6 +1,6 @@
 #include "../includes/BoxMap.hpp"
 
-BoxMap::BoxMap(Game *game) : _game(game){
+BoxMap::BoxMap(Game *game) : m_Game(game){
 
 }
 
@@ -9,21 +9,21 @@ BoxMap::~BoxMap() {
 }
 
 void BoxMap::loadMap(const std::string &path) {
-    std::ifstream map_file(path);
+    std::ifstream mapFile(path);
     std::string line;
 
-	std::vector<std::shared_ptr<Box>> &boxes = _game->getBoxes();
+	std::vector<std::shared_ptr<Box>> &boxes = m_Game->getBoxes();
 	for (std::shared_ptr<Box> box : boxes) {
-		_game->getWorld().DestroyBody(box->getBody());
+		m_Game->getWorld().DestroyBody(box->getBody());
 	}
 	boxes.clear();
 
-	_game->getView().setRotation(0);
-	_game->getView().setCenter(sf::Vector2f(_game->getWindowSize().x / 2, _game->getWindowSize().y / 2 ));
+	m_Game->getView().setRotation(0);
+	m_Game->getView().setCenter(sf::Vector2f(m_Game->getWindowSize().x / 2, m_Game->getWindowSize().y / 2 ));
 
-	std::getline(map_file, line);
-	std::getline(map_file, line);
-    while (std::getline(map_file, line)) {
+	std::getline(mapFile, line);
+	std::getline(mapFile, line);
+    while (std::getline(mapFile, line)) {
         std::istringstream ss(line);
         float x, y;
         int c;
@@ -51,7 +51,7 @@ void BoxMap::loadMap(const std::string &path) {
                 break;
         }
         b2Vec2 position(x / Constants::SCALE, y / Constants::SCALE); // convert back
-        _game->createBox(sf::Vector2i(x, y), color);
+        m_Game->createBox(sf::Vector2i(x, y), color);
     }
 }
 
@@ -59,7 +59,7 @@ void BoxMap::saveMap(const std::string &path) {
     std::ofstream map_file(path);
 
 	map_file << "x y color\n\n";
-    for (auto box : _game->getBoxes()) {
+    for (auto box : m_Game->getBoxes()) {
         b2Vec2 pos = box->getBody()->GetPosition();
         map_file << pos.x * Constants::SCALE 
                 << " " 

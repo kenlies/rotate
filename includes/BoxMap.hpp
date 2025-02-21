@@ -16,5 +16,5 @@ class BoxMap {
 		void loadMap(const std::string &path);
 		
 	private:
-		Game *_game;
+		Game *m_Game;
 };
