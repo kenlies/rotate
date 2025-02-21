@@ -13,7 +13,6 @@ class Fade : public sf::Drawable {
 		void decrementFadeCounter(float deltaTime);
 
 		// ---- getters ----
-		const sf::RectangleShape					&getShape() const;
 		const sf::Clock								&getFadeClock() const;
 		float										getFadeCounter() const;
 		

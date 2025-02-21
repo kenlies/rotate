@@ -23,11 +23,6 @@ void Fade::decrementFadeCounter(float deltaTime) {
 }
 
 // ---- getters ----
-
-const sf::RectangleShape &Fade::getShape() const {
-	return m_Shape;
-}
-
 const sf::Clock &Fade::getFadeClock() const {
 	return m_FadeClock;
 }
