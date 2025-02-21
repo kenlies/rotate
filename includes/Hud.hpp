@@ -19,20 +19,20 @@ class Hud : public sf::Drawable {
 		const unsigned int getFPS() const;
 
 	private:
-		Game		*_game;
+		Game			*m_Game;
 
-		unsigned int mFrame;
-		unsigned int mFps;
-		sf::Clock mFPSClock;
-		sf::Text	_FPSText;
+		unsigned int	m_Frame;
+		unsigned int	m_Fps;
+		sf::Clock 		m_FPSClock;
+		sf::Text		m_FPSText;
 
-		sf::Font	_modeFont;
-		sf::Text	_modeText;
+		sf::Font		m_ModeFont;
+		sf::Text		m_ModeText;
 	
-		sf::Font	_scoreFont;
-		sf::Text	_scoreText;
-		sf::Text	_scoreAvailableText;
-		sf::Text	_scoreSlash;
+		sf::Font		m_ScoreFont;
+		sf::Text		m_ScoreText;
+		sf::Text		m_ScoreAvailableText;
+		sf::Text		m_ScoreSlash;
 
-		std::unique_ptr<candle::RadialLight> _scoreLight;
+		std::unique_ptr<candle::RadialLight> m_ScoreLight;
 };

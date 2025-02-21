@@ -1,52 +1,52 @@
 #include "../includes/Hud.hpp"
 
-Hud::Hud(Game *game) : _game(game), mFrame(0), mFps(0) {
-    if (!_modeFont.loadFromFile(ResourceManager::getAssetFilePath("BebasNeue-Regular.ttf"))) {
+Hud::Hud(Game *game) : m_Game(game), m_Frame(0), m_Fps(0) {
+    if (!m_ModeFont.loadFromFile(ResourceManager::getAssetFilePath("BebasNeue-Regular.ttf"))) {
         std::cerr << "Error: Could not load font 'BebasNeue-Regular.ttf' from assets." << std::endl;
     }
-    _modeText.setPosition({5, static_cast<float>(_game->getWindowSize().y / 64)}); // set position to top left
-    _modeText.setString("Editor");
-    _modeText.setFillColor(sf::Color::Red);
-    _modeText.setFont(_modeFont);
-    sf::FloatRect textBounds = _modeText.getLocalBounds();
-    _modeText.setOrigin(0, textBounds.height / 2.f);
+    m_ModeText.setPosition({5, static_cast<float>(m_Game->getWindowSize().y / 64)}); // set position to top left
+    m_ModeText.setString("Editor");
+    m_ModeText.setFillColor(sf::Color::Red);
+    m_ModeText.setFont(m_ModeFont);
+    sf::FloatRect textBounds = m_ModeText.getLocalBounds();
+    m_ModeText.setOrigin(0, textBounds.height / 2.f);
 
-    _FPSText.setFont(_modeFont);
-    _FPSText.setFillColor(sf::Color::White);
-    _FPSText.setString("fps: 999");
-    _FPSText.setScale({0.5f, 0.5f});
-    _FPSText.setPosition({static_cast<float>(_game->getWindowSize().x - 60), static_cast<float>(_game->getWindowSize().y - 30)});
+    m_FPSText.setFont(m_ModeFont);
+    m_FPSText.setFillColor(sf::Color::White);
+    m_FPSText.setString("fps: 999");
+    m_FPSText.setScale({0.5f, 0.5f});
+    m_FPSText.setPosition({static_cast<float>(m_Game->getWindowSize().x - 60), static_cast<float>(m_Game->getWindowSize().y - 30)});
 
-    if (!_scoreFont.loadFromFile(ResourceManager::getAssetFilePath("Even Stevens.ttf"))) {
+    if (!m_ScoreFont.loadFromFile(ResourceManager::getAssetFilePath("Even Stevens.ttf"))) {
         std::cerr << "Error: Could not load font 'Even Stevens' from assets." << std::endl;
     }
-    _scoreText.setFont(_scoreFont);
-    _scoreText.setString("0");
-    _scoreText.setCharacterSize(24);
-    _scoreText.setOrigin(_scoreText.getGlobalBounds().width / 2, _scoreText.getGlobalBounds().height / 2);
-    _scoreText.scale({1.f, 1.5f});
-    _scoreText.setFillColor(sf::Color::Yellow);
-    _scoreText.setPosition(_game->getWindowSize().x / 2, _game->getWindowSize().y - _game->getWindowSize().y / 8);
-    _scoreSlash.setFont(_scoreFont);
-    _scoreSlash.setString("/");
-    _scoreSlash.setCharacterSize(18);
-    _scoreSlash.scale({1.f, 1.8f});
-    _scoreSlash.setFillColor(sf::Color::Yellow);
-    _scoreSlash.setOrigin(_scoreSlash.getGlobalBounds().width / 2, _scoreSlash.getGlobalBounds().height / 2);
-    _scoreSlash.setPosition(_scoreText.getPosition().x + 23, _scoreText.getPosition().y + 32);
-    _scoreAvailableText.setFont(_scoreFont);
-    _scoreAvailableText.setString(std::to_string(_game->getLevelCoins()));
-    _scoreAvailableText.setCharacterSize(16);
-    _scoreAvailableText.scale({1.f, 1.5f});
-    _scoreAvailableText.setFillColor(sf::Color::Yellow);
-    _scoreAvailableText.setOrigin(_scoreAvailableText.getGlobalBounds().width / 2, _scoreAvailableText.getGlobalBounds().height / 2);
-    _scoreAvailableText.setPosition(_scoreText.getPosition().x + 32, _scoreText.getPosition().y + 40);
+    m_ScoreText.setFont(m_ScoreFont);
+    m_ScoreText.setString("0");
+    m_ScoreText.setCharacterSize(24);
+    m_ScoreText.setOrigin(m_ScoreText.getGlobalBounds().width / 2, m_ScoreText.getGlobalBounds().height / 2);
+    m_ScoreText.scale({1.f, 1.5f});
+    m_ScoreText.setFillColor(sf::Color::Yellow);
+    m_ScoreText.setPosition(m_Game->getWindowSize().x / 2, m_Game->getWindowSize().y - m_Game->getWindowSize().y / 8);
+    m_ScoreSlash.setFont(m_ScoreFont);
+    m_ScoreSlash.setString("/");
+    m_ScoreSlash.setCharacterSize(18);
+    m_ScoreSlash.scale({1.f, 1.8f});
+    m_ScoreSlash.setFillColor(sf::Color::Yellow);
+    m_ScoreSlash.setOrigin(m_ScoreSlash.getGlobalBounds().width / 2, m_ScoreSlash.getGlobalBounds().height / 2);
+    m_ScoreSlash.setPosition(m_ScoreText.getPosition().x + 23, m_ScoreText.getPosition().y + 32);
+    m_ScoreAvailableText.setFont(m_ScoreFont);
+    m_ScoreAvailableText.setString(std::to_string(m_Game->getLevelCoins()));
+    m_ScoreAvailableText.setCharacterSize(16);
+    m_ScoreAvailableText.scale({1.f, 1.5f});
+    m_ScoreAvailableText.setFillColor(sf::Color::Yellow);
+    m_ScoreAvailableText.setOrigin(m_ScoreAvailableText.getGlobalBounds().width / 2, m_ScoreAvailableText.getGlobalBounds().height / 2);
+    m_ScoreAvailableText.setPosition(m_ScoreText.getPosition().x + 32, m_ScoreText.getPosition().y + 40);
 
-    _scoreLight = std::make_unique<candle::RadialLight>();
-    _scoreLight->setColor(sf::Color::White);
-    _scoreLight->setRange(90);
-    _scoreLight->setPosition(_scoreText.getPosition().x, _scoreText.getPosition().y);
-    _scoreLight->setIntensity(0);
+    m_ScoreLight = std::make_unique<candle::RadialLight>();
+    m_ScoreLight->setColor(sf::Color::White);
+    m_ScoreLight->setRange(90);
+    m_ScoreLight->setPosition(m_ScoreText.getPosition().x, m_ScoreText.getPosition().y);
+    m_ScoreLight->setIntensity(0);
 
 }
 
@@ -55,53 +55,53 @@ Hud::~Hud() {
 }
 
 void Hud::updateFPS() {
-	if (mFPSClock.getElapsedTime().asSeconds() >= 1.f) {
-        mFps = mFrame;
-		mFrame = 0;
-        _FPSText.setString("fps: " + std::to_string(mFps));
-		mFPSClock.restart();
+	if (m_FPSClock.getElapsedTime().asSeconds() >= 1.f) {
+        m_Fps = m_Frame;
+		m_Frame = 0;
+        m_FPSText.setString("fps: " + std::to_string(m_Fps));
+		m_FPSClock.restart();
 	}
-	++mFrame;
+	++m_Frame;
 }
 
 // ---- getters ----
 const unsigned int Hud::getFPS() const { 
-	return mFps; 
+	return m_Fps; 
 }
 
 void Hud::updateScore(unsigned short score) {
-    _scoreText.setString(std::to_string(score));
-    _scoreAvailableText.setString(std::to_string(_game->getLevelCoins()));
-    if (std::stoi(std::string((_scoreText.getString()))) == 0) {
-        _scoreText.setPosition(_game->getWindowSize().x / 2, _game->getWindowSize().y - _game->getWindowSize().y / 8);
-        _scoreLight->setPosition(_scoreText.getPosition().x, _scoreText.getPosition().y);
-    } else if (std::stoi(std::string((_scoreText.getString()))) == 10) {
-        _scoreText.setPosition(_scoreText.getPosition().x + 7 - _scoreText.getString().getSize() * 10, _scoreText.getPosition().y);
-        _scoreLight->setPosition(_scoreText.getPosition().x, _scoreText.getPosition().y);
-    } else if (std::stoi(std::string((_scoreText.getString()))) == 20) {
-        _scoreText.setPosition(_scoreText.getPosition().x + 3 - _scoreText.getString().getSize() * 10, _scoreText.getPosition().y);
-        _scoreLight->setPosition(_scoreText.getPosition().x + 10, _scoreText.getPosition().y);
+    m_ScoreText.setString(std::to_string(score));
+    m_ScoreAvailableText.setString(std::to_string(m_Game->getLevelCoins()));
+    if (std::stoi(std::string((m_ScoreText.getString()))) == 0) {
+        m_ScoreText.setPosition(m_Game->getWindowSize().x / 2, m_Game->getWindowSize().y - m_Game->getWindowSize().y / 8);
+        m_ScoreLight->setPosition(m_ScoreText.getPosition().x, m_ScoreText.getPosition().y);
+    } else if (std::stoi(std::string((m_ScoreText.getString()))) == 10) {
+        m_ScoreText.setPosition(m_ScoreText.getPosition().x + 7 - m_ScoreText.getString().getSize() * 10, m_ScoreText.getPosition().y);
+        m_ScoreLight->setPosition(m_ScoreText.getPosition().x, m_ScoreText.getPosition().y);
+    } else if (std::stoi(std::string((m_ScoreText.getString()))) == 20) {
+        m_ScoreText.setPosition(m_ScoreText.getPosition().x + 3 - m_ScoreText.getString().getSize() * 10, m_ScoreText.getPosition().y);
+        m_ScoreLight->setPosition(m_ScoreText.getPosition().x + 10, m_ScoreText.getPosition().y);
     }
     if (score != 0) {
-        _scoreLight->setIntensity(0.4);
+        m_ScoreLight->setIntensity(0.4);
     }
 }
 
 void Hud::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    sf::RenderWindow& window = _game->getWindow();
+    sf::RenderWindow& window = m_Game->getWindow();
 
     window.setView(window.getDefaultView());  // set default view before drawing
 
-    if (_game->getMode() == Game::Play) {
-        _scoreLight->setIntensity(_scoreLight->getIntensity() - 0.02f);
-        target.draw(*_scoreLight, states);
-        target.draw(_scoreText, states);
-        target.draw(_scoreSlash, states);
-        target.draw(_scoreAvailableText, states);
+    if (m_Game->getMode() == Game::Play) {
+        m_ScoreLight->setIntensity(m_ScoreLight->getIntensity() - 0.02f);
+        target.draw(*m_ScoreLight, states);
+        target.draw(m_ScoreText, states);
+        target.draw(m_ScoreSlash, states);
+        target.draw(m_ScoreAvailableText, states);
     } else {
-        target.draw(_modeText, states);
+        target.draw(m_ModeText, states);
     }
-    target.draw(_FPSText, states);
+    target.draw(m_FPSText, states);
 
-    window.setView(_game->getView());  // restore the actual game view
+    window.setView(m_Game->getView());  // restore the actual game view
 }
