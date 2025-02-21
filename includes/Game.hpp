@@ -72,73 +72,73 @@ class Game : public b2ContactListener {
 			None
 		};
 
-		gameMode			_mode = Play;
-		b2World				_world;
+		gameMode			m_Mode = Play;
+		b2World				m_World;
 
-		sf::Time			_deltaTime;
+		sf::Time			m_DeltaTime;
 
 		// ---- interpolation ----
-		float				_accumulator = 0;
-		float				_lerpAlpha;
+		float				m_Accumulator = 0;
+		float				m_LerpAlpha;
 
-		std::vector<std::shared_ptr<Box>> 				_boxes;
-		std::unique_ptr<BoxMap>							_boxMap;
-		std::vector<std::shared_ptr<sf::SoundBuffer>>	_coinSoundBuffers;
-		std::deque<sf::Sound>							_coinSounds;
-		std::vector<std::shared_ptr<sf::SoundBuffer>>	_coinExplosionSoundBuffers;
-		std::deque<sf::Sound>							_coinExplosionSounds;
-		int												_currLevel = 1;
-		int												_levelCoins = 0;
-		int												_levelScore = 0;
-		int												_totalScore = 0;
+		std::vector<std::shared_ptr<Box>> 				m_Boxes;
+		std::unique_ptr<BoxMap>							m_BoxMap;
+		std::vector<std::shared_ptr<sf::SoundBuffer>>	m_CoinSoundBuffers;
+		std::deque<sf::Sound>							m_CoinSounds;
+		std::vector<std::shared_ptr<sf::SoundBuffer>>	m_CoinExplosionSoundBuffers;
+		std::deque<sf::Sound>							m_CoinExplosionSounds;
+		int												m_CurrLevel = 1;
+		int												m_LevelCoins = 0;
+		int												m_LevelScore = 0;
+		int												m_TotalScore = 0;
 
 		// ---- player ----
-		std::unique_ptr<Player>	_player;
-		bool 					_letsRespawn = false;
-		b2Vec2					_playerSpawnPos;
-		sf::Clock				_waitTilRespawnClock;
+		std::unique_ptr<Player>	m_Player;
+		bool 					m_LetsRespawn = false;
+		b2Vec2					m_PlayerSpawnPos;
+		sf::Clock				m_WaitTilRespawnClock;
 
-		bool 					_jump = false;
-		sf::Clock				_jumpCoolDownClock;
-		int						_canJump = 0; // how many bodies touch the ball at a time: able to jump if > 0
+		bool 					m_Jump = false;
+		sf::Clock				m_JumpCoolDownClock;
+		int						m_CanJump = 0; // how many bodies touch the ball at a time: able to jump if > 0
 		
-		b2Body 					*_touchRedBox = nullptr;
-		b2Body 					*_touchGreenBox = nullptr;
-		b2Body 					*_touchYellowoBox = nullptr;
+		b2Body 					*m_TouchRedBox = nullptr;
+		b2Body 					*m_TouchGreenBox = nullptr;
+		b2Body 					*m_TouchYellowBox = nullptr;
 
 
 		// ---- window things ----
-		sf::RenderWindow	_window;
-		sf::Vector2u		_windowSize;
-		sf::View			_view;
+		sf::RenderWindow	m_Window;
+		sf::Vector2u		m_WindowSize;
+		sf::View			m_View;
 
 		// ---- fade effect level transition ----
-		std::unique_ptr<Fade> _fade;
+		std::unique_ptr<Fade> m_Fade;
 		
 		// ---- Hud -----
-		std::unique_ptr<Hud> _hud;
+		std::unique_ptr<Hud> m_Hud;
 
 		// ---- particles ----
-		std::vector<std::shared_ptr<BoxParticles>> _boxParticles;
+		std::vector<std::shared_ptr<BoxParticles>> m_BoxParticles;
 
 		// ---- box color to be placed in editor ----
-		int						_boxColorIndex = 0;
-		std::vector<sf::Color>	_boxColors = {sf::Color::White, 
+		int						m_BoxColorIndex = 0;
+		std::vector<sf::Color>	m_BoxColors = {sf::Color::White, 
 											  sf::Color::Green,
 											  sf::Color::Red,
 											  sf::Color::Cyan,
 											  sf::Color::Yellow,
 											  sf::Color(25, 25, 25)}; // <-- dark gray
-		scrollWheelInput		_scrollWheelInput = None;
+		scrollWheelInput		m_ScrollWheelInput = None;
 
 		// ---- rotate the world ----
-		bool _rotateRight = false;
-		bool _rotateLeft = false;
-		float _rotVel = 0; // rotation speed where x: left y: right
+		bool m_RotateRight = false;
+		bool m_RotateLeft = false;
+		float m_RotVel = 0; // rotation speed where x: left y: right
 		
 		// ---- move level editor view ----
-		bool _moveViewLeft = false;
-		bool _moveViewRight = false;
-		bool _moveViewUp = false;
-		bool _moveViewDown = false;
+		bool m_MoveViewLeft = false;
+		bool m_MoveViewRight = false;
+		bool m_MoveViewUp = false;
+		bool m_MoveViewDown = false;
 };

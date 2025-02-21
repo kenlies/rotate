@@ -1,13 +1,13 @@
 #include "../includes/Game.hpp"
 
 Game::Game() : 
-    _window({}, "rotate", sf::Style::Fullscreen, sf::ContextSettings(0, 0, 8)),
-    _windowSize(_window.getSize()),
-    _world(b2Vec2(0.f, Constants::GRAVITY_MAGNITUDE)),
-    _view(sf::Vector2f(_windowSize.x / 2, _windowSize.y / 2), sf::Vector2f())
+    m_Window({}, "rotate", sf::Style::Fullscreen, sf::ContextSettings(0, 0, 8)),
+    m_WindowSize(m_Window.getSize()),
+    m_World(b2Vec2(0.f, Constants::GRAVITY_MAGNITUDE)),
+    m_View(sf::Vector2f(m_WindowSize.x / 2, m_WindowSize.y / 2), sf::Vector2f())
 {
-    _window.setMouseCursorVisible(false);
-    _view.setSize(sf::Vector2f(_windowSize.x, _windowSize.y));
+    m_Window.setMouseCursorVisible(false);
+    m_View.setSize(sf::Vector2f(m_WindowSize.x, m_WindowSize.y));
 
     // ---- create sound buffers ----
     std::shared_ptr<sf::SoundBuffer> bufSoundOne = std::make_shared<sf::SoundBuffer>();
@@ -18,31 +18,31 @@ Game::Game() :
         bufSoundTwo->loadFromFile(ResourceManager::getAssetFilePath("coin_collect2.ogg")) &&
         bufSoundThree->loadFromFile(ResourceManager::getAssetFilePath("coin_collect3.ogg")) &&
         bufExplosionSoundOne->loadFromFile(ResourceManager::getAssetFilePath("coin_explosion.ogg"))) {
-        _coinSoundBuffers.push_back(bufSoundOne);
-        _coinSoundBuffers.push_back(bufSoundTwo);
-        _coinSoundBuffers.push_back(bufSoundThree);
-        _coinExplosionSoundBuffers.push_back(bufExplosionSoundOne);
+        m_CoinSoundBuffers.push_back(bufSoundOne);
+        m_CoinSoundBuffers.push_back(bufSoundTwo);
+        m_CoinSoundBuffers.push_back(bufSoundThree);
+        m_CoinExplosionSoundBuffers.push_back(bufExplosionSoundOne);
     } else {
         std::cout << "Error: Could not load coin sound buffers" << std::endl;
         exit(EXIT_FAILURE);
     }
 
     // ---- crate player ball ----
-    _player = std::make_unique<Player>(this);
-    _jumpCoolDownClock.restart();
+    m_Player = std::make_unique<Player>(this);
+    m_JumpCoolDownClock.restart();
 
     // ---- create boxmap ----
-    _boxMap = std::make_unique<BoxMap>(this);
+    m_BoxMap = std::make_unique<BoxMap>(this);
 
     // ---- set the listenr for object contacts ----
-    _world.SetContactListener(this);
+    m_World.SetContactListener(this);
 
     // ---- load the first map ----
-    _boxMap->loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(_currLevel));
-    _player->getBody()->SetTransform(_playerSpawnPos, 0);
+    m_BoxMap->loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(m_CurrLevel));
+    m_Player->getBody()->SetTransform(m_PlayerSpawnPos, 0);
 
     // ---- create hud ----
-    _hud = std::make_unique<Hud>(this);
+    m_Hud = std::make_unique<Hud>(this);
 }
 
 Game::~Game() {
@@ -50,83 +50,83 @@ Game::~Game() {
 }
 
 void Game::updateEvents() {
-    _scrollWheelInput = None;
-    for (auto event = sf::Event(); _window.pollEvent(event);) {
+    m_ScrollWheelInput = None;
+    for (auto event = sf::Event(); m_Window.pollEvent(event);) {
         switch (event.type) {
             // window closed
             case sf::Event::Closed:
-                _window.close();
+                m_Window.close();
                 break;
 
             // key pressed
             case sf::Event::KeyPressed:
                 if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::Q) {
-                    _window.close();
+                    m_Window.close();
                 }
                 else if (event.key.code == sf::Keyboard::Space) {
-                    _jump = true;
+                    m_Jump = true;
                 }
                 else if (event.key.code == sf::Keyboard::A) {
-                    _mode == Editor ? _moveViewLeft = true : _rotateLeft = true;
+                    m_Mode == Editor ? m_MoveViewLeft = true : m_RotateLeft = true;
                 }
                 else if (event.key.code == sf::Keyboard::D) {
-                    _mode == Editor ? _moveViewRight = true : _rotateRight = true;
+                    m_Mode == Editor ? m_MoveViewRight = true : m_RotateRight = true;
                 }
-                else if ((event.key.code == sf::Keyboard::W) && _mode == Editor) {
-                    _moveViewUp = true;
+                else if ((event.key.code == sf::Keyboard::W) && m_Mode == Editor) {
+                    m_MoveViewUp = true;
                 }
-                else if ((event.key.code == sf::Keyboard::S) && _mode == Editor) {
-                    _moveViewDown = true;
+                else if ((event.key.code == sf::Keyboard::S) && m_Mode == Editor) {
+                    m_MoveViewDown = true;
                 }
                 else if (event.key.code == sf::Keyboard::M) {
-                    _mode == Play ? _mode = Editor : _mode = Play; // toggle between editor and play
+                    m_Mode == Play ? m_Mode = Editor : m_Mode = Play; // toggle between editor and play
                 }
-                else if (event.key.code == sf::Keyboard::Up && _mode == Editor) {
+                else if (event.key.code == sf::Keyboard::Up && m_Mode == Editor) {
                     // change colors of box in editor mode
-                    _boxColorIndex++;
-                    if (_boxColorIndex >= _boxColors.size()) {
-                        _boxColorIndex = 0;
+                    m_BoxColorIndex++;
+                    if (m_BoxColorIndex >= m_BoxColors.size()) {
+                        m_BoxColorIndex = 0;
                     }
                 }
-                else if (event.key.code == sf::Keyboard::Down && _mode == Editor) {
+                else if (event.key.code == sf::Keyboard::Down && m_Mode == Editor) {
                     // change colors of box in editor mode
-                    _boxColorIndex--;
-                    if (_boxColorIndex < 0) {
-                        _boxColorIndex = _boxColors.size() - 1;
+                    m_BoxColorIndex--;
+                    if (m_BoxColorIndex < 0) {
+                        m_BoxColorIndex = m_BoxColors.size() - 1;
                     }
                 }
-                else if (event.key.code == sf::Keyboard::Comma && _mode == Editor) {
+                else if (event.key.code == sf::Keyboard::Comma && m_Mode == Editor) {
                     std::cout << "Saving map\n";
-                    _boxMap->saveMap(ResourceManager::getLevelFilePath("tmp"));
+                    m_BoxMap->saveMap(ResourceManager::getLevelFilePath("tmp"));
                 }
-                else if (event.key.code == sf::Keyboard::Period && _mode == Editor) {
+                else if (event.key.code == sf::Keyboard::Period && m_Mode == Editor) {
                     std::cout << "Loading map\n";
-                    _boxMap->loadMap(ResourceManager::getLevelFilePath("tmp"));
-                    _player->getBody()->SetTransform(_playerSpawnPos, 0);
+                    m_BoxMap->loadMap(ResourceManager::getLevelFilePath("tmp"));
+                    m_Player->getBody()->SetTransform(m_PlayerSpawnPos, 0);
                 }
                 break;
             case sf::Event::KeyReleased:
                 if (event.key.code == sf::Keyboard::Space) {
-                    _jump = false;
+                    m_Jump = false;
                 } else if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
-                    _mode == Editor ? _moveViewLeft = false : _rotateLeft = false;
+                    m_Mode == Editor ? m_MoveViewLeft = false : m_RotateLeft = false;
                 }
                 else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
-                    _mode == Editor ? _moveViewRight = false : _rotateRight = false;
+                    m_Mode == Editor ? m_MoveViewRight = false : m_RotateRight = false;
                 }
-                else if ((event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) && _mode == Editor) {
-                    _moveViewUp = false;
+                else if ((event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) && m_Mode == Editor) {
+                    m_MoveViewUp = false;
                 }
-                else if ((event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) && _mode == Editor) {
-                    _moveViewDown = false;
+                else if ((event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) && m_Mode == Editor) {
+                    m_MoveViewDown = false;
                 }
                 break;
             case sf::Event::MouseWheelScrolled:
                 if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
                     if (event.mouseWheelScroll.delta > 0) {
-                        _scrollWheelInput = ScrollUp;
+                        m_ScrollWheelInput = ScrollUp;
                     } else {
-                        _scrollWheelInput = ScrollDown;
+                        m_ScrollWheelInput = ScrollDown;
                     }
                 }
                 break; // added this check if actaully works
@@ -140,14 +140,14 @@ void Game::updateEvents() {
 void Game::run() {
     sf::Clock frameClock;
 
-    while (_window.isOpen()) {
+    while (m_Window.isOpen()) {
         // ---- handle events ----
         updateEvents();
 
-        _hud->updateFPS();
-        _deltaTime = frameClock.restart();
+        m_Hud->updateFPS();
+        m_DeltaTime = frameClock.restart();
 
-        switch(_mode) {
+        switch(m_Mode) {
             case Play:
                 updatePlay();
                 break;
@@ -161,20 +161,20 @@ void Game::run() {
 void Game::doPhysicsStep() {
     // fixed time step
     // max frame time to avoid spiral of death (on slow devices)
-    float frameTime = std::min(_deltaTime.asSeconds(), 0.25f);
+    float frameTime = std::min(m_DeltaTime.asSeconds(), 0.25f);
 
-    _accumulator += frameTime;
-    while (_accumulator >= Constants::TIME_STEP) {
-        b2Body *playerBody = _player->getBody();
-        _player->setInterpolationData(playerBody->GetPosition(), playerBody->GetAngle());
-        for (auto& box : _boxes) {
+    m_Accumulator += frameTime;
+    while (m_Accumulator >= Constants::TIME_STEP) {
+        b2Body *playerBody = m_Player->getBody();
+        m_Player->setInterpolationData(playerBody->GetPosition(), playerBody->GetAngle());
+        for (auto& box : m_Boxes) {
             b2Body *boxBody = box->getBody();
             box->setInterpolationData(boxBody->GetPosition(), boxBody->GetAngle());
         }
-        _world.Step(Constants::TIME_STEP, 8, 2);
-        _accumulator -= Constants::TIME_STEP;
+        m_World.Step(Constants::TIME_STEP, 8, 2);
+        m_Accumulator -= Constants::TIME_STEP;
     }
-    _lerpAlpha = _accumulator / Constants::TIME_STEP;
+    m_LerpAlpha = m_Accumulator / Constants::TIME_STEP;
 }
 
 void Game::updatePlay() {
@@ -184,62 +184,62 @@ void Game::updatePlay() {
     doPhysicsStep();
 
     // ---- spawn player at spawn position ----
-    if (_letsRespawn) {
-        if (_waitTilRespawnClock.getElapsedTime().asSeconds() > 2) {
-            _player->getBody()->SetTransform(_playerSpawnPos, 0);
-            _player->getBody()->SetLinearVelocity(b2Vec2(0, 0));
-            _player->getBody()->SetAngularVelocity(0);
-            _letsRespawn = false;
+    if (m_LetsRespawn) {
+        if (m_WaitTilRespawnClock.getElapsedTime().asSeconds() > 2) {
+            m_Player->getBody()->SetTransform(m_PlayerSpawnPos, 0);
+            m_Player->getBody()->SetLinearVelocity(b2Vec2(0, 0));
+            m_Player->getBody()->SetAngularVelocity(0);
+            m_LetsRespawn = false;
             cameraOnPlayer = true;
-            _fade = std::make_unique<Fade>(this);
-            _levelCoins = 0;
-            _levelScore = 0;
-            _boxMap->loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(_currLevel));
-            _hud->updateScore(_levelScore);
+            m_Fade = std::make_unique<Fade>(this);
+            m_LevelCoins = 0;
+            m_LevelScore = 0;
+            m_BoxMap->loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(m_CurrLevel));
+            m_Hud->updateScore(m_LevelScore);
         }
     }
 
     // ---- do the fadeout effect ----
-    if (_fade) {
-        _fade->decrementFadeCounter(_deltaTime.asSeconds());
-        if (_fade->getFadeCounter() <= 0.f) {
-            _fade = nullptr;
+    if (m_Fade) {
+        m_Fade->decrementFadeCounter(m_DeltaTime.asSeconds());
+        if (m_Fade->getFadeCounter() <= 0.f) {
+            m_Fade = nullptr;
         }
     }
 
     // ---- collect yellow box ----
-    if (_touchYellowoBox) {
-        if (_touchYellowoBox->GetType() != b2_dynamicBody) {
-            playSounds(_coinSoundBuffers, _coinSounds, 20.f);
+    if (m_TouchYellowBox) {
+        if (m_TouchYellowBox->GetType() != b2_dynamicBody) {
+            playSounds(m_CoinSoundBuffers, m_CoinSounds, 20.f);
         }
-        _touchYellowoBox->SetType(b2_dynamicBody);
-        _touchYellowoBox->ApplyLinearImpulseToCenter(createForce(-Constants::PICKUP_FORCE), true);
-        _touchYellowoBox = nullptr;
+        m_TouchYellowBox->SetType(b2_dynamicBody);
+        m_TouchYellowBox->ApplyLinearImpulseToCenter(createForce(-Constants::PICKUP_FORCE), true);
+        m_TouchYellowBox = nullptr;
     }
 
     // ---- level clear ----
-    if (_touchGreenBox) {
+    if (m_TouchGreenBox) {
         cameraOnPlayer = false;
-        _letsRespawn = true;
-        _currLevel++;
-        _totalScore += _levelScore;
-        if (_currLevel >= 4) {
-            _currLevel = 1;
-            _totalScore = 0;
+        m_LetsRespawn = true;
+        m_CurrLevel++;
+        m_TotalScore += m_LevelScore;
+        if (m_CurrLevel >= 4) {
+            m_CurrLevel = 1;
+            m_TotalScore = 0;
         }
-        _touchGreenBox->SetType(b2_dynamicBody);
-        _touchGreenBox->ApplyLinearImpulseToCenter(createForce(-Constants::WIN_FORCE), true);
-        _touchGreenBox->ApplyTorque(_player->getBody()->GetAngle(), true);
-        _touchGreenBox = nullptr;
+        m_TouchGreenBox->SetType(b2_dynamicBody);
+        m_TouchGreenBox->ApplyLinearImpulseToCenter(createForce(-Constants::WIN_FORCE), true);
+        m_TouchGreenBox->ApplyTorque(m_Player->getBody()->GetAngle(), true);
+        m_TouchGreenBox = nullptr;
         std::cout << "LEVEL CLEAR\n";
     }
 
     // ---- death by red box ----
-    if (_touchRedBox) {
+    if (m_TouchRedBox) {
         cameraOnPlayer = false;
-        _letsRespawn = true;
+        m_LetsRespawn = true;
         b2Vec2 explosionForce = createForce(-Constants::EXPLOSION_FORCE);
-        b2ContactEdge* contacts = _touchRedBox->GetContactList();
+        b2ContactEdge* contacts = m_TouchRedBox->GetContactList();
 
         // apply the world breaking effect: break things!!!
         while (contacts) {
@@ -258,90 +258,90 @@ void Game::updatePlay() {
                     b2Body* whiteBox = (*fixtureA_Color == Constants::WHITE) ? fixtureA->GetBody() : fixtureB->GetBody();
                     whiteBox->SetType(b2_dynamicBody);
                     whiteBox->ApplyLinearImpulseToCenter(explosionForce, true);
-                    whiteBox->ApplyTorque(_player->getBody()->GetAngle(), true);
+                    whiteBox->ApplyTorque(m_Player->getBody()->GetAngle(), true);
                     whiteBox->SetSleepingAllowed(false);
                 }
             }
             contacts = contacts->next;
         }
-        _touchRedBox->ApplyLinearImpulseToCenter(explosionForce, true);
-        _touchRedBox->ApplyTorque(_player->getBody()->GetAngle(), true);
-        _touchRedBox = nullptr;
+        m_TouchRedBox->ApplyLinearImpulseToCenter(explosionForce, true);
+        m_TouchRedBox->ApplyTorque(m_Player->getBody()->GetAngle(), true);
+        m_TouchRedBox = nullptr;
         std::cout << "DEATH BY RED BOX\n";
     }
 
     // ---- death by void ----
-    if ((std::abs(_player->getBody()->GetLinearVelocity().x) > 40.f
-        || std::abs(_player->getBody()->GetLinearVelocity().y) > 40.f)
-        && !_letsRespawn) {
+    if ((std::abs(m_Player->getBody()->GetLinearVelocity().x) > 40.f
+        || std::abs(m_Player->getBody()->GetLinearVelocity().y) > 40.f)
+        && !m_LetsRespawn) {
         cameraOnPlayer = false;
-        _letsRespawn = true;
-        _waitTilRespawnClock.restart();
+        m_LetsRespawn = true;
+        m_WaitTilRespawnClock.restart();
         std::cout << "DEATH BY VOID\n"; 
     }
 
     // ---- rotate the view ----
-    if (_rotateLeft && !_letsRespawn) {
-        _rotVel += Constants::ROTATE_SPEED;
+    if (m_RotateLeft && !m_LetsRespawn) {
+        m_RotVel += Constants::ROTATE_SPEED;
     }
-    if (_rotateRight && !_letsRespawn) {
-        _rotVel -= Constants::ROTATE_SPEED;
+    if (m_RotateRight && !m_LetsRespawn) {
+        m_RotVel -= Constants::ROTATE_SPEED;
     }
-    _view.rotate(_rotVel * _deltaTime.asSeconds()); // frame rate independent
-    _rotVel *= 0.92; // smoothing rotation
+    m_View.rotate(m_RotVel * m_DeltaTime.asSeconds()); // frame rate independent
+    m_RotVel *= 0.92; // smoothing rotation
 
     // ---- jump ----
-    if (_jump && _canJump > 0 && !_letsRespawn && _jumpCoolDownClock.getElapsedTime().asSeconds() > 1.5f) {
-        _player->getBody()->ApplyLinearImpulseToCenter(createForce(Constants::JUMP_FORCE), false);
-        _jumpCoolDownClock.restart();
+    if (m_Jump && m_CanJump > 0 && !m_LetsRespawn && m_JumpCoolDownClock.getElapsedTime().asSeconds() > 1.5f) {
+        m_Player->getBody()->ApplyLinearImpulseToCenter(createForce(Constants::JUMP_FORCE), false);
+        m_JumpCoolDownClock.restart();
     }
 
     // set the adjusted gravity in the Box2D world
-    _world.SetGravity(createForce(Constants::GRAVITY_MAGNITUDE));
+    m_World.SetGravity(createForce(Constants::GRAVITY_MAGNITUDE));
 
     // make camera follow player with lerp
     if (cameraOnPlayer) {
-        sf::Vector2f playerPos = _player->getShape()->getPosition();
-        sf::Vector2f currentCenter = _view.getCenter();
+        sf::Vector2f playerPos = m_Player->getShape()->getPosition();
+        sf::Vector2f currentCenter = m_View.getCenter();
         float k = 4.0f;
-        float lerpFactor = 1 - std::exp(-k * _deltaTime.asSeconds());
+        float lerpFactor = 1 - std::exp(-k * m_DeltaTime.asSeconds());
 
         sf::Vector2f interpolatedPos = currentCenter + lerpFactor * (playerPos - currentCenter);
-        _view.setCenter(interpolatedPos);
+        m_View.setCenter(interpolatedPos);
     }
 
     // ---- draw everything ----
-    _window.clear();
+    m_Window.clear();
 
     drawParticles();
     drawBoxes();
-    _window.draw(*_player);
-    if (_fade) { _window.draw(*_fade); }
-    _window.draw(*_hud);
+    m_Window.draw(*m_Player);
+    if (m_Fade) { m_Window.draw(*m_Fade); }
+    m_Window.draw(*m_Hud);
 
-    _window.display();
+    m_Window.display();
 }
 
 void Game::updateEditor() {
 
-    if (_moveViewLeft) {
-        _view.move({-Constants::EDITOR_MOVE_SPEED * _deltaTime.asSeconds(), 0});
+    if (m_MoveViewLeft) {
+        m_View.move({-Constants::EDITOR_MOVE_SPEED * m_DeltaTime.asSeconds(), 0});
     }
-    if (_moveViewRight) {
-        _view.move({Constants::EDITOR_MOVE_SPEED * _deltaTime.asSeconds(), 0});
+    if (m_MoveViewRight) {
+        m_View.move({Constants::EDITOR_MOVE_SPEED * m_DeltaTime.asSeconds(), 0});
     }
-    if (_moveViewUp) {
-        _view.move({0, -Constants::EDITOR_MOVE_SPEED * _deltaTime.asSeconds()});
+    if (m_MoveViewUp) {
+        m_View.move({0, -Constants::EDITOR_MOVE_SPEED * m_DeltaTime.asSeconds()});
     }
-    if (_moveViewDown) {
-        _view.move({0, Constants::EDITOR_MOVE_SPEED * _deltaTime.asSeconds()});
+    if (m_MoveViewDown) {
+        m_View.move({0, Constants::EDITOR_MOVE_SPEED * m_DeltaTime.asSeconds()});
     }
-    _window.setView(_view);
+    m_Window.setView(m_View);
 
-    sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
+    sf::Vector2i mousePos = sf::Mouse::getPosition(m_Window);
 
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-        createBox(mousePos, _boxColors[_boxColorIndex]);
+        createBox(mousePos, m_BoxColors[m_BoxColorIndex]);
     }
 
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
@@ -349,21 +349,21 @@ void Game::updateEditor() {
     }
 
     // ---- draw everything ----
-    _window.clear();
+    m_Window.clear();
     drawBoxes();
     drawGrid();
     drawBoxAtCursor(mousePos); // draw the box to be placed
-    _window.draw(*_hud);
+    m_Window.draw(*m_Hud);
 
-    _window.display();
+    m_Window.display();
 }
 
 void Game::drawParticles() {
-    for (auto it = _boxParticles.begin(); it != _boxParticles.end();) {
-        (*it)->update(_deltaTime);
-        _window.draw(*(*it));
+    for (auto it = m_BoxParticles.begin(); it != m_BoxParticles.end();) {
+        (*it)->update(m_DeltaTime);
+        m_Window.draw(*(*it));
         if ((*it)->getCurrLife().asSeconds() > 3) {
-            it = _boxParticles.erase(it);
+            it = m_BoxParticles.erase(it);
             std::cout << "removed particles from vector" << "\n";
             continue;
         }
@@ -374,39 +374,39 @@ void Game::drawParticles() {
 void Game::drawBoxes() {
     // ---- draw boxes ----
     // this draws the oldest boxes first, rather that newest which could be an issue
-    for (auto it = _boxes.begin(); it != _boxes.end(); ) {
-        if ((*it)->getShape()->getFillColor() == sf::Color::Cyan && _mode == Play) {
+    for (auto it = m_Boxes.begin(); it != m_Boxes.end(); ) {
+        if ((*it)->getShape()->getFillColor() == sf::Color::Cyan && m_Mode == Play) {
             ++it;
             continue;
         }
-        if ((*it)->getShape()->getFillColor() == sf::Color::Yellow && _mode == Play) {
-            (*it)->getShape()->rotate(50.f * _deltaTime.asSeconds());
-            if ((*it)->getBody()->GetType() == b2_dynamicBody && !(*it)->isInView(_view)) {
+        if ((*it)->getShape()->getFillColor() == sf::Color::Yellow && m_Mode == Play) {
+            (*it)->getShape()->rotate(50.f * m_DeltaTime.asSeconds());
+            if ((*it)->getBody()->GetType() == b2_dynamicBody && !(*it)->isInView(m_View)) {
                 // emit particles!!
                 std::cout << "emit particles" << "\n";
-                _boxParticles.emplace_back(std::make_unique<BoxParticles>(150, (*it)->getShape()->getPosition()));
-                _world.DestroyBody((*it)->getBody());
-                it = _boxes.erase(it);
-                _levelScore++;
-                _hud->updateScore(_levelScore);
-                playSounds(_coinExplosionSoundBuffers, _coinExplosionSounds, 15);
+                m_BoxParticles.emplace_back(std::make_unique<BoxParticles>(150, (*it)->getShape()->getPosition()));
+                m_World.DestroyBody((*it)->getBody());
+                it = m_Boxes.erase(it);
+                m_LevelScore++;
+                m_Hud->updateScore(m_LevelScore);
+                playSounds(m_CoinExplosionSoundBuffers, m_CoinExplosionSounds, 15);
                 continue;
             }
         } 
-        _window.draw(*(*it));
+        m_Window.draw(*(*it));
 
         // ---- draw lighting ----
-        if (_mode == Play && (*it)->getShape()->getFillColor() != sf::Color(25, 25, 25)) {  // don't draw lighting on dark gray boxes
+        if (m_Mode == Play && (*it)->getShape()->getFillColor() != sf::Color(25, 25, 25)) {  // don't draw lighting on dark gray boxes
             (*it)->getLight()->setPosition(Constants::SCALE * (*it)->getBody()->GetPosition().x, Constants::SCALE * (*it)->getBody()->GetPosition().y);
-            _window.draw(*((*it)->getLight()));
+            m_Window.draw(*((*it)->getLight()));
         }
         ++it;
     }
 }
 
 void Game::drawGrid() {
-    sf::Vector2f topLeft = _window.mapPixelToCoords(sf::Vector2i(0, 0));
-    sf::Vector2f bottomRight = _window.mapPixelToCoords(sf::Vector2i(_windowSize.x, _windowSize.y));
+    sf::Vector2f topLeft = m_Window.mapPixelToCoords(sf::Vector2i(0, 0));
+    sf::Vector2f bottomRight = m_Window.mapPixelToCoords(sf::Vector2i(m_WindowSize.x, m_WindowSize.y));
 
     // store the lines to be drawed in a vertex array
     sf::VertexArray gridLines(sf::Lines);
@@ -424,29 +424,29 @@ void Game::drawGrid() {
     }
 
     // Draw all lines in one call
-    _window.draw(gridLines);
+    m_Window.draw(gridLines);
 }
 
 void Game::drawBoxAtCursor(const sf::Vector2i &mousePos) {
     sf::RectangleShape rectangle;
 
-    rectangle.setFillColor(_boxColors[_boxColorIndex]);
-    if (_boxColors[_boxColorIndex] == sf::Color::Yellow) {
+    rectangle.setFillColor(m_BoxColors[m_BoxColorIndex]);
+    if (m_BoxColors[m_BoxColorIndex] == sf::Color::Yellow) {
         rectangle.setOrigin(Constants::BOX_WIDTH / 4, Constants::BOX_WIDTH / 4);
         rectangle.setSize({Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2});
     } else {
         rectangle.setOrigin(Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2);
         rectangle.setSize({Constants::BOX_WIDTH, Constants::BOX_WIDTH});
     }
-    // need to use mapPixelToCoords to account for distrortion on location after using _view.move()
-    rectangle.setPosition(_window.mapPixelToCoords(mousePos));
+    // need to use mapPixelToCoords to account for distrortion on location after using m_View.move()
+    rectangle.setPosition(m_Window.mapPixelToCoords(mousePos));
 
-    _window.draw(rectangle);
+    m_Window.draw(rectangle);
 }
 
 void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {   
     bool available = true;
-    sf::Vector2f mousePosConverted = _window.mapPixelToCoords(mousePos, _view);
+    sf::Vector2f mousePosConverted = m_Window.mapPixelToCoords(mousePos, m_View);
 
     // divide mouse by 32 because each box is 32 pixels
     // then floow to round down example:
@@ -458,9 +458,9 @@ void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {
 
     // check that the spot isn't already occupied or
     // if there is already a spawn box in the world
-	for (int i = 0; i < _boxes.size(); i++) {
-		if (_boxes[i]->getBody() && _boxes[i]->getBody()->GetPosition() == checkPos
-            || (_boxes[i]->getShape()->getFillColor() == sf::Color::Cyan && color == sf::Color::Cyan)) {
+	for (int i = 0; i < m_Boxes.size(); i++) {
+		if (m_Boxes[i]->getBody() && m_Boxes[i]->getBody()->GetPosition() == checkPos
+            || (m_Boxes[i]->getShape()->getFillColor() == sf::Color::Cyan && color == sf::Color::Cyan)) {
 			available = false;
 			break;
 		}
@@ -469,26 +469,26 @@ void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {
     // create the box
     if (available) {
         if (color == sf::Color::Cyan) {
-            _playerSpawnPos = checkPos;
+            m_PlayerSpawnPos = checkPos;
         } else if (color == sf::Color::Yellow) {
-            _levelCoins++;
+            m_LevelCoins++;
         }
-        _boxes.emplace_back(std::make_shared<Box>(this, checkPos, color));
+        m_Boxes.emplace_back(std::make_shared<Box>(this, checkPos, color));
     }
 }
 
 void Game::removeBox(const sf::Vector2i &mousePos) {
-    sf::Vector2f mousePosConverted = _window.mapPixelToCoords(mousePos, _view);
+    sf::Vector2f mousePosConverted = m_Window.mapPixelToCoords(mousePos, m_View);
     float mouseX = std::floor(mousePosConverted.x / Constants::BOX_WIDTH);
     float mouseY = std::floor(mousePosConverted.y / Constants::BOX_WIDTH);
 
     b2Vec2 checkPos((mouseX * Constants::BOX_WIDTH + Constants::BOX_WIDTH / 2) / Constants::SCALE, (mouseY * Constants::BOX_WIDTH + Constants::BOX_WIDTH / 2) / Constants::SCALE); // tiled position (grid)
 
-    for (int i = 0; i < _boxes.size(); i++) {
-        if (_boxes[i]->getBody()->GetPosition() == checkPos) {
-            _world.DestroyBody(_boxes[i]->getBody());
-            _boxes[i] = _boxes.back();
-            _boxes.pop_back();
+    for (int i = 0; i < m_Boxes.size(); i++) {
+        if (m_Boxes[i]->getBody()->GetPosition() == checkPos) {
+            m_World.DestroyBody(m_Boxes[i]->getBody());
+            m_Boxes[i] = m_Boxes.back();
+            m_Boxes.pop_back();
             std::cout << "remove block\n";
             break;
         }
@@ -499,8 +499,8 @@ void Game::removeBox(const sf::Vector2i &mousePos) {
 void Game::BeginContact(b2Contact* contact) {
 
     // don't do anything if the contact doesn't involve player or if the player is respawning
-    if ((contact->GetFixtureB()->GetBody() != _player->getBody() 
-        && contact->GetFixtureA()->GetBody() != _player->getBody())) {
+    if ((contact->GetFixtureB()->GetBody() != m_Player->getBody() 
+        && contact->GetFixtureA()->GetBody() != m_Player->getBody())) {
         return ;
     }
 
@@ -522,22 +522,22 @@ void Game::BeginContact(b2Contact* contact) {
         return;
     }
     else if (color && *color == Constants::YELLOW) {
-        _touchYellowoBox = box;
+        m_TouchYellowBox = box;
         return;
-    } else if (color && *color == Constants::RED && !_letsRespawn) {
-        _waitTilRespawnClock.restart();
-        _touchRedBox = box;
-    } else if (color && *color == Constants::GREEN && !_letsRespawn) {
-        _waitTilRespawnClock.restart();
-        _touchGreenBox = box;
+    } else if (color && *color == Constants::RED && !m_LetsRespawn) {
+        m_WaitTilRespawnClock.restart();
+        m_TouchRedBox = box;
+    } else if (color && *color == Constants::GREEN && !m_LetsRespawn) {
+        m_WaitTilRespawnClock.restart();
+        m_TouchGreenBox = box;
     }
-    _canJump++;
+    m_CanJump++;
 }
 
 void Game::EndContact(b2Contact* contact) {
     // don't do anything if the contact doesn't involve player or if the player is respawning
-    if ((contact->GetFixtureB()->GetBody() != _player->getBody() 
-        && contact->GetFixtureA()->GetBody() != _player->getBody())) {
+    if ((contact->GetFixtureB()->GetBody() != m_Player->getBody() 
+        && contact->GetFixtureA()->GetBody() != m_Player->getBody())) {
         return ;
     }
 
@@ -558,13 +558,13 @@ void Game::EndContact(b2Contact* contact) {
         return ;
     }
 
-    _canJump--;
+    m_CanJump--;
 }
 
 // --- helper/other ----
 // calculate force direction in world space to acoount for rotated world
 b2Vec2 Game::createForce(float forcePower) const {
-    float radians = _view.getRotation() * Constants::DEG_TO_RAD;
+    float radians = m_View.getRotation() * Constants::DEG_TO_RAD;
     b2Vec2 force;
     force.x = -forcePower * sin(radians);
     force.y = forcePower * cos(radians);
@@ -592,33 +592,33 @@ void Game::playSounds(const std::vector<std::shared_ptr<sf::SoundBuffer>> &sound
 // these can't be const because some none const methods
 // are called on the return of these
 b2World &Game::getWorld() {
-    return _world;
+    return m_World;
 }
 
 sf::RenderWindow &Game::getWindow() {
-    return _window;
+    return m_Window;
 }
 
 sf::Vector2u &Game::getWindowSize() {
-    return _windowSize;
+    return m_WindowSize;
 }
 
 std::vector<std::shared_ptr<Box>> &Game::getBoxes() {
-    return _boxes;
+    return m_Boxes;
 }
 
 sf::View &Game::getView() {
-    return _view;
+    return m_View;
 }
 
 Game::gameMode Game::getMode() const {
-    return _mode;
+    return m_Mode;
 }
 
 int Game::getLevelCoins() const {
-    return _levelCoins;
+    return m_LevelCoins;
 }
 
 float Game::getLerpAlpha() const {
-    return _lerpAlpha;
+    return m_LerpAlpha;
 }
