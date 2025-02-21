@@ -18,13 +18,13 @@ class BoxParticles : public sf::Drawable, public sf::Transformable {
 	private:
 		struct Particle
 		{
-			sf::Vector2f	velocity;
-			sf::Time		lifetime;
+			sf::Vector2f	_velocity;
+			sf::Time		_lifetime;
 		};
 
-		std::vector<Particle>	m_particles;
-		sf::VertexArray 		m_vertices;
-		sf::Time				m_lifetime;
-		sf::Time				m_currlife;
-		sf::Vector2f			m_emitter;
+		std::vector<Particle>	m_Particles;
+		sf::VertexArray 		m_Vertices;
+		sf::Time				m_Lifetime;
+		sf::Time				m_Currlife;
+		sf::Vector2f			m_Emitter;
 };
