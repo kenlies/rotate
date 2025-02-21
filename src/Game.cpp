@@ -310,6 +310,8 @@ void Game::updatePlay() {
         m_View.setCenter(interpolatedPos);
     }
 
+    m_Hud->updateScoreLightIntensity(m_DeltaTime.asSeconds());
+
     // ---- draw everything ----
     m_Window.clear();
 

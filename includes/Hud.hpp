@@ -12,17 +12,19 @@ class Hud : public sf::Drawable {
 
 		void			updateScore(unsigned short score);
 		void 			updateFPS();
+		void			updateScoreLightIntensity(float deltaTime);
 
 		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 		// ---- getters ----
 		const unsigned int getFPS() const;
+		const candle::RadialLight &getScoreLight() const;
 
 	private:
 		Game			*m_Game;
 
-		unsigned int	m_Frame;
-		unsigned int	m_Fps;
+		unsigned int	m_Frame = 0;
+		unsigned int	m_FPS = 0;
 		sf::Clock 		m_FPSClock;
 		sf::Text		m_FPSText;
 
@@ -34,5 +36,6 @@ class Hud : public sf::Drawable {
 		sf::Text		m_ScoreAvailableText;
 		sf::Text		m_ScoreSlash;
 
-		std::unique_ptr<candle::RadialLight> m_ScoreLight;
+		float			m_LightIntensity = 0.f;
+		candle::RadialLight	m_ScoreLight;
 };

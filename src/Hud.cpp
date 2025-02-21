@@ -1,6 +1,6 @@
 #include "../includes/Hud.hpp"
 
-Hud::Hud(Game *game) : m_Game(game), m_Frame(0), m_Fps(0) {
+Hud::Hud(Game *game) : m_Game(game) {
     if (!m_ModeFont.loadFromFile(ResourceManager::getAssetFilePath("BebasNeue-Regular.ttf"))) {
         std::cerr << "Error: Could not load font 'BebasNeue-Regular.ttf' from assets." << std::endl;
     }
@@ -42,11 +42,10 @@ Hud::Hud(Game *game) : m_Game(game), m_Frame(0), m_Fps(0) {
     m_ScoreAvailableText.setOrigin(m_ScoreAvailableText.getGlobalBounds().width / 2, m_ScoreAvailableText.getGlobalBounds().height / 2);
     m_ScoreAvailableText.setPosition(m_ScoreText.getPosition().x + 32, m_ScoreText.getPosition().y + 40);
 
-    m_ScoreLight = std::make_unique<candle::RadialLight>();
-    m_ScoreLight->setColor(sf::Color::White);
-    m_ScoreLight->setRange(90);
-    m_ScoreLight->setPosition(m_ScoreText.getPosition().x, m_ScoreText.getPosition().y);
-    m_ScoreLight->setIntensity(0);
+    m_ScoreLight.setColor(sf::Color::White);
+    m_ScoreLight.setRange(90);
+    m_ScoreLight.setPosition(m_ScoreText.getPosition().x, m_ScoreText.getPosition().y);
+    m_ScoreLight.setIntensity(0);
 
 }
 
@@ -56,34 +55,37 @@ Hud::~Hud() {
 
 void Hud::updateFPS() {
 	if (m_FPSClock.getElapsedTime().asSeconds() >= 1.f) {
-        m_Fps = m_Frame;
+        m_FPS = m_Frame;
 		m_Frame = 0;
-        m_FPSText.setString("fps: " + std::to_string(m_Fps));
+        m_FPSText.setString("fps: " + std::to_string(m_FPS));
 		m_FPSClock.restart();
 	}
 	++m_Frame;
 }
 
-// ---- getters ----
-const unsigned int Hud::getFPS() const { 
-	return m_Fps; 
-}
 
 void Hud::updateScore(unsigned short score) {
     m_ScoreText.setString(std::to_string(score));
     m_ScoreAvailableText.setString(std::to_string(m_Game->getLevelCoins()));
     if (std::stoi(std::string((m_ScoreText.getString()))) == 0) {
         m_ScoreText.setPosition(m_Game->getWindowSize().x / 2, m_Game->getWindowSize().y - m_Game->getWindowSize().y / 8);
-        m_ScoreLight->setPosition(m_ScoreText.getPosition().x, m_ScoreText.getPosition().y);
+        m_ScoreLight.setPosition(m_ScoreText.getPosition().x, m_ScoreText.getPosition().y);
     } else if (std::stoi(std::string((m_ScoreText.getString()))) == 10) {
         m_ScoreText.setPosition(m_ScoreText.getPosition().x + 7 - m_ScoreText.getString().getSize() * 10, m_ScoreText.getPosition().y);
-        m_ScoreLight->setPosition(m_ScoreText.getPosition().x, m_ScoreText.getPosition().y);
+        m_ScoreLight.setPosition(m_ScoreText.getPosition().x, m_ScoreText.getPosition().y);
     } else if (std::stoi(std::string((m_ScoreText.getString()))) == 20) {
         m_ScoreText.setPosition(m_ScoreText.getPosition().x + 3 - m_ScoreText.getString().getSize() * 10, m_ScoreText.getPosition().y);
-        m_ScoreLight->setPosition(m_ScoreText.getPosition().x + 10, m_ScoreText.getPosition().y);
+        m_ScoreLight.setPosition(m_ScoreText.getPosition().x + 10, m_ScoreText.getPosition().y);
     }
     if (score != 0) {
-        m_ScoreLight->setIntensity(0.4);
+        m_LightIntensity = 0.4f;
+    }
+}
+
+void Hud::updateScoreLightIntensity(float deltaTime) {
+    if (m_LightIntensity > 0.0f) {
+        m_LightIntensity = std::max(m_LightIntensity - deltaTime, 0.0f);
+        m_ScoreLight.setIntensity(m_LightIntensity);
     }
 }
 
@@ -93,8 +95,7 @@ void Hud::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     window.setView(window.getDefaultView());  // set default view before drawing
 
     if (m_Game->getMode() == Game::Play) {
-        m_ScoreLight->setIntensity(m_ScoreLight->getIntensity() - 0.02f);
-        target.draw(*m_ScoreLight, states);
+        target.draw(m_ScoreLight, states);
         target.draw(m_ScoreText, states);
         target.draw(m_ScoreSlash, states);
         target.draw(m_ScoreAvailableText, states);
@@ -104,4 +105,13 @@ void Hud::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     target.draw(m_FPSText, states);
 
     window.setView(m_Game->getView());  // restore the actual game view
+}
+
+// ---- getters ----
+const unsigned int Hud::getFPS() const {
+	return m_FPS;
+}
+
+const candle::RadialLight &Hud::getScoreLight() const {
+    return m_ScoreLight;
 }
