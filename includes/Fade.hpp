@@ -18,8 +18,8 @@ class Fade : public sf::Drawable {
 		float										getFadeCounter() const;
 		
 	private:
-		Game*								_game;
-		std::unique_ptr<sf::RectangleShape>	_shape;
-		sf::Clock							_fadeClock;
-		float								_fadeCounter = 255.f;
+		Game*								m_Game;
+		std::unique_ptr<sf::RectangleShape>	m_Shape;
+		sf::Clock							m_FadeClock;
+		float								m_FadeCounter = 255.f;
 };
