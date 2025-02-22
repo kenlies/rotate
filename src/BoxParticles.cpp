@@ -6,7 +6,7 @@ BoxParticles::BoxParticles(unsigned int count, sf::Vector2f position) :
     m_Lifetime(sf::seconds(0.3f)),
 	m_Currlife(sf::seconds(0.f))
 {
-	for (std::size_t i = 0; i < m_Particles.size(); ++i) {
+	for (size_t i = 0; i < m_Particles.size(); ++i) {
 		// give a random velocity and lifetime to the particle
 		float angle = (std::rand() % 360) * 3.14f / 180.f;
 		float speed = (std::rand() % 600) + 10.f;
@@ -25,7 +25,7 @@ BoxParticles::~BoxParticles() {
 
 void BoxParticles::update(sf::Time elapsed) {
 	m_Currlife += elapsed;
-	for (std::size_t i = 0; i < m_Particles.size(); ++i) {
+	for (size_t i = 0; i < m_Particles.size(); ++i) {
 		// update the particle lifetime
 		Particle& p = m_Particles[i];
 		p._lifetime -= elapsed;

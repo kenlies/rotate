@@ -460,7 +460,7 @@ void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {
 
     // check that the spot isn't already occupied or
     // if there is already a spawn box in the world
-	for (int i = 0; i < m_Boxes.size(); i++) {
+	for (size_t i = 0; i < m_Boxes.size(); i++) {
 		if (m_Boxes[i]->getBody() && m_Boxes[i]->getBody()->GetPosition() == checkPos
             || (m_Boxes[i]->getShape()->getFillColor() == sf::Color::Cyan && color == sf::Color::Cyan)) {
 			available = false;
@@ -486,7 +486,7 @@ void Game::removeBox(const sf::Vector2i &mousePos) {
 
     b2Vec2 checkPos((mouseX * Constants::BOX_WIDTH + Constants::BOX_WIDTH / 2) / Constants::SCALE, (mouseY * Constants::BOX_WIDTH + Constants::BOX_WIDTH / 2) / Constants::SCALE); // tiled position (grid)
 
-    for (int i = 0; i < m_Boxes.size(); i++) {
+    for (size_t i = 0; i < m_Boxes.size(); i++) {
         if (m_Boxes[i]->getBody()->GetPosition() == checkPos) {
             m_World.DestroyBody(m_Boxes[i]->getBody());
             m_Boxes[i] = m_Boxes.back();
