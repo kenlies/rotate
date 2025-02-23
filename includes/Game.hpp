@@ -16,7 +16,6 @@
 #include "Candle/RadialLight.hpp"
 
 class Box;
-class Fade;
 class BoxParticles;
 
 class Game : public b2ContactListener {
@@ -109,7 +108,7 @@ class Game : public b2ContactListener {
 		sf::View			m_View;
 
 		// ---- fade effect level transition ----
-		std::unique_ptr<Fade> m_Fade;
+		Fade m_Fade;
 		
 		// ---- Hud -----
 		Hud m_Hud;

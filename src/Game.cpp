@@ -7,7 +7,8 @@ Game::Game() :
     m_View(sf::Vector2f(m_WindowSize.x / 2, m_WindowSize.y / 2), sf::Vector2f()),
     m_BoxMap(this),
     m_Player(this),
-    m_Hud(this)
+    m_Hud(this),
+    m_Fade(this)
 {
     m_Window.setMouseCursorVisible(false);
     m_View.setSize(sf::Vector2f(m_WindowSize.x, m_WindowSize.y));
@@ -187,7 +188,7 @@ void Game::updatePlay() {
             m_Player.getBody()->SetAngularVelocity(0);
             m_LetsRespawn = false;
             cameraOnPlayer = true;
-            m_Fade = std::make_unique<Fade>(this);
+            m_Fade.setActive();
             m_LevelCoins = 0;
             m_LevelScore = 0;
             m_BoxMap.loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(m_CurrLevel));
@@ -196,11 +197,8 @@ void Game::updatePlay() {
     }
 
     // ---- do the fadeout effect ----
-    if (m_Fade) {
-        m_Fade->decrementFadeCounter(m_DeltaTime.asSeconds());
-        if (m_Fade->getFadeCounter() <= 0.f) {
-            m_Fade = nullptr;
-        }
+    if (m_Fade.getActive()) {
+        m_Fade.decrementFadeCounter(m_DeltaTime.asSeconds());
     }
 
     // ---- collect yellow box ----
@@ -316,7 +314,7 @@ void Game::updatePlay() {
     drawParticles();
     drawBoxes();
     m_Window.draw(m_Player);
-    if (m_Fade) { m_Window.draw(*m_Fade); }
+    if (m_Fade.getActive()) { m_Window.draw(m_Fade); }
     m_Window.draw(m_Hud);
 
     m_Window.display();

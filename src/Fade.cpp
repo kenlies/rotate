@@ -1,4 +1,5 @@
 #include "../includes/Fade.hpp"
+#include "../includes/Game.hpp"
 
 Fade::Fade(Game *game) : m_Game(game) {
     m_Shape.setFillColor(sf::Color::Black);
@@ -15,11 +16,19 @@ void Fade::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(m_Shape, states);
 }
 
+void Fade::setActive() {
+	m_Active = true;
+	m_FadeCounter = 255.f;
+}
+
 // ---- increment/decrement ----
 
 void Fade::decrementFadeCounter(float deltaTime) {
 	m_FadeCounter -= 200.f * deltaTime;
 	m_Shape.setFillColor(sf::Color(0, 0, 0, static_cast<int>(m_FadeCounter)));
+	if (m_FadeCounter <= 0.f) {
+		m_Active = false;
+	}
 }
 
 // ---- getters ----
@@ -29,4 +38,8 @@ const sf::Clock &Fade::getFadeClock() const {
 
 float Fade::getFadeCounter() const {
 	return m_FadeCounter;
+}
+
+bool Fade::getActive() const {
+	return m_Active;
 }
