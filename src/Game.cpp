@@ -301,7 +301,7 @@ void Game::updatePlay() {
 
     // make camera follow player with lerp
     if (cameraOnPlayer) {
-        sf::Vector2f playerPos = m_Player->getShape()->getPosition();
+        sf::Vector2f playerPos = m_Player->getShape().getPosition();
         sf::Vector2f currentCenter = m_View.getCenter();
         float k = 4.0f;
         float lerpFactor = 1 - std::exp(-k * m_DeltaTime.asSeconds());
@@ -311,6 +311,7 @@ void Game::updatePlay() {
     }
 
     m_Hud->updateScoreLightIntensity(m_DeltaTime.asSeconds());
+    m_Player->updatePosition();
 
     // ---- draw everything ----
     m_Window.clear();

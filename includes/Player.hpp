@@ -10,13 +10,14 @@ class Player : public sf::Drawable {
 		~Player();
 
 		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		void			updatePosition();
 
 		// ---- setters ----
 		void	setInterpolationData(b2Vec2 prevPos, float prevAngle);
 
 		// ---- getters ----
-		b2Body*									getBody() const;
-		const std::unique_ptr<sf::CircleShape>	&getShape() const;
+		b2Body*					getBody() const;
+		const	sf::CircleShape	&getShape() const;
 	public:
 		struct InterpolationData {
 			b2Vec2 _prevPos;
@@ -24,8 +25,8 @@ class Player : public sf::Drawable {
 		};
 
 	private:
-		InterpolationData					m_LerpData;
-		Game*								m_Game;
-		b2Body* 							m_Body;
-		std::unique_ptr<sf::CircleShape>	m_Shape;
+		InterpolationData		m_LerpData;
+		Game*					m_Game;
+		b2Body* 				m_Body;
+		sf::CircleShape			m_Shape;
 };

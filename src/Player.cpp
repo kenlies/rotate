@@ -22,10 +22,9 @@ Player::Player(Game *game) : m_Game(game) {
 	identifier = new int(Constants::PLAYER);
 	body->SetUserData(identifier);
 
-    m_Shape = std::make_unique<sf::CircleShape>();
-    m_Shape->setRadius(Constants::CIRCLE_RADIUS);
-    m_Shape->setFillColor(sf::Color::Cyan);
-    m_Shape->setOrigin({Constants::CIRCLE_RADIUS, Constants::CIRCLE_RADIUS});
+    m_Shape.setRadius(Constants::CIRCLE_RADIUS);
+    m_Shape.setFillColor(sf::Color::Cyan);
+    m_Shape.setOrigin({Constants::CIRCLE_RADIUS, Constants::CIRCLE_RADIUS});
 
 	m_Body = body;
 }
@@ -35,14 +34,16 @@ Player::~Player() {
 }
 
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    target.draw(m_Shape, states);
+}
+
+void    Player::updatePosition() {
     const float alpha = m_Game->getLerpAlpha();
     const b2Vec2 interpolatedPos = (1.0f - alpha) * m_LerpData._prevPos + alpha * m_Body->GetPosition();
     const float interpolatedAngle = (1.0f - alpha) * m_LerpData._prevAngle + alpha * m_Body->GetAngle();
 
-    m_Shape->setPosition(Constants::SCALE * interpolatedPos.x, Constants::SCALE * interpolatedPos.y);
-    m_Shape->setRotation(interpolatedAngle * Constants::RAD_TO_DEG);
-
-    target.draw(*m_Shape, states);
+    m_Shape.setPosition(Constants::SCALE * interpolatedPos.x, Constants::SCALE * interpolatedPos.y);
+    m_Shape.setRotation(interpolatedAngle * Constants::RAD_TO_DEG);
 }
 
 // ---- setters ----
@@ -56,6 +57,6 @@ b2Body*	Player::getBody() const {
 	return m_Body;
 }
 
-const std::unique_ptr<sf::CircleShape> &Player::getShape() const {
+const sf::CircleShape &Player::getShape() const {
 	return m_Shape;
 }
