@@ -67,25 +67,33 @@ class Game : public b2ContactListener {
 			None
 		};
 
+		// ---- window things ----
+		sf::RenderWindow	m_Window;
+		sf::Vector2u		m_WindowSize;
+		sf::View			m_View;
+
+		// ---- game things ----
 		gameMode			m_Mode = Play;
 		b2World				m_World;
-
 		sf::Time			m_DeltaTime;
-
-		// ---- interpolation ----
-		float				m_Accumulator = 0;
-		float				m_LerpAlpha;
+		Fade 				m_Fade;
+		Hud 				m_Hud;
+		BoxMap				m_BoxMap;
 
 		std::vector<std::shared_ptr<Box>> 				m_Boxes;
-		BoxMap											m_BoxMap;
 		std::vector<std::shared_ptr<sf::SoundBuffer>>	m_CoinSoundBuffers;
 		std::deque<sf::Sound>							m_CoinSounds;
 		std::vector<std::shared_ptr<sf::SoundBuffer>>	m_CoinExplosionSoundBuffers;
 		std::deque<sf::Sound>							m_CoinExplosionSounds;
-		int												m_CurrLevel = 1;
-		int												m_LevelCoins = 0;
-		int												m_LevelScore = 0;
-		int												m_TotalScore = 0;
+
+		int					m_CurrLevel = 1;
+		int					m_LevelCoins = 0;
+		int					m_LevelScore = 0;
+		int					m_TotalScore = 0;
+
+		// ---- physics interpolation ----
+		float				m_Accumulator = 0;
+		float				m_LerpAlpha;
 
 		// ---- player ----
 		Player					m_Player;
@@ -100,18 +108,6 @@ class Game : public b2ContactListener {
 		b2Body 					*m_TouchRedBox = nullptr;
 		b2Body 					*m_TouchGreenBox = nullptr;
 		b2Body 					*m_TouchYellowBox = nullptr;
-
-
-		// ---- window things ----
-		sf::RenderWindow	m_Window;
-		sf::Vector2u		m_WindowSize;
-		sf::View			m_View;
-
-		// ---- fade effect level transition ----
-		Fade m_Fade;
-		
-		// ---- Hud -----
-		Hud m_Hud;
 
 		// ---- particles ----
 		std::vector<std::shared_ptr<BoxParticles>> m_BoxParticles;
