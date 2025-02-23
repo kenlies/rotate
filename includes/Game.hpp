@@ -15,7 +15,6 @@
 #include "BoxParticles.hpp"
 #include "Candle/RadialLight.hpp"
 
-class Hud;
 class Box;
 class Fade;
 class BoxParticles;
@@ -113,7 +112,7 @@ class Game : public b2ContactListener {
 		std::unique_ptr<Fade> m_Fade;
 		
 		// ---- Hud -----
-		std::unique_ptr<Hud> m_Hud;
+		Hud m_Hud;
 
 		// ---- particles ----
 		std::vector<std::shared_ptr<BoxParticles>> m_BoxParticles;

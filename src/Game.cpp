@@ -6,7 +6,8 @@ Game::Game() :
     m_World(b2Vec2(0.f, Constants::GRAVITY_MAGNITUDE)),
     m_View(sf::Vector2f(m_WindowSize.x / 2, m_WindowSize.y / 2), sf::Vector2f()),
     m_BoxMap(this),
-    m_Player(this)
+    m_Player(this),
+    m_Hud(this)
 {
     m_Window.setMouseCursorVisible(false);
     m_View.setSize(sf::Vector2f(m_WindowSize.x, m_WindowSize.y));
@@ -38,9 +39,6 @@ Game::Game() :
     // ---- load the first map ----
     m_BoxMap.loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(m_CurrLevel));
     m_Player.getBody()->SetTransform(m_PlayerSpawnPos, 0);
-
-    // ---- create hud ----
-    m_Hud = std::make_unique<Hud>(this);
 }
 
 Game::~Game() {
@@ -142,7 +140,7 @@ void Game::run() {
         // ---- handle events ----
         updateEvents();
 
-        m_Hud->updateFPS();
+        m_Hud.updateFPS();
         m_DeltaTime = frameClock.restart();
 
         switch(m_Mode) {
@@ -193,7 +191,7 @@ void Game::updatePlay() {
             m_LevelCoins = 0;
             m_LevelScore = 0;
             m_BoxMap.loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(m_CurrLevel));
-            m_Hud->updateScore(m_LevelScore);
+            m_Hud.updateScore(m_LevelScore);
         }
     }
 
@@ -308,7 +306,7 @@ void Game::updatePlay() {
         m_View.setCenter(interpolatedPos);
     }
 
-    m_Hud->updateScoreLightIntensity(m_DeltaTime.asSeconds());
+    m_Hud.updateScoreLightIntensity(m_DeltaTime.asSeconds());
     m_Player.updatePosition();
     updateBoxes();
 
@@ -319,7 +317,7 @@ void Game::updatePlay() {
     drawBoxes();
     m_Window.draw(m_Player);
     if (m_Fade) { m_Window.draw(*m_Fade); }
-    m_Window.draw(*m_Hud);
+    m_Window.draw(m_Hud);
 
     m_Window.display();
 }
@@ -357,7 +355,7 @@ void Game::updateEditor() {
     drawBoxes();
     drawGrid();
     drawBoxAtCursor(mousePos); // draw the box to be placed
-    m_Window.draw(*m_Hud);
+    m_Window.draw(m_Hud);
 
     m_Window.display();
 }
@@ -385,7 +383,7 @@ void Game::updateBoxes() {
             m_World.DestroyBody((*it)->getBody());
             it = m_Boxes.erase(it);
             m_LevelScore++;
-            m_Hud->updateScore(m_LevelScore);
+            m_Hud.updateScore(m_LevelScore);
             playSounds(m_CoinExplosionSoundBuffers, m_CoinExplosionSounds, 15);
             continue;
         }

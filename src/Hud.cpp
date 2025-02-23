@@ -1,4 +1,5 @@
 #include "../includes/Hud.hpp"
+#include "../includes/Game.hpp"
 
 Hud::Hud(Game *game) : m_Game(game) {
     if (!m_ModeFont.loadFromFile(ResourceManager::getAssetFilePath("BebasNeue-Regular.ttf"))) {
