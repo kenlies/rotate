@@ -372,7 +372,7 @@ void Game::drawParticles() {
 }
 
 void Game::updateBoxes() {
-    for (auto it = m_Boxes.begin(); it != m_Boxes.end(); ) {
+    for (auto it = m_Boxes.begin(); it != m_Boxes.end();) {
         (*it)->update(m_DeltaTime.asSeconds());
         if ((*it)->getShape().getFillColor() == sf::Color::Yellow && m_Mode == Play &&
             (*it)->getBody()->GetType() == b2_dynamicBody && !(*it)->isInView(m_View)) {
@@ -392,9 +392,8 @@ void Game::updateBoxes() {
 void Game::drawBoxes() {
     // ---- draw boxes ----
     // this draws the oldest boxes first, rather that newest which could be an issue
-    for (auto it = m_Boxes.begin(); it != m_Boxes.end(); ) {
+    for (auto it = m_Boxes.begin(); it != m_Boxes.end(); it++) {
         m_Window.draw(*(*it));
-        ++it;
     }
 }
 
