@@ -54,6 +54,7 @@ class Game : public b2ContactListener {
 		void updateEvents();
 		void updatePlay();
 		void updateEditor();
+		void updateBoxes();
 		void drawParticles();
 		void drawBoxes();
 

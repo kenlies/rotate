@@ -54,16 +54,15 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : m_Game(game) {
 	}
 
 	// ---- drawing attributes ----
-	m_Shape = std::make_unique<sf::RectangleShape>();
 	// make yellow boxes half the size
 	if (color == sf::Color::Yellow) {
-		m_Shape->setOrigin(Constants::BOX_WIDTH / 4, Constants::BOX_WIDTH / 4);
-		m_Shape->setSize({Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2});
+		m_Shape.setOrigin(Constants::BOX_WIDTH / 4, Constants::BOX_WIDTH / 4);
+		m_Shape.setSize({Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2});
 	} else {
-		m_Shape->setOrigin(Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2);
-		m_Shape->setSize({Constants::BOX_WIDTH, Constants::BOX_WIDTH});
+		m_Shape.setOrigin(Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2);
+		m_Shape.setSize({Constants::BOX_WIDTH, Constants::BOX_WIDTH});
 	}
-	m_Shape->setFillColor(color);
+	m_Shape.setFillColor(color);
 
 	// ---- store them in one data structure ----
 	m_Body = body;
@@ -87,7 +86,7 @@ bool Box::isInView(const sf::View &view) const {
     sf::Transform inverseViewTransform = viewTransform.getInverse();
 
     // transform the object's position into the view's local space
-    sf::Vector2f localPos = inverseViewTransform.transformPoint(m_Shape->getPosition());
+    sf::Vector2f localPos = inverseViewTransform.transformPoint(m_Shape.getPosition());
 
     // check if the object is within the view's local bounds (-1 to 1 in both x and y)
     return (localPos.x >= -1.05f && localPos.x <= 1.05f && localPos.y >= -1.05f && localPos.y <= 1.05f);
@@ -98,27 +97,43 @@ Box::~Box() {
 }
 
 void Box::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	if (m_Shape.getFillColor() == sf::Color::Cyan && m_Game->getMode() == Game::Play) {
+		return ;
+	}
+	// ---- draw lighting ----
+	// don't draw lighting on dark gray and cyan boxes
+	if (m_Game->getMode() == Game::Play && m_Shape.getFillColor() != sf::Color(25, 25, 25)) {
+		target.draw(m_Light, states);
+	}
+	target.draw(m_Shape, states);
+}
+
+void Box::update(float deltaTime) {
+	if (m_Shape.getFillColor() == sf::Color::Cyan && m_Game->getMode() == Game::Play) {
+		return ;
+	}
 	if (m_Game->getMode() == Game::Play) {
 		const float alpha = m_Game->getLerpAlpha();
 		const b2Vec2 interpolatedPos = (1.0f - alpha) * m_LerpData._prevPos + alpha * m_Body->GetPosition();
-		m_Shape->setPosition(Constants::SCALE * interpolatedPos.x, Constants::SCALE * interpolatedPos.y);
+		m_Shape.setPosition(Constants::SCALE * interpolatedPos.x, Constants::SCALE * interpolatedPos.y);
 		// don't get rotation for yellow boxes from Box2D, since their shapes are rotated in Game.cpp where this was called
-		if (m_Shape->getFillColor() != sf::Color::Yellow) {
+		if (m_Shape.getFillColor() != sf::Color::Yellow) {
 			const float interpolatedAngle = (1.0f - alpha) * m_LerpData._prevAngle + alpha * m_Body->GetAngle();
-			m_Shape->setRotation(interpolatedAngle * Constants::RAD_TO_DEG);
+			m_Shape.setRotation(interpolatedAngle * Constants::RAD_TO_DEG);
+		} else {
+			m_Shape.rotate(50.f * deltaTime);
 		}
 	} else {
-		m_Shape->setPosition(Constants::SCALE * m_Body->GetPosition().x, Constants::SCALE * m_Body->GetPosition().y);
-		if (m_Shape->getFillColor() != sf::Color::Yellow) {
-			m_Shape->setRotation(m_Body->GetAngle() * Constants::RAD_TO_DEG);
+		m_Shape.setPosition(Constants::SCALE * m_Body->GetPosition().x, Constants::SCALE * m_Body->GetPosition().y);
+		if (m_Shape.getFillColor() != sf::Color::Yellow) {
+			m_Shape.setRotation(m_Body->GetAngle() * Constants::RAD_TO_DEG);
 		}
 	}
-	target.draw(*m_Shape, states);
-}
-
-void Box::updateLightPosition() {
-	m_Light.setPosition(Constants::SCALE * m_Body->GetPosition().x,
-		Constants::SCALE * m_Body->GetPosition().y);
+	// ---- update light position ----
+	if (m_Game->getMode() == Game::Play && m_Shape.getFillColor() != sf::Color(25, 25, 25) &&
+			m_Shape.getFillColor() != sf::Color::Cyan) {
+		m_Light.setPosition(Constants::SCALE * m_Body->GetPosition().x, Constants::SCALE * m_Body->GetPosition().y);
+	}
 }
 
 // ---- setters ----
@@ -132,7 +147,7 @@ b2Body*	Box::getBody() const {
 	return m_Body;
 }
 
-const std::unique_ptr<sf::RectangleShape> &Box::getShape() const {
+const sf::RectangleShape &Box::getShape() const {
 	return m_Shape;
 }
 

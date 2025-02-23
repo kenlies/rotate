@@ -292,7 +292,7 @@ void Game::updatePlay() {
 
     // ---- jump ----
     if (m_Jump && m_CanJump > 0 && !m_LetsRespawn && m_JumpCoolDownClock.getElapsedTime().asSeconds() > 1.5f) {
-        m_Player->getBody()->ApplyLinearImpulseToCenter(createForce(Constants::JUMP_FORCE), false);
+            m_Player->getBody()->ApplyLinearImpulseToCenter(createForce(Constants::JUMP_FORCE), false);
         m_JumpCoolDownClock.restart();
     }
 
@@ -312,6 +312,7 @@ void Game::updatePlay() {
 
     m_Hud->updateScoreLightIntensity(m_DeltaTime.asSeconds());
     m_Player->updatePosition();
+    updateBoxes();
 
     // ---- draw everything ----
     m_Window.clear();
@@ -351,6 +352,8 @@ void Game::updateEditor() {
         removeBox(mousePos);
     }
 
+    updateBoxes();
+
     // ---- draw everything ----
     m_Window.clear();
     drawBoxes();
@@ -374,35 +377,29 @@ void Game::drawParticles() {
     }
 }
 
+void Game::updateBoxes() {
+    for (auto it = m_Boxes.begin(); it != m_Boxes.end(); ) {
+        (*it)->update(m_DeltaTime.asSeconds());
+        if ((*it)->getShape().getFillColor() == sf::Color::Yellow && m_Mode == Play &&
+            (*it)->getBody()->GetType() == b2_dynamicBody && !(*it)->isInView(m_View)) {
+            std::cout << "emit particles" << "\n";
+            m_BoxParticles.emplace_back(std::make_unique<BoxParticles>(150, (*it)->getShape().getPosition()));
+            m_World.DestroyBody((*it)->getBody());
+            it = m_Boxes.erase(it);
+            m_LevelScore++;
+            m_Hud->updateScore(m_LevelScore);
+            playSounds(m_CoinExplosionSoundBuffers, m_CoinExplosionSounds, 15);
+            continue;
+        }
+        ++it;
+    }
+}
+
 void Game::drawBoxes() {
     // ---- draw boxes ----
     // this draws the oldest boxes first, rather that newest which could be an issue
     for (auto it = m_Boxes.begin(); it != m_Boxes.end(); ) {
-        if ((*it)->getShape()->getFillColor() == sf::Color::Cyan && m_Mode == Play) {
-            ++it;
-            continue;
-        }
-        if ((*it)->getShape()->getFillColor() == sf::Color::Yellow && m_Mode == Play) {
-            (*it)->getShape()->rotate(50.f * m_DeltaTime.asSeconds());
-            if ((*it)->getBody()->GetType() == b2_dynamicBody && !(*it)->isInView(m_View)) {
-                // emit particles!!
-                std::cout << "emit particles" << "\n";
-                m_BoxParticles.emplace_back(std::make_unique<BoxParticles>(150, (*it)->getShape()->getPosition()));
-                m_World.DestroyBody((*it)->getBody());
-                it = m_Boxes.erase(it);
-                m_LevelScore++;
-                m_Hud->updateScore(m_LevelScore);
-                playSounds(m_CoinExplosionSoundBuffers, m_CoinExplosionSounds, 15);
-                continue;
-            }
-        } 
         m_Window.draw(*(*it));
-
-        // ---- draw lighting ----
-        if (m_Mode == Play && (*it)->getShape()->getFillColor() != sf::Color(25, 25, 25)) {  // don't draw lighting on dark gray boxes
-            (*it)->updateLightPosition();
-            m_Window.draw(((*it)->getLight()));
-        }
         ++it;
     }
 }
@@ -463,7 +460,7 @@ void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {
     // if there is already a spawn box in the world
 	for (size_t i = 0; i < m_Boxes.size(); i++) {
 		if (m_Boxes[i]->getBody() && m_Boxes[i]->getBody()->GetPosition() == checkPos
-            || (m_Boxes[i]->getShape()->getFillColor() == sf::Color::Cyan && color == sf::Color::Cyan)) {
+            || (m_Boxes[i]->getShape().getFillColor() == sf::Color::Cyan && color == sf::Color::Cyan)) {
 			available = false;
 			break;
 		}
