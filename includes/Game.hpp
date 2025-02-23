@@ -4,9 +4,7 @@
 #include <SFML/Audio.hpp>
 #include <box2d/box2d.h>
 #include <iostream>
-#include <memory>
 #include <random>
-#include <algorithm>
 #include "constants.h"
 #include "ResourceManager.hpp"
 #include "Player.hpp"
