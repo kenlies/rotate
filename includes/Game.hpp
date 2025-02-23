@@ -121,14 +121,14 @@ class Game : public b2ContactListener {
 		std::vector<std::shared_ptr<BoxParticles>> m_BoxParticles;
 
 		// ---- box color to be placed in editor ----
-		int						m_BoxColorIndex = 0;
-		std::vector<sf::Color>	m_BoxColors = {sf::Color::White, 
-											  sf::Color::Green,
-											  sf::Color::Red,
-											  sf::Color::Cyan,
-											  sf::Color::Yellow,
-											  sf::Color(25, 25, 25)}; // <-- dark gray
-		scrollWheelInput		m_ScrollWheelInput = None;
+		int	m_BoxColorIndex = 0;
+		std::array<sf::Color, 6>	m_BoxColors = {sf::Color::White, 
+													sf::Color::Green,
+											  		sf::Color::Red,
+											  		sf::Color::Cyan,
+											 		sf::Color::Yellow,
+											  		sf::Color(25, 25, 25)}; // <-- dark gray
+		scrollWheelInput	m_ScrollWheelInput = None;
 
 		// ---- rotate the world ----
 		bool m_RotateRight = false;
