@@ -4,7 +4,8 @@ Game::Game() :
     m_Window({}, "rotate", sf::Style::Fullscreen, sf::ContextSettings(0, 0, 8)),
     m_WindowSize(m_Window.getSize()),
     m_World(b2Vec2(0.f, Constants::GRAVITY_MAGNITUDE)),
-    m_View(sf::Vector2f(m_WindowSize.x / 2, m_WindowSize.y / 2), sf::Vector2f())
+    m_View(sf::Vector2f(m_WindowSize.x / 2, m_WindowSize.y / 2), sf::Vector2f()),
+    m_BoxMap(this)
 {
     m_Window.setMouseCursorVisible(false);
     m_View.setSize(sf::Vector2f(m_WindowSize.x, m_WindowSize.y));
@@ -31,14 +32,11 @@ Game::Game() :
     m_Player = std::make_unique<Player>(this);
     m_JumpCoolDownClock.restart();
 
-    // ---- create boxmap ----
-    m_BoxMap = std::make_unique<BoxMap>(this);
-
     // ---- set the listenr for object contacts ----
     m_World.SetContactListener(this);
 
     // ---- load the first map ----
-    m_BoxMap->loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(m_CurrLevel));
+    m_BoxMap.loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(m_CurrLevel));
     m_Player->getBody()->SetTransform(m_PlayerSpawnPos, 0);
 
     // ---- create hud ----
@@ -97,11 +95,11 @@ void Game::updateEvents() {
                 }
                 else if (event.key.code == sf::Keyboard::Comma && m_Mode == Editor) {
                     std::cout << "Saving map\n";
-                    m_BoxMap->saveMap(ResourceManager::getLevelFilePath("tmp"));
+                    m_BoxMap.saveMap(ResourceManager::getLevelFilePath("tmp"));
                 }
                 else if (event.key.code == sf::Keyboard::Period && m_Mode == Editor) {
                     std::cout << "Loading map\n";
-                    m_BoxMap->loadMap(ResourceManager::getLevelFilePath("tmp"));
+                    m_BoxMap.loadMap(ResourceManager::getLevelFilePath("tmp"));
                     m_Player->getBody()->SetTransform(m_PlayerSpawnPos, 0);
                 }
                 break;
@@ -194,7 +192,7 @@ void Game::updatePlay() {
             m_Fade = std::make_unique<Fade>(this);
             m_LevelCoins = 0;
             m_LevelScore = 0;
-            m_BoxMap->loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(m_CurrLevel));
+            m_BoxMap.loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(m_CurrLevel));
             m_Hud->updateScore(m_LevelScore);
         }
     }

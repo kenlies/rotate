@@ -1,4 +1,5 @@
 #include "../includes/BoxMap.hpp"
+#include "../includes/Game.hpp"
 
 BoxMap::BoxMap(Game *game) : m_Game(game){
 

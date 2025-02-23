@@ -19,7 +19,6 @@ class Player;
 class Hud;
 class Box;
 class Fade;
-class BoxMap;
 class BoxParticles;
 
 class Game : public b2ContactListener {
@@ -81,7 +80,7 @@ class Game : public b2ContactListener {
 		float				m_LerpAlpha;
 
 		std::vector<std::shared_ptr<Box>> 				m_Boxes;
-		std::unique_ptr<BoxMap>							m_BoxMap;
+		BoxMap											m_BoxMap;
 		std::vector<std::shared_ptr<sf::SoundBuffer>>	m_CoinSoundBuffers;
 		std::deque<sf::Sound>							m_CoinSounds;
 		std::vector<std::shared_ptr<sf::SoundBuffer>>	m_CoinExplosionSoundBuffers;

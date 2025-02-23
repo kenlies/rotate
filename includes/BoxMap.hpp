@@ -2,7 +2,6 @@
 
 #include <fstream>
 #include <sstream>
-#include "Game.hpp"
 
 class Game;
 
