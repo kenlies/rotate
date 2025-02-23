@@ -15,7 +15,6 @@
 #include "BoxParticles.hpp"
 #include "Candle/RadialLight.hpp"
 
-class Player;
 class Hud;
 class Box;
 class Fade;
@@ -91,7 +90,7 @@ class Game : public b2ContactListener {
 		int												m_TotalScore = 0;
 
 		// ---- player ----
-		std::unique_ptr<Player>	m_Player;
+		Player					m_Player;
 		bool 					m_LetsRespawn = false;
 		b2Vec2					m_PlayerSpawnPos;
 		sf::Clock				m_WaitTilRespawnClock;

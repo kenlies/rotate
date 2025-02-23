@@ -5,7 +5,8 @@ Game::Game() :
     m_WindowSize(m_Window.getSize()),
     m_World(b2Vec2(0.f, Constants::GRAVITY_MAGNITUDE)),
     m_View(sf::Vector2f(m_WindowSize.x / 2, m_WindowSize.y / 2), sf::Vector2f()),
-    m_BoxMap(this)
+    m_BoxMap(this),
+    m_Player(this)
 {
     m_Window.setMouseCursorVisible(false);
     m_View.setSize(sf::Vector2f(m_WindowSize.x, m_WindowSize.y));
@@ -29,7 +30,6 @@ Game::Game() :
     }
 
     // ---- crate player ball ----
-    m_Player = std::make_unique<Player>(this);
     m_JumpCoolDownClock.restart();
 
     // ---- set the listenr for object contacts ----
@@ -37,7 +37,7 @@ Game::Game() :
 
     // ---- load the first map ----
     m_BoxMap.loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(m_CurrLevel));
-    m_Player->getBody()->SetTransform(m_PlayerSpawnPos, 0);
+    m_Player.getBody()->SetTransform(m_PlayerSpawnPos, 0);
 
     // ---- create hud ----
     m_Hud = std::make_unique<Hud>(this);
@@ -100,7 +100,7 @@ void Game::updateEvents() {
                 else if (event.key.code == sf::Keyboard::Period && m_Mode == Editor) {
                     std::cout << "Loading map\n";
                     m_BoxMap.loadMap(ResourceManager::getLevelFilePath("tmp"));
-                    m_Player->getBody()->SetTransform(m_PlayerSpawnPos, 0);
+                    m_Player.getBody()->SetTransform(m_PlayerSpawnPos, 0);
                 }
                 break;
             case sf::Event::KeyReleased:
@@ -163,8 +163,8 @@ void Game::doPhysicsStep() {
 
     m_Accumulator += frameTime;
     while (m_Accumulator >= Constants::TIME_STEP) {
-        b2Body *playerBody = m_Player->getBody();
-        m_Player->setInterpolationData(playerBody->GetPosition(), playerBody->GetAngle());
+        b2Body *playerBody = m_Player.getBody();
+        m_Player.setInterpolationData(playerBody->GetPosition(), playerBody->GetAngle());
         for (auto& box : m_Boxes) {
             b2Body *boxBody = box->getBody();
             box->setInterpolationData(boxBody->GetPosition(), boxBody->GetAngle());
@@ -184,9 +184,9 @@ void Game::updatePlay() {
     // ---- spawn player at spawn position ----
     if (m_LetsRespawn) {
         if (m_WaitTilRespawnClock.getElapsedTime().asSeconds() > 2) {
-            m_Player->getBody()->SetTransform(m_PlayerSpawnPos, 0);
-            m_Player->getBody()->SetLinearVelocity(b2Vec2(0, 0));
-            m_Player->getBody()->SetAngularVelocity(0);
+            m_Player.getBody()->SetTransform(m_PlayerSpawnPos, 0);
+            m_Player.getBody()->SetLinearVelocity(b2Vec2(0, 0));
+            m_Player.getBody()->SetAngularVelocity(0);
             m_LetsRespawn = false;
             cameraOnPlayer = true;
             m_Fade = std::make_unique<Fade>(this);
@@ -227,7 +227,7 @@ void Game::updatePlay() {
         }
         m_TouchGreenBox->SetType(b2_dynamicBody);
         m_TouchGreenBox->ApplyLinearImpulseToCenter(createForce(-Constants::WIN_FORCE), true);
-        m_TouchGreenBox->ApplyTorque(m_Player->getBody()->GetAngle(), true);
+        m_TouchGreenBox->ApplyTorque(m_Player.getBody()->GetAngle(), true);
         m_TouchGreenBox = nullptr;
         std::cout << "LEVEL CLEAR\n";
     }
@@ -256,21 +256,21 @@ void Game::updatePlay() {
                     b2Body* whiteBox = (*fixtureA_Color == Constants::WHITE) ? fixtureA->GetBody() : fixtureB->GetBody();
                     whiteBox->SetType(b2_dynamicBody);
                     whiteBox->ApplyLinearImpulseToCenter(explosionForce, true);
-                    whiteBox->ApplyTorque(m_Player->getBody()->GetAngle(), true);
+                    whiteBox->ApplyTorque(m_Player.getBody()->GetAngle(), true);
                     whiteBox->SetSleepingAllowed(false);
                 }
             }
             contacts = contacts->next;
         }
         m_TouchRedBox->ApplyLinearImpulseToCenter(explosionForce, true);
-        m_TouchRedBox->ApplyTorque(m_Player->getBody()->GetAngle(), true);
+        m_TouchRedBox->ApplyTorque(m_Player.getBody()->GetAngle(), true);
         m_TouchRedBox = nullptr;
         std::cout << "DEATH BY RED BOX\n";
     }
 
     // ---- death by void ----
-    if ((std::abs(m_Player->getBody()->GetLinearVelocity().x) > 40.f
-        || std::abs(m_Player->getBody()->GetLinearVelocity().y) > 40.f)
+    if ((std::abs(m_Player.getBody()->GetLinearVelocity().x) > 40.f
+        || std::abs(m_Player.getBody()->GetLinearVelocity().y) > 40.f)
         && !m_LetsRespawn) {
         cameraOnPlayer = false;
         m_LetsRespawn = true;
@@ -290,7 +290,7 @@ void Game::updatePlay() {
 
     // ---- jump ----
     if (m_Jump && m_CanJump > 0 && !m_LetsRespawn && m_JumpCoolDownClock.getElapsedTime().asSeconds() > 1.5f) {
-            m_Player->getBody()->ApplyLinearImpulseToCenter(createForce(Constants::JUMP_FORCE), false);
+            m_Player.getBody()->ApplyLinearImpulseToCenter(createForce(Constants::JUMP_FORCE), false);
         m_JumpCoolDownClock.restart();
     }
 
@@ -299,7 +299,7 @@ void Game::updatePlay() {
 
     // make camera follow player with lerp
     if (cameraOnPlayer) {
-        sf::Vector2f playerPos = m_Player->getShape().getPosition();
+        sf::Vector2f playerPos = m_Player.getShape().getPosition();
         sf::Vector2f currentCenter = m_View.getCenter();
         float k = 4.0f;
         float lerpFactor = 1 - std::exp(-k * m_DeltaTime.asSeconds());
@@ -309,7 +309,7 @@ void Game::updatePlay() {
     }
 
     m_Hud->updateScoreLightIntensity(m_DeltaTime.asSeconds());
-    m_Player->updatePosition();
+    m_Player.updatePosition();
     updateBoxes();
 
     // ---- draw everything ----
@@ -317,7 +317,7 @@ void Game::updatePlay() {
 
     drawParticles();
     drawBoxes();
-    m_Window.draw(*m_Player);
+    m_Window.draw(m_Player);
     if (m_Fade) { m_Window.draw(*m_Fade); }
     m_Window.draw(*m_Hud);
 
@@ -497,8 +497,8 @@ void Game::removeBox(const sf::Vector2i &mousePos) {
 void Game::BeginContact(b2Contact* contact) {
 
     // don't do anything if the contact doesn't involve player or if the player is respawning
-    if ((contact->GetFixtureB()->GetBody() != m_Player->getBody() 
-        && contact->GetFixtureA()->GetBody() != m_Player->getBody())) {
+    if ((contact->GetFixtureB()->GetBody() != m_Player.getBody() 
+        && contact->GetFixtureA()->GetBody() != m_Player.getBody())) {
         return ;
     }
 
@@ -534,8 +534,8 @@ void Game::BeginContact(b2Contact* contact) {
 
 void Game::EndContact(b2Contact* contact) {
     // don't do anything if the contact doesn't involve player or if the player is respawning
-    if ((contact->GetFixtureB()->GetBody() != m_Player->getBody() 
-        && contact->GetFixtureA()->GetBody() != m_Player->getBody())) {
+    if ((contact->GetFixtureB()->GetBody() != m_Player.getBody() 
+        && contact->GetFixtureA()->GetBody() != m_Player.getBody())) {
         return ;
     }
 

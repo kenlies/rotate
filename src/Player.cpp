@@ -1,4 +1,5 @@
 #include "../includes/Player.hpp"
+#include "../includes/Game.hpp"
 
 Player::Player(Game *game) : m_Game(game) {
     b2BodyDef bodyDef;
