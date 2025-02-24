@@ -35,7 +35,8 @@ add_executable(rotate
     src/BoxParticles.cpp
     src/Fade.cpp
     src/Hud.cpp
-    src/ResourceManager.cpp)
+    src/ResourceManager.cpp
+    src/SoundManager.cpp)
 
 target_include_directories(rotate PRIVATE ${box2d_SOURCE_DIR}/include)
 target_include_directories(rotate PRIVATE ${candle_SOURCE_DIR}/include)

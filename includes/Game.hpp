@@ -4,9 +4,9 @@
 #include <SFML/Audio.hpp>
 #include <box2d/box2d.h>
 #include <iostream>
-#include <random>
 #include "constants.h"
 #include "ResourceManager.hpp"
+#include "SoundManager.hpp"
 #include "Player.hpp"
 #include "Box.hpp"
 #include "Hud.hpp"
@@ -58,8 +58,7 @@ class Game : public b2ContactListener {
 		
 		// ---- helper/other ----
 		b2Vec2 createForce(float force) const;
-		void playSounds(const std::vector<std::shared_ptr<sf::SoundBuffer>> &soundBuffers,
-							std::deque<sf::Sound> &sounds, float volume);
+
 	private:
 		enum scrollWheelInput {
 			ScrollUp,
@@ -79,12 +78,9 @@ class Game : public b2ContactListener {
 		Fade 				m_Fade;
 		Hud 				m_Hud;
 		BoxMap				m_BoxMap;
+		SoundManager		m_SoundManager;
 
-		std::vector<std::shared_ptr<Box>> 				m_Boxes;
-		std::vector<std::shared_ptr<sf::SoundBuffer>>	m_CoinSoundBuffers;
-		std::deque<sf::Sound>							m_CoinSounds;
-		std::vector<std::shared_ptr<sf::SoundBuffer>>	m_CoinExplosionSoundBuffers;
-		std::deque<sf::Sound>							m_CoinExplosionSounds;
+		std::vector<std::shared_ptr<Box>>	m_Boxes;
 
 		int					m_CurrLevel = 1;
 		int					m_LevelCoins = 0;

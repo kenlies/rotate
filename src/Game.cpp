@@ -14,22 +14,10 @@ Game::Game() :
     m_View.setSize(sf::Vector2f(m_WindowSize.x, m_WindowSize.y));
 
     // ---- create sound buffers ----
-    std::shared_ptr<sf::SoundBuffer> bufSoundOne = std::make_shared<sf::SoundBuffer>();
-    std::shared_ptr<sf::SoundBuffer> bufSoundTwo = std::make_shared<sf::SoundBuffer>();
-    std::shared_ptr<sf::SoundBuffer> bufSoundThree = std::make_shared<sf::SoundBuffer>();
-    std::shared_ptr<sf::SoundBuffer> bufExplosionSoundOne = std::make_shared<sf::SoundBuffer>();
-    if (bufSoundOne->loadFromFile(ResourceManager::getAssetFilePath("coin_collect1.ogg")) &&
-        bufSoundTwo->loadFromFile(ResourceManager::getAssetFilePath("coin_collect2.ogg")) &&
-        bufSoundThree->loadFromFile(ResourceManager::getAssetFilePath("coin_collect3.ogg")) &&
-        bufExplosionSoundOne->loadFromFile(ResourceManager::getAssetFilePath("coin_explosion.ogg"))) {
-        m_CoinSoundBuffers.push_back(bufSoundOne);
-        m_CoinSoundBuffers.push_back(bufSoundTwo);
-        m_CoinSoundBuffers.push_back(bufSoundThree);
-        m_CoinExplosionSoundBuffers.push_back(bufExplosionSoundOne);
-    } else {
-        std::cout << "Error: Could not load coin sound buffers" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+    m_SoundManager.loadSound("pickup1", "coin_collect1.ogg");
+    m_SoundManager.loadSound("pickup2", "coin_collect2.ogg");
+    m_SoundManager.loadSound("pickup3", "coin_collect3.ogg");
+    m_SoundManager.loadSound("explosion", "coin_explosion.ogg");
 
     // ---- crate player ball ----
     m_JumpCoolDownClock.restart();
@@ -204,7 +192,7 @@ void Game::updatePlay() {
     // ---- collect yellow box ----
     if (m_TouchYellowBox) {
         if (m_TouchYellowBox->GetType() != b2_dynamicBody) {
-            playSounds(m_CoinSoundBuffers, m_CoinSounds, 20.f);
+            m_SoundManager.playSound("pickup1", "pickup2", "pickup3", 80.f);
         }
         m_TouchYellowBox->SetType(b2_dynamicBody);
         m_TouchYellowBox->ApplyLinearImpulseToCenter(createForce(-Constants::PICKUP_FORCE), true);
@@ -382,7 +370,7 @@ void Game::updateBoxes() {
             it = m_Boxes.erase(it);
             m_LevelScore++;
             m_Hud.updateScore(m_LevelScore);
-            playSounds(m_CoinExplosionSoundBuffers, m_CoinExplosionSounds, 15);
+            m_SoundManager.playSound("explosion", 60.f);
             continue;
         }
         ++it;
@@ -562,23 +550,6 @@ b2Vec2 Game::createForce(float forcePower) const {
     force.x = -forcePower * sin(radians);
     force.y = forcePower * cos(radians);
     return force;
-}
-
-void Game::playSounds(const std::vector<std::shared_ptr<sf::SoundBuffer>> &soundBuffers, 
-                        std::deque<sf::Sound> &sounds, float volume) {
-    static std::random_device rd;
-    static std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distrib(0, soundBuffers.size() - 1);
-    int rnum = distrib(gen);
-    sounds.emplace_back();
-    sf::Sound& sound = sounds.back();
-    sound.setBuffer(*soundBuffers[rnum]);
-    sound.setVolume(volume);
-    sounds.back().play();
-    // remove stopped sounds
-    while (sounds.front().getStatus() == sf::Sound::Stopped) {
-        sounds.pop_front();
-    }
 }
 
 // --- getters ----
