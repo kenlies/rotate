@@ -9,7 +9,7 @@
 #include "SoundManager.hpp"
 #include "Player.hpp"
 #include "Box.hpp"
-#include "Hud.hpp"
+#include "HUD.hpp"
 #include "Fade.hpp"
 #include "BoxMap.hpp"
 #include "BoxParticles.hpp"
@@ -76,7 +76,7 @@ class Game : public b2ContactListener {
 		b2World				m_World;
 		sf::Time			m_DeltaTime;
 		Fade 				m_Fade;
-		Hud 				m_Hud;
+		HUD 				m_Hud;
 		BoxMap				m_BoxMap;
 		SoundManager		m_SoundManager;
 

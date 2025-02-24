@@ -5,10 +5,10 @@
 
 class Game;
 
-class Hud : public sf::Drawable {
+class HUD : public sf::Drawable {
 	public:
-		Hud(Game *game);
-		~Hud();
+		HUD(Game *game);
+		~HUD();
 
 		void			updateScore(unsigned short score);
 		void 			updateFPS();

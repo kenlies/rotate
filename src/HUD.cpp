@@ -1,7 +1,7 @@
-#include "../includes/Hud.hpp"
+#include "../includes/HUD.hpp"
 #include "../includes/Game.hpp"
 
-Hud::Hud(Game *game) : m_Game(game) {
+HUD::HUD(Game *game) : m_Game(game) {
     if (!m_ModeFont.loadFromFile(ResourceManager::getAssetFilePath("BebasNeue-Regular.ttf"))) {
         std::cerr << "Error: Could not load font 'BebasNeue-Regular.ttf' from assets." << std::endl;
     }
@@ -50,11 +50,11 @@ Hud::Hud(Game *game) : m_Game(game) {
 
 }
 
-Hud::~Hud() {
+HUD::~HUD() {
 
 }
 
-void Hud::updateFPS() {
+void HUD::updateFPS() {
 	if (m_FPSClock.getElapsedTime().asSeconds() >= 1.f) {
         m_FPS = m_Frame;
 		m_Frame = 0;
@@ -65,7 +65,7 @@ void Hud::updateFPS() {
 }
 
 
-void Hud::updateScore(unsigned short score) {
+void HUD::updateScore(unsigned short score) {
     m_ScoreText.setString(std::to_string(score));
     m_ScoreAvailableText.setString(std::to_string(m_Game->getLevelCoins()));
     if (std::stoi(std::string((m_ScoreText.getString()))) == 0) {
@@ -83,14 +83,14 @@ void Hud::updateScore(unsigned short score) {
     }
 }
 
-void Hud::updateScoreLightIntensity(float deltaTime) {
+void HUD::updateScoreLightIntensity(float deltaTime) {
     if (m_LightIntensity > 0.0f) {
         m_LightIntensity = std::max(m_LightIntensity - deltaTime, 0.0f);
         m_ScoreLight.setIntensity(m_LightIntensity);
     }
 }
 
-void Hud::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void HUD::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     sf::RenderWindow& window = m_Game->getWindow();
 
     window.setView(window.getDefaultView());  // set default view before drawing
@@ -109,10 +109,10 @@ void Hud::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 }
 
 // ---- getters ----
-const unsigned int Hud::getFPS() const {
+const unsigned int HUD::getFPS() const {
 	return m_FPS;
 }
 
-const candle::RadialLight &Hud::getScoreLight() const {
+const candle::RadialLight &HUD::getScoreLight() const {
     return m_ScoreLight;
 }
