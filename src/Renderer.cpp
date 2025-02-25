@@ -1,6 +1,4 @@
 #include "../includes/Renderer.hpp"
-#include <iostream>
-
 
 Renderer::Renderer(sf::RenderWindow& window) : m_Window(window) {
 

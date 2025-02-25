@@ -1,7 +1,7 @@
 #pragma once
 
+#include <Candle/RadialLight.hpp>
 #include "Game.hpp"
-#include "Candle/RadialLight.hpp"
 
 class Game;
 

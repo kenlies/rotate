@@ -1,5 +1,4 @@
 #include "../includes/ResourceManager.hpp"
-
 #include <algorithm>
 
 void ResourceManager::init(std::string executablePath)

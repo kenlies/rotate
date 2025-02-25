@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <box2d/box2d.h>
+#include <Candle/RadialLight.hpp>
 #include <iostream>
 #include "constants.h"
 #include "Renderer.hpp"
@@ -15,7 +16,6 @@
 #include "Grid.hpp"
 #include "BoxMap.hpp"
 #include "BoxParticles.hpp"
-#include "Candle/RadialLight.hpp"
 
 class Box;
 class BoxParticles;

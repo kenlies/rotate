@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "Candle/RadialLight.hpp"
+#include <Candle/RadialLight.hpp>
 
 class Game;
 
