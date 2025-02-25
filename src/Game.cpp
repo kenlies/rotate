@@ -9,8 +9,8 @@ Game::Game() :
     m_Player(this),
     m_Hud(this),
     m_Fade(this),
-    m_Renderer(m_Window),
-    m_GridLines(sf::Lines)
+    m_Grid(this),
+    m_Renderer(m_Window)
 {
     m_Window.setMouseCursorVisible(false);
     m_View.setSize(sf::Vector2f(m_WindowSize.x, m_WindowSize.y));
@@ -336,10 +336,11 @@ void Game::updateEditor() {
     }
 
     updateBoxes();
+    m_Grid.update();
 
     // ---- add to render queue ----
     addBoxesToRenderQueue();
-    addGridToRenderQueue();
+    m_Renderer.addToRenderQueue(m_Grid);
     addCursorBoxToRenderQueue(mousePos); // draw the box to be placed
     m_Renderer.addToRenderQueue(m_Hud);
 }
@@ -381,27 +382,6 @@ void Game::addBoxesToRenderQueue() {
     for (auto it = m_Boxes.begin(); it != m_Boxes.end(); it++) {
         m_Renderer.addToRenderQueue(*(*it));
     }
-}
-
-void Game::addGridToRenderQueue() {
-    sf::Vector2f topLeft = m_Window.mapPixelToCoords(sf::Vector2i(0, 0));
-    sf::Vector2f bottomRight = m_Window.mapPixelToCoords(sf::Vector2i(m_WindowSize.x, m_WindowSize.y));
-    // store the lines to be drawed in a vertex array
-    m_GridLines.clear();
-
-    // calculate the vertical lines to be drawn
-    for (int x = static_cast<int>(topLeft.x / Constants::BOX_WIDTH) * Constants::BOX_WIDTH; x <= bottomRight.x; x += Constants::BOX_WIDTH) {
-        m_GridLines.append(sf::Vertex(sf::Vector2f(x, topLeft.y), sf::Color::Red));
-        m_GridLines.append(sf::Vertex(sf::Vector2f(x, bottomRight.y), sf::Color::Red));
-    }
-
-    // calculate the horizontal lines to be drawn
-    for (int y = static_cast<int>(topLeft.y / Constants::BOX_WIDTH) * Constants::BOX_WIDTH; y <= bottomRight.y; y += Constants::BOX_WIDTH) {
-        m_GridLines.append(sf::Vertex(sf::Vector2f(topLeft.x, y), sf::Color::Red));
-        m_GridLines.append(sf::Vertex(sf::Vector2f(bottomRight.x, y), sf::Color::Red));
-    }
-
-    m_Renderer.addToRenderQueue(m_GridLines);
 }
 
 void Game::addCursorBoxToRenderQueue(const sf::Vector2i &mousePos) {

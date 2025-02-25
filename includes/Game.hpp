@@ -12,6 +12,7 @@
 #include "Box.hpp"
 #include "HUD.hpp"
 #include "Fade.hpp"
+#include "Grid.hpp"
 #include "BoxMap.hpp"
 #include "BoxParticles.hpp"
 #include "Candle/RadialLight.hpp"
@@ -54,7 +55,6 @@ class Game : public b2ContactListener {
 		void addBoxesToRenderQueue();
 
 		// ---- editor ----
-		void addGridToRenderQueue();
 		void addCursorBoxToRenderQueue(const sf::Vector2i &mousePos);
 		
 		// ---- helper/other ----
@@ -111,7 +111,7 @@ class Game : public b2ContactListener {
 		std::vector<std::shared_ptr<BoxParticles>> m_BoxParticles;
 
 		// ---- editor ----
-		sf::VertexArray				m_GridLines;
+		Grid						m_Grid;
 		sf::RectangleShape			m_CursorBox;
 		int	m_BoxColorIndex = 0;
 		std::array<sf::Color, 6>	m_BoxColors = {sf::Color::White, 
