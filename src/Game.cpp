@@ -346,9 +346,14 @@ void Game::updateEditor() {
 
 void Game::addParticlesToRenderQueue() {
     for (auto it = m_BoxParticles.begin(); it != m_BoxParticles.end();) {
-        (*it)->update(m_DeltaTime);
-        m_Renderer.addToRenderQueue(*(*it));
-        ++it;
+        if ((*it)->getCurrLife().asSeconds() > 3) {
+            it = m_BoxParticles.erase(it);
+            std::cout << "removed particles from vector" << "\n";
+        } else {
+            (*it)->update(m_DeltaTime);
+            m_Renderer.addToRenderQueue(*(*it));
+            ++it;
+        }
     }
 }
 
