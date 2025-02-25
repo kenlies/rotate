@@ -5,6 +5,7 @@
 #include <box2d/box2d.h>
 #include <iostream>
 #include "constants.h"
+#include "Renderer.hpp"
 #include "ResourceManager.hpp"
 #include "SoundManager.hpp"
 #include "Player.hpp"
@@ -49,12 +50,12 @@ class Game : public b2ContactListener {
 		void updatePlay();
 		void updateEditor();
 		void updateBoxes();
-		void drawParticles();
-		void drawBoxes();
+		void addParticlesToRenderQueue();
+		void addBoxesToRenderQueue();
 
 		// ---- editor ----
-		void drawGrid();
-		void drawBoxAtCursor(const sf::Vector2i &mousePos);
+		void addGridToRenderQueue();
+		void addCursorBoxToRenderQueue(const sf::Vector2i &mousePos);
 		
 		// ---- helper/other ----
 		b2Vec2 createForce(float force) const;
@@ -79,6 +80,7 @@ class Game : public b2ContactListener {
 		HUD 				m_Hud;
 		BoxMap				m_BoxMap;
 		SoundManager		m_SoundManager;
+		Renderer			m_Renderer;
 
 		std::vector<std::shared_ptr<Box>>	m_Boxes;
 
@@ -108,7 +110,9 @@ class Game : public b2ContactListener {
 		// ---- particles ----
 		std::vector<std::shared_ptr<BoxParticles>> m_BoxParticles;
 
-		// ---- box color to be placed in editor ----
+		// ---- editor ----
+		sf::VertexArray				m_GridLines;
+		sf::RectangleShape			m_CursorBox;
 		int	m_BoxColorIndex = 0;
 		std::array<sf::Color, 6>	m_BoxColors = {sf::Color::White, 
 													sf::Color::Green,

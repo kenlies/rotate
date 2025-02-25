@@ -8,7 +8,9 @@ Game::Game() :
     m_BoxMap(this),
     m_Player(this),
     m_Hud(this),
-    m_Fade(this)
+    m_Fade(this),
+    m_Renderer(m_Window),
+    m_GridLines(sf::Lines)
 {
     m_Window.setMouseCursorVisible(false);
     m_View.setSize(sf::Vector2f(m_WindowSize.x, m_WindowSize.y));
@@ -140,6 +142,9 @@ void Game::run() {
                 updateEditor();
                 break;
         }
+
+        // ---- render -----
+        m_Renderer.renderFrame();
     }
 }
 
@@ -295,17 +300,13 @@ void Game::updatePlay() {
     m_Hud.updateScoreLightIntensity(m_DeltaTime.asSeconds());
     m_Player.updatePosition();
     updateBoxes();
-
-    // ---- draw everything ----
-    m_Window.clear();
-
-    drawParticles();
-    drawBoxes();
-    m_Window.draw(m_Player);
-    if (m_Fade.getActive()) { m_Window.draw(m_Fade); }
-    m_Window.draw(m_Hud);
-
-    m_Window.display();
+    
+    // ---- add to render queue ----
+    addParticlesToRenderQueue();
+    addBoxesToRenderQueue();
+    m_Renderer.addToRenderQueue(m_Player);
+    if (m_Fade.getActive()) { m_Renderer.addToRenderQueue(m_Fade); }
+    m_Renderer.addToRenderQueue(m_Hud);
 }
 
 void Game::updateEditor() {
@@ -336,25 +337,17 @@ void Game::updateEditor() {
 
     updateBoxes();
 
-    // ---- draw everything ----
-    m_Window.clear();
-    drawBoxes();
-    drawGrid();
-    drawBoxAtCursor(mousePos); // draw the box to be placed
-    m_Window.draw(m_Hud);
-
-    m_Window.display();
+    // ---- add to render queue ----
+    addBoxesToRenderQueue();
+    addGridToRenderQueue();
+    addCursorBoxToRenderQueue(mousePos); // draw the box to be placed
+    m_Renderer.addToRenderQueue(m_Hud);
 }
 
-void Game::drawParticles() {
+void Game::addParticlesToRenderQueue() {
     for (auto it = m_BoxParticles.begin(); it != m_BoxParticles.end();) {
         (*it)->update(m_DeltaTime);
-        m_Window.draw(*(*it));
-        if ((*it)->getCurrLife().asSeconds() > 3) {
-            it = m_BoxParticles.erase(it);
-            std::cout << "removed particles from vector" << "\n";
-            continue;
-        }
+        m_Renderer.addToRenderQueue(*(*it));
         ++it;
     }
 }
@@ -377,52 +370,47 @@ void Game::updateBoxes() {
     }
 }
 
-void Game::drawBoxes() {
+void Game::addBoxesToRenderQueue() {
     // ---- draw boxes ----
     // this draws the oldest boxes first, rather that newest which could be an issue
     for (auto it = m_Boxes.begin(); it != m_Boxes.end(); it++) {
-        m_Window.draw(*(*it));
+        m_Renderer.addToRenderQueue(*(*it));
     }
 }
 
-void Game::drawGrid() {
+void Game::addGridToRenderQueue() {
     sf::Vector2f topLeft = m_Window.mapPixelToCoords(sf::Vector2i(0, 0));
     sf::Vector2f bottomRight = m_Window.mapPixelToCoords(sf::Vector2i(m_WindowSize.x, m_WindowSize.y));
-
     // store the lines to be drawed in a vertex array
-    sf::VertexArray gridLines(sf::Lines);
+    m_GridLines.clear();
 
     // calculate the vertical lines to be drawn
     for (int x = static_cast<int>(topLeft.x / Constants::BOX_WIDTH) * Constants::BOX_WIDTH; x <= bottomRight.x; x += Constants::BOX_WIDTH) {
-        gridLines.append(sf::Vertex(sf::Vector2f(x, topLeft.y), sf::Color::Red));
-        gridLines.append(sf::Vertex(sf::Vector2f(x, bottomRight.y), sf::Color::Red));
+        m_GridLines.append(sf::Vertex(sf::Vector2f(x, topLeft.y), sf::Color::Red));
+        m_GridLines.append(sf::Vertex(sf::Vector2f(x, bottomRight.y), sf::Color::Red));
     }
 
     // calculate the horizontal lines to be drawn
     for (int y = static_cast<int>(topLeft.y / Constants::BOX_WIDTH) * Constants::BOX_WIDTH; y <= bottomRight.y; y += Constants::BOX_WIDTH) {
-        gridLines.append(sf::Vertex(sf::Vector2f(topLeft.x, y), sf::Color::Red));
-        gridLines.append(sf::Vertex(sf::Vector2f(bottomRight.x, y), sf::Color::Red));
+        m_GridLines.append(sf::Vertex(sf::Vector2f(topLeft.x, y), sf::Color::Red));
+        m_GridLines.append(sf::Vertex(sf::Vector2f(bottomRight.x, y), sf::Color::Red));
     }
 
-    // Draw all lines in one call
-    m_Window.draw(gridLines);
+    m_Renderer.addToRenderQueue(m_GridLines);
 }
 
-void Game::drawBoxAtCursor(const sf::Vector2i &mousePos) {
-    sf::RectangleShape rectangle;
-
-    rectangle.setFillColor(m_BoxColors[m_BoxColorIndex]);
+void Game::addCursorBoxToRenderQueue(const sf::Vector2i &mousePos) {
+    m_CursorBox.setFillColor(m_BoxColors[m_BoxColorIndex]);
     if (m_BoxColors[m_BoxColorIndex] == sf::Color::Yellow) {
-        rectangle.setOrigin(Constants::BOX_WIDTH / 4, Constants::BOX_WIDTH / 4);
-        rectangle.setSize({Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2});
+        m_CursorBox.setOrigin(Constants::BOX_WIDTH / 4, Constants::BOX_WIDTH / 4);
+        m_CursorBox.setSize({Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2});
     } else {
-        rectangle.setOrigin(Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2);
-        rectangle.setSize({Constants::BOX_WIDTH, Constants::BOX_WIDTH});
+        m_CursorBox.setOrigin(Constants::BOX_WIDTH / 2, Constants::BOX_WIDTH / 2);
+        m_CursorBox.setSize({Constants::BOX_WIDTH, Constants::BOX_WIDTH});
     }
     // need to use mapPixelToCoords to account for distrortion on location after using m_View.move()
-    rectangle.setPosition(m_Window.mapPixelToCoords(mousePos));
-
-    m_Window.draw(rectangle);
+    m_CursorBox.setPosition(m_Window.mapPixelToCoords(mousePos));
+    m_Renderer.addToRenderQueue(m_CursorBox);
 }
 
 void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {   
