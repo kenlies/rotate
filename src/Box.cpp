@@ -1,4 +1,5 @@
 #include "../includes/Box.hpp"
+#include "../includes/Game.hpp"
 
 Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : m_Game(game) {
 

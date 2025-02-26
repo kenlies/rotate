@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Candle/RadialLight.hpp>
-#include "Game.hpp"
+#include <box2d/box2d.h>
 
 class Game;
 
