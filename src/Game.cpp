@@ -135,7 +135,6 @@ void Game::run() {
         // ---- handle events ----
         updateEvents();
 
-        m_Hud.updateFPS();
         m_DeltaTime = frameClock.restart();
 
         switch(m_Mode) {
@@ -189,7 +188,7 @@ void Game::updatePlay() {
             m_LevelCoins = 0;
             m_LevelScore = 0;
             m_BoxMap.loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(m_CurrLevel));
-            m_Hud.updateScore(m_LevelScore);
+            m_Hud.refreshScore(m_LevelScore);
         }
     }
 
@@ -301,7 +300,7 @@ void Game::updatePlay() {
         m_View.setCenter(interpolatedPos);
     }
 
-    m_Hud.updateScoreLightIntensity(m_DeltaTime.asSeconds());
+    m_Hud.update(m_DeltaTime.asSeconds());
     m_Player.updatePosition();
     updateBoxes();
     
@@ -339,8 +338,9 @@ void Game::updateEditor() {
         removeBox(mousePos);
     }
 
-    updateBoxes();
     m_Grid.update();
+    m_Hud.update(m_DeltaTime.asSeconds());
+    updateBoxes();
 
     // ---- add to render queue ----
     addBoxesToRenderQueue();
@@ -372,7 +372,7 @@ void Game::updateBoxes() {
             m_World.DestroyBody((*it)->getBody());
             it = m_Boxes.erase(it);
             m_LevelScore++;
-            m_Hud.updateScore(m_LevelScore);
+            m_Hud.refreshScore(m_LevelScore);
             m_SoundManager.playSound("explosion", 60.f);
             continue;
         }

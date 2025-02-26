@@ -56,6 +56,11 @@ HUD::~HUD() {
 
 }
 
+void HUD::update(float deltaTime) {
+    updateScoreLightIntensity(deltaTime);
+    updateFPS();
+}
+
 void HUD::updateFPS() {
 	if (m_FPSClock.getElapsedTime().asSeconds() >= 1.f) {
         m_FPS = m_Frame;
@@ -67,7 +72,7 @@ void HUD::updateFPS() {
 }
 
 
-void HUD::updateScore(unsigned short score) {
+void HUD::refreshScore(unsigned short score) {
     m_ScoreText.setString(std::to_string(score));
     m_ScoreAvailableText.setString(std::to_string(m_Game->getLevelCoins()));
     if (std::stoi(std::string((m_ScoreText.getString()))) == 0) {

@@ -10,12 +10,14 @@ class HUD : public sf::Drawable {
 		HUD(Game *game);
 		~HUD();
 
-		void			updateScore(unsigned short score);
-		void 			updateFPS();
-		void			updateScoreLightIntensity(float deltaTime);
+		void	update(float deltaTime);
+		void	refreshScore(unsigned short score);
 
 		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+	private:
+		void	updateFPS();
+		void	updateScoreLightIntensity(float deltaTime);
 	private:
 		Game			*m_Game;
 
