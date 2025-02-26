@@ -1,5 +1,6 @@
 #include "../includes/HUD.hpp"
 #include "../includes/Game.hpp"
+#include <iostream>
 
 HUD::HUD(Game *game) : m_Game(game) {
     if (!m_ModeFont.loadFromFile(ResourceManager::getAssetFilePath("BebasNeue-Regular.ttf"))) {

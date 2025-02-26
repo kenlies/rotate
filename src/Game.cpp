@@ -1,4 +1,5 @@
 #include "../includes/Game.hpp"
+#include <iostream>
 
 Game::Game() : 
     m_Window({}, "rotate", sf::Style::Fullscreen, sf::ContextSettings(0, 0, 8)),
