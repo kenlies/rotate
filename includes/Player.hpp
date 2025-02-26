@@ -11,7 +11,7 @@ class Player : public sf::Drawable {
 		~Player();
 
 		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-		void			updatePosition();
+		void 			update();
 
 		// ---- setters ----
 		void	setInterpolationData(b2Vec2 prevPos, float prevAngle);
@@ -24,7 +24,9 @@ class Player : public sf::Drawable {
 			b2Vec2 _prevPos;
 			float _prevAngle;
 		};
-
+	
+	private:
+		void updateTransform();
 	private:
 		InterpolationData		m_LerpData;
 		Game*					m_Game;

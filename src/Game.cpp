@@ -301,7 +301,7 @@ void Game::updatePlay() {
     }
 
     m_Hud.update(m_DeltaTime.asSeconds());
-    m_Player.updatePosition();
+    m_Player.update();
     updateBoxes();
     
     // ---- add to render queue ----

@@ -39,7 +39,11 @@ void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     target.draw(m_Shape, states);
 }
 
-void    Player::updatePosition() {
+void Player::update() {
+    updateTransform();
+}
+
+void Player::updateTransform() {
     const float alpha = m_Game->getLerpAlpha();
     const b2Vec2 interpolatedPos = (1.0f - alpha) * m_LerpData._prevPos + alpha * m_Body->GetPosition();
     const float interpolatedAngle = (1.0f - alpha) * m_LerpData._prevAngle + alpha * m_Body->GetAngle();
