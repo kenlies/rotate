@@ -1,4 +1,5 @@
 #include "../includes/BoxMap.hpp"
+#include "../includes/Box.hpp"
 #include "../includes/Game.hpp"
 #include "../includes/constants.h"
 #include <sstream>

@@ -1,4 +1,6 @@
 #include "../includes/Game.hpp"
+#include "../includes/Box.hpp"
+#include "../includes/BoxParticles.hpp"
 #include "../includes/constants.h"
 #include <iostream>
 

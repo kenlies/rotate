@@ -8,12 +8,10 @@
 #include "ResourceManager.hpp"
 #include "SoundManager.hpp"
 #include "Player.hpp"
-#include "Box.hpp"
 #include "HUD.hpp"
 #include "Fade.hpp"
 #include "Grid.hpp"
 #include "BoxMap.hpp"
-#include "BoxParticles.hpp"
 
 class Box;
 class BoxParticles;
