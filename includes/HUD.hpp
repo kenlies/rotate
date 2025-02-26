@@ -16,10 +16,6 @@ class HUD : public sf::Drawable {
 
 		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-		// ---- getters ----
-		const unsigned int getFPS() const;
-		const candle::RadialLight &getScoreLight() const;
-
 	private:
 		Game			*m_Game;
 

@@ -109,12 +109,3 @@ void HUD::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
     window.setView(m_Game->getView());  // restore the actual game view
 }
-
-// ---- getters ----
-const unsigned int HUD::getFPS() const {
-	return m_FPS;
-}
-
-const candle::RadialLight &HUD::getScoreLight() const {
-    return m_ScoreLight;
-}
