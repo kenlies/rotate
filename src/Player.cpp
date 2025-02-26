@@ -1,5 +1,6 @@
 #include "../includes/Player.hpp"
 #include "../includes/Game.hpp"
+#include "../includes/constants.h"
 
 Player::Player(Game *game) : m_Game(game) {
     b2BodyDef bodyDef;

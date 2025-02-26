@@ -1,5 +1,6 @@
 #include "../includes/BoxMap.hpp"
 #include "../includes/Game.hpp"
+#include "../includes/constants.h"
 #include <sstream>
 
 BoxMap::BoxMap(Game *game) : m_Game(game){

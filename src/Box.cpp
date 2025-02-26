@@ -1,5 +1,6 @@
 #include "../includes/Box.hpp"
 #include "../includes/Game.hpp"
+#include "../includes/constants.h"
 
 Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : m_Game(game) {
 

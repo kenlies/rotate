@@ -1,5 +1,6 @@
 #include "../includes/HUD.hpp"
 #include "../includes/Game.hpp"
+#include "../includes/constants.h"
 #include <iostream>
 
 HUD::HUD(Game *game) : m_Game(game) {

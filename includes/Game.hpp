@@ -4,8 +4,6 @@
 #include <SFML/Audio.hpp>
 #include <box2d/box2d.h>
 #include <Candle/RadialLight.hpp>
-#include <iostream>
-#include "constants.h"
 #include "Renderer.hpp"
 #include "ResourceManager.hpp"
 #include "SoundManager.hpp"
