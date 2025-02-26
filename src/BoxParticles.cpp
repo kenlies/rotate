@@ -1,4 +1,5 @@
 #include "../includes/BoxParticles.hpp"
+#include "../includes/Game.hpp"
 
 BoxParticles::BoxParticles(unsigned int count, sf::Vector2f position) :
     m_Particles(count),
