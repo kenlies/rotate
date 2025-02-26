@@ -2,7 +2,6 @@
 
 #include <SFML/Audio.hpp>
 #include <unordered_map>
-#include <vector>
 #include <memory>
 #include <deque>
 #include <random>
