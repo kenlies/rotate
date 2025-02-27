@@ -2,8 +2,7 @@
 
 #include <string>
 
-class ResourceManager
-{
+class ResourceManager {
 public:
     static void init(std::string executablePath);
     static std::string getAssetFilePath(const std::string& fileName);
