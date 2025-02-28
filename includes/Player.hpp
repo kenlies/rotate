@@ -14,7 +14,7 @@ class Player : public sf::Drawable {
 		void 			update();
 
 		// ---- setters ----
-		void	setInterpolationData(b2Vec2 prevPos, float prevAngle);
+		void	setInterpolationData(const b2Vec2 &prevPos, float prevAngle);
 
 		// ---- getters ----
 		b2Body*					getBody() const;

@@ -15,7 +15,7 @@ class Box : public sf::Drawable {
 		bool 			isInView(const sf::View &view) const;
 
 		// ---- setters ----
-		void	setInterpolationData(b2Vec2 prevPos, float prevAngle);
+		void	setInterpolationData(const b2Vec2 &prevPos, float prevAngle);
 
 		// ---- getters ----
 		b2Body*						getBody() const;
