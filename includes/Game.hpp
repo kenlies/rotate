@@ -32,7 +32,7 @@ class Game : public b2ContactListener {
 		std::vector<std::shared_ptr<Box>>	&getBoxes();
 		sf::View							&getView();
 		gameMode 							getMode() const;
-		int									getLevelCoins() const;
+		unsigned int						getLevelCoins() const;
 		float								getLerpAlpha() const;
 
 		// ---- listeners ----
@@ -78,10 +78,10 @@ class Game : public b2ContactListener {
 
 		std::vector<std::shared_ptr<Box>>	m_Boxes;
 
-		int					m_CurrLevel = 1;
-		int					m_LevelCoins = 0;
-		int					m_LevelScore = 0;
-		int					m_TotalScore = 0;
+		unsigned int	m_CurrLevel = 1;
+		unsigned int	m_LevelCoins = 0;
+		unsigned int	m_LevelScore = 0;
+		unsigned int	m_TotalScore = 0;
 
 		// ---- physics interpolation ----
 		float				m_Accumulator = 0;

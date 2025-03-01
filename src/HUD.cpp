@@ -72,7 +72,7 @@ void HUD::updateFPS() {
 }
 
 
-void HUD::refreshScore(unsigned short score) {
+void HUD::refreshScore(unsigned int score) {
     m_ScoreText.setString(std::to_string(score));
     m_ScoreAvailableText.setString(std::to_string(m_Game->getLevelCoins()));
     if (std::stoi(std::string((m_ScoreText.getString()))) == 0) {

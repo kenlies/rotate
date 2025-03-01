@@ -11,7 +11,7 @@ class HUD : public sf::Drawable {
 		~HUD();
 
 		void	update(float deltaTime);
-		void	refreshScore(unsigned short score);
+		void	refreshScore(unsigned int score);
 
 		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

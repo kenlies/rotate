@@ -556,7 +556,7 @@ Game::gameMode Game::getMode() const {
     return m_Mode;
 }
 
-int Game::getLevelCoins() const {
+unsigned int Game::getLevelCoins() const {
     return m_LevelCoins;
 }
 
