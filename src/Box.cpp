@@ -138,13 +138,11 @@ void Box::update(float deltaTime) {
 	}
 }
 
-// ---- setters ----
 void Box::setInterpolationData(const b2Vec2 &prevPos, float prevAngle) {
 	m_LerpData._prevPos = prevPos;
 	m_LerpData._prevAngle = prevAngle;
 }
 
-// ---- getters ----
 b2Body*	Box::getBody() const {
 	return m_Body;
 }

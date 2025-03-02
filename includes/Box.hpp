@@ -14,10 +14,8 @@ class Box : public sf::Drawable {
 		void			update(float deltaTime);
 		bool 			isInView(const sf::View &view) const;
 
-		// ---- setters ----
-		void	setInterpolationData(const b2Vec2 &prevPos, float prevAngle);
+		void			setInterpolationData(const b2Vec2 &prevPos, float prevAngle);
 
-		// ---- getters ----
 		b2Body*						getBody() const;
 		const sf::RectangleShape	&getShape() const;
 		const candle::RadialLight	&getLight() const;
