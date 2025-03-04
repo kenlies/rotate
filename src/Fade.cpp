@@ -21,8 +21,6 @@ void Fade::setActive() {
 	m_FadeCounter = 255.f;
 }
 
-// ---- increment/decrement ----
-
 void Fade::decrementFadeCounter(float deltaTime) {
 	m_FadeCounter -= 200.f * deltaTime;
 	m_Shape.setFillColor(sf::Color(0, 0, 0, static_cast<int>(m_FadeCounter)));
@@ -31,7 +29,6 @@ void Fade::decrementFadeCounter(float deltaTime) {
 	}
 }
 
-// ---- getters ----
 const sf::Clock &Fade::getFadeClock() const {
 	return m_FadeClock;
 }
