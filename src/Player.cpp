@@ -52,13 +52,11 @@ void Player::updateTransform() {
     m_Shape.setRotation(interpolatedAngle * Constants::RAD_TO_DEG);
 }
 
-// ---- setters ----
 void Player::setInterpolationData(const b2Vec2 &prevPos, float prevAngle) {
     m_LerpData._prevPos = prevPos;
     m_LerpData._prevAngle = prevAngle;
 }
 
-// ---- getters ----
 b2Body*	Player::getBody() const {
 	return m_Body;
 }
