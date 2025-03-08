@@ -27,9 +27,9 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : m_Game(game) {
 		fixtureDef.isSensor = true;
 	}
 	fixtureDef.shape = &Shape;
-	fixtureDef.density = 1.f; // def 1
+	fixtureDef.density = 1.f;
 	fixtureDef.friction = 0.2f;
-	fixtureDef.restitution = 0.35f; // bounciness // def 0.35
+	fixtureDef.restitution = 0.35f; // bounciness
 
 	body->CreateFixture(&fixtureDef);
 
