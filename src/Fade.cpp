@@ -3,9 +3,11 @@
 
 Fade::Fade(Game *game) : m_Game(game) {
     m_Shape.setFillColor(sf::Color::Black);
-	m_Shape.setSize({static_cast<float>(m_Game->getWindowSize().x * 4), static_cast<float>(m_Game->getWindowSize().y * 4)});
+	m_Shape.setSize({static_cast<float>(m_Game->getWindow().getWindowSize().x * 4),
+						static_cast<float>(m_Game->getWindow().getWindowSize().y * 4)});
 	m_Shape.setOrigin(m_Shape.getSize().y / 2, m_Shape.getSize().x / 2);
-	m_Shape.setPosition(m_Game->getWindowSize().x / 2, m_Game->getWindowSize().y / 2);
+	m_Shape.setPosition(m_Game->getWindow().getWindowSize().x / 2,
+							m_Game->getWindow().getWindowSize().y / 2);
 }
 
 Fade::~Fade() {

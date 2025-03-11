@@ -4,10 +4,12 @@
 #include <iostream>
 
 HUD::HUD(Game *game) : m_Game(game) {
+    sf::Vector2u &windowSize = m_Game->getWindow().getWindowSize();
+
     if (!m_ModeFont.loadFromFile(ResourceManager::getAssetFilePath("BebasNeue-Regular.ttf"))) {
         std::cerr << "Error: Could not load font 'BebasNeue-Regular.ttf' from assets." << std::endl;
     }
-    m_ModeText.setPosition({5, static_cast<float>(m_Game->getWindowSize().y / 64)}); // set position to top left
+    m_ModeText.setPosition({5, static_cast<float>(windowSize.y / 64)}); // set position to top left
     m_ModeText.setString("Editor");
     m_ModeText.setFillColor(sf::Color::Red);
     m_ModeText.setFont(m_ModeFont);
@@ -18,7 +20,7 @@ HUD::HUD(Game *game) : m_Game(game) {
     m_FPSText.setFillColor(sf::Color::White);
     m_FPSText.setString("fps: 999");
     m_FPSText.setScale({0.5f, 0.5f});
-    m_FPSText.setPosition({static_cast<float>(m_Game->getWindowSize().x - 60), static_cast<float>(m_Game->getWindowSize().y - 30)});
+    m_FPSText.setPosition({static_cast<float>(windowSize.x - 60), static_cast<float>(windowSize.y - 30)});
 
     if (!m_ScoreFont.loadFromFile(ResourceManager::getAssetFilePath("Even Stevens.ttf"))) {
         std::cerr << "Error: Could not load font 'Even Stevens' from assets." << std::endl;
@@ -29,7 +31,7 @@ HUD::HUD(Game *game) : m_Game(game) {
     m_ScoreText.setOrigin(m_ScoreText.getGlobalBounds().width / 2, m_ScoreText.getGlobalBounds().height / 2);
     m_ScoreText.scale({1.f, 1.5f});
     m_ScoreText.setFillColor(sf::Color::Yellow);
-    m_ScoreText.setPosition(m_Game->getWindowSize().x / 2, m_Game->getWindowSize().y - m_Game->getWindowSize().y / 8);
+    m_ScoreText.setPosition(windowSize.x / 2, windowSize.y - windowSize.y / 8);
     m_ScoreSlash.setFont(m_ScoreFont);
     m_ScoreSlash.setString("/");
     m_ScoreSlash.setCharacterSize(18);
@@ -49,7 +51,6 @@ HUD::HUD(Game *game) : m_Game(game) {
     m_ScoreLight.setRange(90);
     m_ScoreLight.setPosition(m_ScoreText.getPosition().x, m_ScoreText.getPosition().y);
     m_ScoreLight.setIntensity(0);
-
 }
 
 HUD::~HUD() {
@@ -71,12 +72,13 @@ void HUD::updateFPS() {
 	++m_Frame;
 }
 
-
 void HUD::refreshScore(unsigned int score) {
+    sf::Vector2u& windowSize = m_Game->getWindow().getWindowSize();
+
     m_ScoreText.setString(std::to_string(score));
     m_ScoreAvailableText.setString(std::to_string(m_Game->getLevelCoins()));
     if (std::stoi(std::string((m_ScoreText.getString()))) == 0) {
-        m_ScoreText.setPosition(m_Game->getWindowSize().x / 2, m_Game->getWindowSize().y - m_Game->getWindowSize().y / 8);
+        m_ScoreText.setPosition(windowSize.x / 2, windowSize.y - windowSize.y / 8);
         m_ScoreLight.setPosition(m_ScoreText.getPosition().x, m_ScoreText.getPosition().y);
     } else if (std::stoi(std::string((m_ScoreText.getString()))) == 10) {
         m_ScoreText.setPosition(m_ScoreText.getPosition().x + 7 - m_ScoreText.getString().getSize() * 10, m_ScoreText.getPosition().y);
@@ -98,7 +100,7 @@ void HUD::updateScoreLightIntensity(float deltaTime) {
 }
 
 void HUD::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    sf::RenderWindow& window = m_Game->getWindow();
+    sf::RenderWindow& window = m_Game->getWindow().getWindow();
 
     window.setView(window.getDefaultView());  // set default view before drawing
 
@@ -112,5 +114,5 @@ void HUD::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     }
     target.draw(m_FPSText, states);
 
-    window.setView(m_Game->getView());  // restore the actual game view
+    window.setView(m_Game->getWindow().getView());  // restore the actual game view
 }

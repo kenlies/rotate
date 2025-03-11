@@ -11,8 +11,8 @@ Grid::~Grid() {
 }
 
 void Grid::update() {
-    sf::Vector2f topLeft = m_Game->getWindow().mapPixelToCoords(sf::Vector2i(0, 0));
-    sf::Vector2f bottomRight = m_Game->getWindow().mapPixelToCoords(sf::Vector2i(m_Game->getWindowSize().x, m_Game->getWindowSize().y));
+    sf::Vector2f topLeft = m_Game->getWindow().getWindow().mapPixelToCoords(sf::Vector2i(0, 0));
+    sf::Vector2f bottomRight = m_Game->getWindow().getWindow().mapPixelToCoords(sf::Vector2i(m_Game->getWindow().getWindowSize().x, m_Game->getWindow().getWindowSize().y));
     // store the lines to be drawed in a vertex array
     m_Grid.clear();
 

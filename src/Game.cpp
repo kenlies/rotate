@@ -2,141 +2,70 @@
 #include "../includes/Box.hpp"
 #include "../includes/BoxParticles.hpp"
 #include "../includes/constants.h"
+#include "../includes/utils.h"
 #include <iostream>
 
 Game::Game() : 
-    m_Window({}, "rotate", sf::Style::Fullscreen, sf::ContextSettings(0, 0, 8)),
-    m_WindowSize(m_Window.getSize()),
     m_World(b2Vec2(0.f, Constants::GRAVITY_MAGNITUDE)),
-    m_View(sf::Vector2f(m_WindowSize.x / 2, m_WindowSize.y / 2), sf::Vector2f()),
-    m_BoxMap(this),
+    m_Window(this),
     m_Player(this),
+    m_BoxMap(this),
     m_Hud(this),
     m_Fade(this),
     m_Grid(this),
-    m_Renderer(m_Window)
+    m_Renderer(m_Window.getWindow())
 {
-    m_Window.setMouseCursorVisible(false);
-    m_View.setSize(sf::Vector2f(m_WindowSize.x, m_WindowSize.y));
-
     // ---- create sound buffers ----
     m_SoundManager.loadSound("pickup1", "coin_collect1.ogg");
     m_SoundManager.loadSound("pickup2", "coin_collect2.ogg");
     m_SoundManager.loadSound("pickup3", "coin_collect3.ogg");
     m_SoundManager.loadSound("explosion", "coin_explosion.ogg");
 
-    // ---- crate player ball ----
-    m_JumpCoolDownClock.restart();
-
     // ---- set the listenr for object contacts ----
-    m_World.SetContactListener(this);
+    m_World.SetContactListener(&m_Player);
 
     // ---- load the first map ----
     m_BoxMap.loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(m_CurrLevel));
-    m_Player.getBody()->SetTransform(m_PlayerSpawnPos, 0);
+
+    // ---- set player pos to spawn ----
+    m_Player.getBody()->SetTransform(m_Player.getSpawnPos(), 0);
 }
 
 Game::~Game() {
 
 }
 
-void Game::updateEvents() {
-    m_ScrollWheelInput = None;
-    for (auto event = sf::Event(); m_Window.pollEvent(event);) {
-        switch (event.type) {
-            // window closed
-            case sf::Event::Closed:
-                m_Window.close();
-                break;
-
-            // key pressed
-            case sf::Event::KeyPressed:
-                if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::Q) {
-                    m_Window.close();
-                }
-                else if (event.key.code == sf::Keyboard::Space) {
-                    m_Jump = true;
-                }
-                else if (event.key.code == sf::Keyboard::A) {
-                    m_Mode == Editor ? m_MoveViewLeft = true : m_RotateLeft = true;
-                }
-                else if (event.key.code == sf::Keyboard::D) {
-                    m_Mode == Editor ? m_MoveViewRight = true : m_RotateRight = true;
-                }
-                else if ((event.key.code == sf::Keyboard::W) && m_Mode == Editor) {
-                    m_MoveViewUp = true;
-                }
-                else if ((event.key.code == sf::Keyboard::S) && m_Mode == Editor) {
-                    m_MoveViewDown = true;
-                }
-                else if (event.key.code == sf::Keyboard::M) {
-                    m_Mode == Play ? m_Mode = Editor : m_Mode = Play; // toggle between editor and play
-                }
-                else if (event.key.code == sf::Keyboard::Up && m_Mode == Editor) {
-                    // change colors of box in editor mode
-                    m_BoxColorIndex++;
-                    if (m_BoxColorIndex >= m_BoxColors.size()) {
-                        m_BoxColorIndex = 0;
-                    }
-                }
-                else if (event.key.code == sf::Keyboard::Down && m_Mode == Editor) {
-                    // change colors of box in editor mode
-                    m_BoxColorIndex--;
-                    if (m_BoxColorIndex < 0) {
-                        m_BoxColorIndex = m_BoxColors.size() - 1;
-                    }
-                }
-                else if (event.key.code == sf::Keyboard::Comma && m_Mode == Editor) {
-                    std::cout << "Saving map\n";
-                    m_BoxMap.saveMap(ResourceManager::getLevelFilePath("tmp"));
-                }
-                else if (event.key.code == sf::Keyboard::Period && m_Mode == Editor) {
-                    std::cout << "Loading map\n";
-                    m_BoxMap.loadMap(ResourceManager::getLevelFilePath("tmp"));
-                    m_Player.getBody()->SetTransform(m_PlayerSpawnPos, 0);
-                }
-                break;
-            case sf::Event::KeyReleased:
-                if (event.key.code == sf::Keyboard::Space) {
-                    m_Jump = false;
-                } else if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
-                    m_Mode == Editor ? m_MoveViewLeft = false : m_RotateLeft = false;
-                }
-                else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
-                    m_Mode == Editor ? m_MoveViewRight = false : m_RotateRight = false;
-                }
-                else if ((event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) && m_Mode == Editor) {
-                    m_MoveViewUp = false;
-                }
-                else if ((event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) && m_Mode == Editor) {
-                    m_MoveViewDown = false;
-                }
-                break;
-            case sf::Event::MouseWheelScrolled:
-                if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
-                    if (event.mouseWheelScroll.delta > 0) {
-                        m_ScrollWheelInput = ScrollUp;
-                    } else {
-                        m_ScrollWheelInput = ScrollDown;
-                    }
-                }
-                break; // added this check if actaully works
-
-            default:
-                break;
-        }
+// some input processing happens already in the pollEvents() function in the Window class
+// due to that for some inputs I only want to register one, for instance the "M" key unlike on
+// movement where I want to register for as long as the key is pressed
+void Game::processInput() {
+    if (m_BoxColorIndex < 0) {
+        m_BoxColorIndex = m_BoxColors.size() - 1;
+    } else if (m_BoxColorIndex >= m_BoxColors.size()) {
+        m_BoxColorIndex = 0;
     }
+    if (m_Window.isKeyPressed(sf::Keyboard::Q) || m_Window.isKeyPressed(sf::Keyboard::Escape)) {
+        m_Window.getWindow().close();
+    }
+    m_Window.processViewMovement(m_DeltaTime.asSeconds());
+    if (m_Window.getChangeMode()) {
+        m_Mode == Play ? m_Mode = Editor : m_Mode = Play; // toggle between editor and play
+        m_Window.setChangeMode(false);
+    }
+    m_Player.processInput(m_DeltaTime.asSeconds());
 }
 
 void Game::run() {
     sf::Clock frameClock;
 
     while (m_Window.isOpen()) {
-        // ---- handle events ----
-        updateEvents();
-
         m_DeltaTime = frameClock.restart();
 
+        // ---- poll events ----
+        m_Window.pollEvents();
+        // ---- process input ----
+        processInput();
+        // ---- update ----
         switch(m_Mode) {
             case Play:
                 updatePlay();
@@ -171,137 +100,21 @@ void Game::doPhysicsStep() {
 }
 
 void Game::updatePlay() {
-    static bool cameraOnPlayer = true;
+    float radians = m_Window.getView().getRotation() * Constants::DEG_TO_RAD;
 
     // ---- update the physics world ----
     doPhysicsStep();
-
-    // ---- spawn player at spawn position ----
-    if (m_LetsRespawn) {
-        if (m_WaitTilRespawnClock.getElapsedTime().asSeconds() > 2) {
-            m_Player.getBody()->SetTransform(m_PlayerSpawnPos, 0);
-            m_Player.getBody()->SetLinearVelocity(b2Vec2(0, 0));
-            m_Player.getBody()->SetAngularVelocity(0);
-            m_LetsRespawn = false;
-            cameraOnPlayer = true;
-            m_Fade.setActive();
-            m_LevelCoins = 0;
-            m_LevelScore = 0;
-            m_BoxMap.loadMap(ResourceManager::getLevelFilePath("level") + std::to_string(m_CurrLevel));
-            m_Hud.refreshScore(m_LevelScore);
-        }
-    }
 
     // ---- do the fadeout effect ----
     if (m_Fade.getActive()) {
         m_Fade.decrementFadeCounter(m_DeltaTime.asSeconds());
     }
 
-    // ---- collect yellow box ----
-    if (m_TouchYellowBox) {
-        if (m_TouchYellowBox->GetType() != b2_dynamicBody) {
-            m_SoundManager.playSound("pickup1", "pickup2", "pickup3", 80.f);
-        }
-        m_TouchYellowBox->SetType(b2_dynamicBody);
-        m_TouchYellowBox->ApplyLinearImpulseToCenter(createForce(-Constants::PICKUP_FORCE), true);
-        m_TouchYellowBox = nullptr;
-    }
-
-    // ---- level clear ----
-    if (m_TouchGreenBox) {
-        cameraOnPlayer = false;
-        m_LetsRespawn = true;
-        m_CurrLevel++;
-        m_TotalScore += m_LevelScore;
-        if (m_CurrLevel >= 4) {
-            m_CurrLevel = 1;
-            m_TotalScore = 0;
-        }
-        m_TouchGreenBox->SetType(b2_dynamicBody);
-        m_TouchGreenBox->ApplyLinearImpulseToCenter(createForce(-Constants::WIN_FORCE), true);
-        m_TouchGreenBox->ApplyTorque(m_Player.getBody()->GetAngle(), true);
-        m_TouchGreenBox = nullptr;
-        std::cout << "LEVEL CLEAR\n";
-    }
-
-    // ---- death by red box ----
-    if (m_TouchRedBox) {
-        cameraOnPlayer = false;
-        m_LetsRespawn = true;
-        b2Vec2 explosionForce = createForce(-Constants::EXPLOSION_FORCE);
-        b2ContactEdge* contacts = m_TouchRedBox->GetContactList();
-
-        // apply the world breaking effect: break things!!!
-        while (contacts) {
-            b2Contact* contact = contacts->contact;
-
-            if (contact->IsTouching()) {
-                b2Fixture* fixtureA = contact->GetFixtureA();
-                b2Fixture* fixtureB = contact->GetFixtureB();
-
-                int* fixtureA_Color = static_cast<int*>(fixtureA->GetBody()->GetUserData());
-                int* fixtureB_Color = static_cast<int*>(fixtureB->GetBody()->GetUserData());
-
-                if ((fixtureA_Color && *fixtureA_Color == Constants::RED && fixtureB_Color && *fixtureB_Color == Constants::WHITE) ||
-                    fixtureA_Color && *fixtureA_Color == Constants::WHITE && fixtureB_Color && *fixtureB_Color == Constants::RED) {
-                        
-                    b2Body* whiteBox = (*fixtureA_Color == Constants::WHITE) ? fixtureA->GetBody() : fixtureB->GetBody();
-                    whiteBox->SetType(b2_dynamicBody);
-                    whiteBox->ApplyLinearImpulseToCenter(explosionForce, true);
-                    whiteBox->ApplyTorque(m_Player.getBody()->GetAngle(), true);
-                    whiteBox->SetSleepingAllowed(false);
-                }
-            }
-            contacts = contacts->next;
-        }
-        m_TouchRedBox->ApplyLinearImpulseToCenter(explosionForce, true);
-        m_TouchRedBox->ApplyTorque(m_Player.getBody()->GetAngle(), true);
-        m_TouchRedBox = nullptr;
-        std::cout << "DEATH BY RED BOX\n";
-    }
-
-    // ---- death by void ----
-    if ((std::abs(m_Player.getBody()->GetLinearVelocity().x) > 40.f
-        || std::abs(m_Player.getBody()->GetLinearVelocity().y) > 40.f)
-        && !m_LetsRespawn) {
-        cameraOnPlayer = false;
-        m_LetsRespawn = true;
-        m_WaitTilRespawnClock.restart();
-        std::cout << "DEATH BY VOID\n"; 
-    }
-
-    // ---- rotate the view ----
-    if (m_RotateLeft && !m_LetsRespawn) {
-        m_RotVel += Constants::ROTATE_SPEED;
-    }
-    if (m_RotateRight && !m_LetsRespawn) {
-        m_RotVel -= Constants::ROTATE_SPEED;
-    }
-    m_View.rotate(m_RotVel * m_DeltaTime.asSeconds()); // frame rate independent
-    m_RotVel *= 0.92; // smoothing rotation
-
-    // ---- jump ----
-    if (m_Jump && m_CanJump > 0 && !m_LetsRespawn && m_JumpCoolDownClock.getElapsedTime().asSeconds() > 1.5f) {
-            m_Player.getBody()->ApplyLinearImpulseToCenter(createForce(Constants::JUMP_FORCE), false);
-        m_JumpCoolDownClock.restart();
-    }
-
-    // set the adjusted gravity in the Box2D world
-    m_World.SetGravity(createForce(Constants::GRAVITY_MAGNITUDE));
-
-    // make camera follow player with lerp
-    if (cameraOnPlayer) {
-        sf::Vector2f playerPos = m_Player.getShape().getPosition();
-        sf::Vector2f currentCenter = m_View.getCenter();
-        float k = 4.0f;
-        float lerpFactor = 1 - std::exp(-k * m_DeltaTime.asSeconds());
-
-        sf::Vector2f interpolatedPos = currentCenter + lerpFactor * (playerPos - currentCenter);
-        m_View.setCenter(interpolatedPos);
-    }
+    // set the adjusted gravity in the Box2D world 
+    m_World.SetGravity(Utils::createForce(Constants::GRAVITY_MAGNITUDE, radians));
 
     m_Hud.update(m_DeltaTime.asSeconds());
-    m_Player.update();
+    m_Player.update(radians);
     updateBoxes();
     
     // ---- add to render queue ----
@@ -313,28 +126,11 @@ void Game::updatePlay() {
 }
 
 void Game::updateEditor() {
-
-    if (m_MoveViewLeft) {
-        m_View.move({-Constants::EDITOR_MOVE_SPEED * m_DeltaTime.asSeconds(), 0});
-    }
-    if (m_MoveViewRight) {
-        m_View.move({Constants::EDITOR_MOVE_SPEED * m_DeltaTime.asSeconds(), 0});
-    }
-    if (m_MoveViewUp) {
-        m_View.move({0, -Constants::EDITOR_MOVE_SPEED * m_DeltaTime.asSeconds()});
-    }
-    if (m_MoveViewDown) {
-        m_View.move({0, Constants::EDITOR_MOVE_SPEED * m_DeltaTime.asSeconds()});
-    }
-    m_Window.setView(m_View);
-
-    sf::Vector2i mousePos = sf::Mouse::getPosition(m_Window);
+    sf::Vector2i mousePos = sf::Mouse::getPosition(m_Window.getWindow());
 
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         createBox(mousePos, m_BoxColors[m_BoxColorIndex]);
-    }
-
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+    } else if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
         removeBox(mousePos);
     }
 
@@ -366,7 +162,7 @@ void Game::updateBoxes() {
     for (auto it = m_Boxes.begin(); it != m_Boxes.end();) {
         (*it)->update(m_DeltaTime.asSeconds());
         if ((*it)->getShape().getFillColor() == sf::Color::Yellow && m_Mode == Play &&
-            (*it)->getBody()->GetType() == b2_dynamicBody && !(*it)->isInView(m_View)) {
+            (*it)->getBody()->GetType() == b2_dynamicBody && !(*it)->isInView(m_Window.getView())) {
             std::cout << "emit particles" << "\n";
             m_BoxParticles.emplace_back(std::make_unique<BoxParticles>(150, (*it)->getShape().getPosition()));
             m_World.DestroyBody((*it)->getBody());
@@ -398,13 +194,13 @@ void Game::addCursorBoxToRenderQueue(const sf::Vector2i &mousePos) {
         m_CursorBox.setSize({Constants::BOX_WIDTH, Constants::BOX_WIDTH});
     }
     // need to use mapPixelToCoords to account for distrortion on location after using m_View.move()
-    m_CursorBox.setPosition(m_Window.mapPixelToCoords(mousePos));
+    m_CursorBox.setPosition(m_Window.getWindow().mapPixelToCoords(mousePos));
     m_Renderer.addToRenderQueue(m_CursorBox);
 }
 
 void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {   
     bool available = true;
-    sf::Vector2f mousePosConverted = m_Window.mapPixelToCoords(mousePos, m_View);
+    sf::Vector2f mousePosConverted = m_Window.getWindow().mapPixelToCoords(mousePos, m_Window.getView());
 
     // divide mouse by 32 because each box is 32 pixels
     // then floow to round down example:
@@ -427,7 +223,7 @@ void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {
     // create the box
     if (available) {
         if (color == sf::Color::Cyan) {
-            m_PlayerSpawnPos = checkPos;
+            m_Player.setSpawnPos(checkPos); // setting spawn position
         } else if (color == sf::Color::Yellow) {
             m_LevelCoins++;
         }
@@ -436,7 +232,7 @@ void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {
 }
 
 void Game::removeBox(const sf::Vector2i &mousePos) {
-    sf::Vector2f mousePosConverted = m_Window.mapPixelToCoords(mousePos, m_View);
+    sf::Vector2f mousePosConverted = m_Window.getWindow().mapPixelToCoords(mousePos, m_Window.getView());
     float mouseX = std::floor(mousePosConverted.x / Constants::BOX_WIDTH);
     float mouseY = std::floor(mousePosConverted.y / Constants::BOX_WIDTH);
 
@@ -453,113 +249,90 @@ void Game::removeBox(const sf::Vector2i &mousePos) {
     }
 }
 
-// ---- listeners ----
-void Game::BeginContact(b2Contact* contact) {
-
-    // don't do anything if the contact doesn't involve player or if the player is respawning
-    if ((contact->GetFixtureB()->GetBody() != m_Player.getBody() 
-        && contact->GetFixtureA()->GetBody() != m_Player.getBody())) {
-        return ;
-    }
-
-    int* fixtureA_UserData = static_cast<int*>(contact->GetFixtureA()->GetBody()->GetUserData());
-    int* fixtureB_UserData = static_cast<int*>(contact->GetFixtureB()->GetBody()->GetUserData());
-    int* color;
-
-    b2Body* box = nullptr;
-    if (fixtureA_UserData && *fixtureA_UserData == Constants::PLAYER) {
-        box = contact->GetFixtureB()->GetBody();
-        color = fixtureB_UserData;
-    } else if (fixtureB_UserData && *fixtureB_UserData == Constants::PLAYER) {
-        box = contact->GetFixtureA()->GetBody();
-        color = fixtureA_UserData;
-    }
-
-    // don't don anything if in contact with spawn point
-    if (color && *color == Constants::CYAN) {
-        return;
-    }
-    else if (color && *color == Constants::YELLOW) {
-        m_TouchYellowBox = box;
-        return;
-    } else if (color && *color == Constants::RED && !m_LetsRespawn) {
-        m_WaitTilRespawnClock.restart();
-        m_TouchRedBox = box;
-    } else if (color && *color == Constants::GREEN && !m_LetsRespawn) {
-        m_WaitTilRespawnClock.restart();
-        m_TouchGreenBox = box;
-    }
-    m_CanJump++;
+void Game::setSrollWheelInput(scrollWheelInput scrollInput) {
+    m_ScrollWheelInput = scrollInput;
 }
 
-void Game::EndContact(b2Contact* contact) {
-    // don't do anything if the contact doesn't involve player or if the player is respawning
-    if ((contact->GetFixtureB()->GetBody() != m_Player.getBody() 
-        && contact->GetFixtureA()->GetBody() != m_Player.getBody())) {
-        return ;
-    }
-
-    int* fixtureA_UserData = static_cast<int*>(contact->GetFixtureA()->GetBody()->GetUserData());
-    int* fixtureB_UserData = static_cast<int*>(contact->GetFixtureB()->GetBody()->GetUserData());
-    int* color;
-
-    b2Body* box = nullptr;
-    if (fixtureA_UserData && *fixtureA_UserData == Constants::PLAYER) {
-        box = contact->GetFixtureB()->GetBody();
-        color = fixtureB_UserData;
-    } else if (fixtureB_UserData && *fixtureB_UserData == Constants::PLAYER) {
-        box = contact->GetFixtureB()->GetBody();
-        color = fixtureA_UserData;
-    }
-
-    if (color && *color == Constants::CYAN || color && *color == Constants::YELLOW) {
-        return ;
-    }
-
-    m_CanJump--;
+void Game::setMode(gameMode mode) {
+    m_Mode = mode;
 }
 
-// --- helper/other ----
-// calculate force direction in world space to acoount for rotated world
-b2Vec2 Game::createForce(float forcePower) const {
-    float radians = m_View.getRotation() * Constants::DEG_TO_RAD;
-    b2Vec2 force;
-    force.x = -forcePower * sin(radians);
-    force.y = forcePower * cos(radians);
-    return force;
+void Game::setBoxColorIndex(int value) {
+    m_BoxColorIndex = value;
 }
 
-// --- getters ----
-// these can't be const because some none const methods
-// are called on the return of these
-b2World &Game::getWorld() {
-    return m_World;
+void Game::setCurrLevel(unsigned int value) {
+    m_CurrLevel = value;
 }
 
-sf::RenderWindow &Game::getWindow() {
+void Game::setLevelCoins(unsigned int value) {
+    m_LevelCoins = value;
+}
+
+void Game::setLevelScore(unsigned int value) {
+    m_LevelScore = value;
+}
+
+void Game::setTotalScore(unsigned int value) {
+    m_TotalScore = value;
+}
+
+Window &Game::getWindow() {
     return m_Window;
 }
 
-sf::Vector2u &Game::getWindowSize() {
-    return m_WindowSize;
+b2World &Game::getWorld() {
+    return m_World;
 }
 
 std::vector<std::shared_ptr<Box>> &Game::getBoxes() {
     return m_Boxes;
 }
 
-sf::View &Game::getView() {
-    return m_View;
-}
-
 Game::gameMode Game::getMode() const {
     return m_Mode;
+}
+
+int Game::getBoxColorIndex() const {
+    return m_BoxColorIndex;
+}
+
+unsigned int Game::getCurrLevel() const {
+    return m_CurrLevel;
 }
 
 unsigned int Game::getLevelCoins() const {
     return m_LevelCoins;
 }
 
+unsigned int Game::getLevelScore() const {
+    return m_LevelScore;
+}
+
+unsigned int Game::getTotalScore() const {
+    return m_TotalScore;
+}
+
 float Game::getLerpAlpha() const {
     return m_LerpAlpha;
+}
+
+const Player &Game::getPlayer() const {
+    return m_Player;
+}
+
+BoxMap &Game::getBoxMap() {
+    return m_BoxMap;
+}
+
+Fade &Game::getFade() {
+    return m_Fade;
+}
+
+HUD &Game::getHud() {
+    return m_Hud;
+}
+
+SoundManager &Game::getSoundManager() {
+    return m_SoundManager;
 }

@@ -38,7 +38,8 @@ add_executable(rotate
     src/Grid.cpp
     src/ResourceManager.cpp
     src/Renderer.cpp
-    src/SoundManager.cpp)
+    src/SoundManager.cpp
+    src/Window.cpp)
 
 target_include_directories(rotate PRIVATE ${box2d_SOURCE_DIR}/include)
 target_include_directories(rotate PRIVATE ${candle_SOURCE_DIR}/include)

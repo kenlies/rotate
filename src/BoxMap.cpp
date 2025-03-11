@@ -22,8 +22,9 @@ void BoxMap::loadMap(const std::string &path) {
 	}
 	boxes.clear();
 
-	m_Game->getView().setRotation(0);
-	m_Game->getView().setCenter(sf::Vector2f(m_Game->getWindowSize().x / 2, m_Game->getWindowSize().y / 2 ));
+    m_Game->getWindow().getView().setRotation(0);
+    m_Game->getWindow().getView().setCenter(sf::Vector2f(m_Game->getWindow().getWindowSize().x / 2,
+                                                            m_Game->getWindow().getWindowSize().y / 2));
 
 	std::getline(mapFile, line);
 	std::getline(mapFile, line);
