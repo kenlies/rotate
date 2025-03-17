@@ -15,14 +15,14 @@ class Window {
 		void processViewMovement(float deltaTime);
 		bool isKeyPressed(sf::Keyboard::Key key) const;
 
+		void				setChangeMode(bool value);
+		void				setViewOnPlayer(bool value);
+
 		sf::RenderWindow	&getWindow();
 		sf::Vector2u 		&getWindowSize();
 		sf::View			&getView();
 		bool				getChangeMode() const;
 		bool				getViewOnPlayer() const;
-
-		void				setChangeMode(bool value);
-		void				setViewOnPlayer(bool value);
 	
 	private:
 		void 				handleEditorModeKeys(sf::Keyboard::Key key);

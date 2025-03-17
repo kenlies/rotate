@@ -123,6 +123,14 @@ bool Window::isOpen() const {
 	return m_Window.isOpen();
 }
 
+void Window::setChangeMode(bool value) {
+    m_ChangeMode = value;
+}
+
+void Window::setViewOnPlayer(bool value) {
+    m_ViewOnPlayer = value;
+}
+
 sf::RenderWindow &Window::getWindow() {
 	return m_Window;
 }
@@ -143,10 +151,3 @@ bool Window::getViewOnPlayer() const {
     return m_ViewOnPlayer;
 }
 
-void Window::setChangeMode(bool value) {
-    m_ChangeMode = value;
-}
-
-void Window::setViewOnPlayer(bool value) {
-    m_ViewOnPlayer = value;
-}
