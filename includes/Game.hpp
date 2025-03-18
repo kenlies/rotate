@@ -27,6 +27,14 @@ class Game {
 		void 								createBox(const sf::Vector2i &mousePos, const sf::Color &color);
 		void 								removeBox(const sf::Vector2i &mousePos);
 
+		void								setSrollWheelInput(scrollWheelInput scrollInput);
+		void								setMode(gameMode mode);
+		void								setBoxColorIndex(int value);
+		void								setCurrLevel(unsigned int value);
+		void								setLevelCoins(unsigned int value);
+		void								setLevelScore(unsigned int value);
+		void								setTotalScore(unsigned int value);
+
 		Window								&getWindow();
 		b2World 							&getWorld();
 		std::vector<std::shared_ptr<Box>>	&getBoxes();
@@ -42,14 +50,6 @@ class Game {
 		Fade								&getFade();
 		HUD									&getHud();
 		SoundManager						&getSoundManager();
-
-		void								setSrollWheelInput(scrollWheelInput scrollInput);
-		void								setMode(gameMode mode);
-		void								setBoxColorIndex(int value);
-		void								setCurrLevel(unsigned int value);
-		void								setLevelCoins(unsigned int value);
-		void								setLevelScore(unsigned int value);
-		void								setTotalScore(unsigned int value);
 
 	private:
 		void doPhysicsStep();
