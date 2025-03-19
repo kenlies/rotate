@@ -2,7 +2,7 @@
 #include "../includes/Game.hpp"
 #include "../includes/constants.h"
 
-Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : m_Game(game) {
+Box::Box(Game* game, b2Vec2& checkPos, const sf::Color& color) : m_Game(game) {
 
     // ---- physics attributes ----
     b2BodyDef bodyDef;
@@ -78,7 +78,7 @@ Box::Box(Game *game, b2Vec2 &checkPos, const sf::Color &color) : m_Game(game) {
 	m_Light.setColor(color);
 }
 
-bool Box::isInView(const sf::View &view) const {
+bool Box::isInView(const sf::View& view) const {
     sf::Transform viewTransform;
     viewTransform.translate(view.getCenter());
     viewTransform.rotate(view.getRotation());
@@ -95,7 +95,7 @@ bool Box::isInView(const sf::View &view) const {
 }
 
 Box::~Box() {
-	delete static_cast<int *>(m_Body->GetUserData());
+	delete static_cast<int*>(m_Body->GetUserData());
 }
 
 void Box::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -138,7 +138,7 @@ void Box::update(float deltaTime) {
 	}
 }
 
-void Box::setInterpolationData(const b2Vec2 &prevPos, float prevAngle) {
+void Box::setInterpolationData(const b2Vec2& prevPos, float prevAngle) {
 	m_LerpData._prevPos = prevPos;
 	m_LerpData._prevAngle = prevAngle;
 }
@@ -147,10 +147,10 @@ b2Body*	Box::getBody() const {
 	return m_Body;
 }
 
-const sf::RectangleShape &Box::getShape() const {
+const sf::RectangleShape& Box::getShape() const {
 	return m_Shape;
 }
 
-const candle::RadialLight &Box::getLight() const {
+const candle::RadialLight& Box::getLight() const {
 	return m_Light;
 }
