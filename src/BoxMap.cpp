@@ -4,7 +4,7 @@
 #include "../includes/constants.h"
 #include <sstream>
 
-BoxMap::BoxMap(Game *game) : m_Game(game){
+BoxMap::BoxMap(Game* game) : m_Game(game){
 
 }
 
@@ -12,11 +12,11 @@ BoxMap::~BoxMap() {
 
 }
 
-void BoxMap::loadMap(const std::string &path) {
+void BoxMap::loadMap(const std::string& path) {
     std::ifstream mapFile(path);
     std::string line;
 
-	std::vector<std::shared_ptr<Box>> &boxes = m_Game->getBoxes();
+	std::vector<std::shared_ptr<Box>>& boxes = m_Game->getBoxes();
 	for (std::shared_ptr<Box> box : boxes) {
 		m_Game->getWorld().DestroyBody(box->getBody());
 	}
@@ -60,7 +60,7 @@ void BoxMap::loadMap(const std::string &path) {
     }
 }
 
-void BoxMap::saveMap(const std::string &path) {
+void BoxMap::saveMap(const std::string& path) {
     std::ofstream map_file(path);
 
 	map_file << "x y color\n\n";
@@ -70,7 +70,7 @@ void BoxMap::saveMap(const std::string &path) {
                 << " " 
                 << pos.y * Constants::SCALE 
                 << " "
-                << *(static_cast<int *>(box->getBody()->GetUserData()))
+                << *(static_cast<int*>(box->getBody()->GetUserData()))
                 << "\n";
     }
 }
