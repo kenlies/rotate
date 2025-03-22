@@ -51,6 +51,6 @@ void BoxParticles::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	target.draw(m_Vertices, states);
 }
 
-const sf::Time &BoxParticles::getCurrLife() const {
+const sf::Time& BoxParticles::getCurrLife() const {
 	return m_Currlife;
 }

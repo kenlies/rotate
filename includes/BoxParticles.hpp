@@ -12,7 +12,7 @@ class BoxParticles : public sf::Drawable, public sf::Transformable {
 		void 			update(sf::Time elapsed);
 		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-		const sf::Time	&getCurrLife() const;
+		const sf::Time& getCurrLife() const;
 		
 	private:
 		struct Particle
