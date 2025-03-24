@@ -6,17 +6,17 @@ class Game;
 
 class Fade : public sf::Drawable {
 	public:
-		Fade(Game *game);
+		Fade(Game* game);
 		~Fade();
 
-		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-		void 			decrementFadeCounter(float deltaTime);
+		virtual void		draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		void 				decrementFadeCounter(float deltaTime);
 
-		void			setActive();
+		void				setActive();
 
-		const sf::Clock	&getFadeClock() const;
-		float			getFadeCounter() const;
-		bool			getActive() const;
+		const sf::Clock&	getFadeClock() const;
+		float				getFadeCounter() const;
+		bool				getActive() const;
 		
 	private:
 		Game*								m_Game;

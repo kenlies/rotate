@@ -1,7 +1,7 @@
 #include "../includes/Fade.hpp"
 #include "../includes/Game.hpp"
 
-Fade::Fade(Game *game) : m_Game(game) {
+Fade::Fade(Game* game) : m_Game(game) {
     m_Shape.setFillColor(sf::Color::Black);
 	m_Shape.setSize({static_cast<float>(m_Game->getWindow().getWindowSize().x * 4),
 						static_cast<float>(m_Game->getWindow().getWindowSize().y * 4)});
@@ -31,7 +31,7 @@ void Fade::decrementFadeCounter(float deltaTime) {
 	}
 }
 
-const sf::Clock &Fade::getFadeClock() const {
+const sf::Clock& Fade::getFadeClock() const {
 	return m_FadeClock;
 }
 
