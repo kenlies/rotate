@@ -24,8 +24,8 @@ class Game {
 		~Game();
 
 		void 								run();
-		void 								createBox(const sf::Vector2i &mousePos, const sf::Color &color);
-		void 								removeBox(const sf::Vector2i &mousePos);
+		void 								createBox(const sf::Vector2i& mousePos, const sf::Color& color);
+		void 								removeBox(const sf::Vector2i& mousePos);
 
 		void								setSrollWheelInput(scrollWheelInput scrollInput);
 		void								setMode(gameMode mode);
@@ -35,9 +35,9 @@ class Game {
 		void								setLevelScore(unsigned int value);
 		void								setTotalScore(unsigned int value);
 
-		Window								&getWindow();
-		b2World 							&getWorld();
-		std::vector<std::shared_ptr<Box>>	&getBoxes();
+		Window&								getWindow();
+		b2World& 							getWorld();
+		std::vector<std::shared_ptr<Box>>&	getBoxes();
 		gameMode 							getMode() const;
 		int									getBoxColorIndex() const;
 		unsigned int						getCurrLevel() const;
@@ -45,11 +45,11 @@ class Game {
 		unsigned int						getLevelScore() const;
 		unsigned int						getTotalScore() const;
 		float								getLerpAlpha() const;
-		const Player						&getPlayer() const;
-		BoxMap								&getBoxMap();
-		Fade								&getFade();
-		HUD									&getHud();
-		SoundManager						&getSoundManager();
+		const Player&						getPlayer() const;
+		BoxMap&								getBoxMap();
+		Fade&								getFade();
+		HUD&								getHud();
+		SoundManager&						getSoundManager();
 
 	private:
 		void doPhysicsStep();
@@ -61,7 +61,7 @@ class Game {
 		void addBoxesToRenderQueue();
 
 		// ---- editor ----
-		void addCursorBoxToRenderQueue(const sf::Vector2i &mousePos);
+		void addCursorBoxToRenderQueue(const sf::Vector2i& mousePos);
 	private:
 		Window				m_Window;
 		gameMode			m_Mode = Play;

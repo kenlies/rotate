@@ -87,10 +87,10 @@ void Game::doPhysicsStep() {
 
     m_Accumulator += frameTime;
     while (m_Accumulator >= Constants::TIME_STEP) {
-        b2Body *playerBody = m_Player.getBody();
+        b2Body* playerBody = m_Player.getBody();
         m_Player.setInterpolationData(playerBody->GetPosition(), playerBody->GetAngle());
         for (auto& box : m_Boxes) {
-            b2Body *boxBody = box->getBody();
+            b2Body* boxBody = box->getBody();
             box->setInterpolationData(boxBody->GetPosition(), boxBody->GetAngle());
         }
         m_World.Step(Constants::TIME_STEP, 8, 2);
@@ -184,7 +184,7 @@ void Game::addBoxesToRenderQueue() {
     }
 }
 
-void Game::addCursorBoxToRenderQueue(const sf::Vector2i &mousePos) {
+void Game::addCursorBoxToRenderQueue(const sf::Vector2i& mousePos) {
     m_CursorBox.setFillColor(m_BoxColors[m_BoxColorIndex]);
     if (m_BoxColors[m_BoxColorIndex] == sf::Color::Yellow) {
         m_CursorBox.setOrigin(Constants::BOX_WIDTH / 4, Constants::BOX_WIDTH / 4);
@@ -198,7 +198,7 @@ void Game::addCursorBoxToRenderQueue(const sf::Vector2i &mousePos) {
     m_Renderer.addToRenderQueue(m_CursorBox);
 }
 
-void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {   
+void Game::createBox(const sf::Vector2i& mousePos, const sf::Color& color) {   
     bool available = true;
     sf::Vector2f mousePosConverted = m_Window.getWindow().mapPixelToCoords(mousePos, m_Window.getView());
 
@@ -231,7 +231,7 @@ void Game::createBox(const sf::Vector2i &mousePos, const sf::Color &color) {
     }
 }
 
-void Game::removeBox(const sf::Vector2i &mousePos) {
+void Game::removeBox(const sf::Vector2i& mousePos) {
     sf::Vector2f mousePosConverted = m_Window.getWindow().mapPixelToCoords(mousePos, m_Window.getView());
     float mouseX = std::floor(mousePosConverted.x / Constants::BOX_WIDTH);
     float mouseY = std::floor(mousePosConverted.y / Constants::BOX_WIDTH);
@@ -277,15 +277,15 @@ void Game::setTotalScore(unsigned int value) {
     m_TotalScore = value;
 }
 
-Window &Game::getWindow() {
+Window& Game::getWindow() {
     return m_Window;
 }
 
-b2World &Game::getWorld() {
+b2World& Game::getWorld() {
     return m_World;
 }
 
-std::vector<std::shared_ptr<Box>> &Game::getBoxes() {
+std::vector<std::shared_ptr<Box>>& Game::getBoxes() {
     return m_Boxes;
 }
 
@@ -317,22 +317,22 @@ float Game::getLerpAlpha() const {
     return m_LerpAlpha;
 }
 
-const Player &Game::getPlayer() const {
+const Player& Game::getPlayer() const {
     return m_Player;
 }
 
-BoxMap &Game::getBoxMap() {
+BoxMap& Game::getBoxMap() {
     return m_BoxMap;
 }
 
-Fade &Game::getFade() {
+Fade& Game::getFade() {
     return m_Fade;
 }
 
-HUD &Game::getHud() {
+HUD& Game::getHud() {
     return m_Hud;
 }
 
-SoundManager &Game::getSoundManager() {
+SoundManager& Game::getSoundManager() {
     return m_SoundManager;
 }
