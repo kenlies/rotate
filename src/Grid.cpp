@@ -2,7 +2,7 @@
 #include "../includes/Game.hpp"
 #include "../includes/constants.h"
 
-Grid::Grid(Game *game) : m_Game(game), m_Grid(sf::Lines) {
+Grid::Grid(Game* game) : m_Game(game), m_Grid(sf::Lines) {
 
 }
 
