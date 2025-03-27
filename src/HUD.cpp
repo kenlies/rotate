@@ -3,8 +3,8 @@
 #include "../includes/constants.h"
 #include <iostream>
 
-HUD::HUD(Game *game) : m_Game(game) {
-    sf::Vector2u &windowSize = m_Game->getWindow().getWindowSize();
+HUD::HUD(Game* game) : m_Game(game) {
+    sf::Vector2u& windowSize = m_Game->getWindow().getWindowSize();
 
     if (!m_ModeFont.loadFromFile(ResourceManager::getAssetFilePath("BebasNeue-Regular.ttf"))) {
         std::cerr << "Error: Could not load font 'BebasNeue-Regular.ttf' from assets." << std::endl;
