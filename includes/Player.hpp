@@ -7,7 +7,7 @@ class Game;
 
 class Player : public sf::Drawable, public b2ContactListener {
 	public:
-		Player(Game *game);
+		Player(Game* game);
 		~Player();
 
 		virtual void			draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -17,13 +17,13 @@ class Player : public sf::Drawable, public b2ContactListener {
 		void 					BeginContact(b2Contact* contact) override; // override the base class functions
 		void 					EndContact(b2Contact* contact) override;	// override the base class functions PRIVATE??
 
-		void					setInterpolationData(const b2Vec2 &prevPos, float prevAngle);
-		void					setSpawnPos(const b2Vec2 &spawnPos);
+		void					setInterpolationData(const b2Vec2& prevPos, float prevAngle);
+		void					setSpawnPos(const b2Vec2& spawnPos);
 
 		b2Body*					getBody() const;
-		const sf::CircleShape	&getShape() const;
+		const sf::CircleShape&	getShape() const;
 		bool					getLetsRespawn() const;
-		const b2Vec2 			&getSpawnPos() const;
+		const b2Vec2&			getSpawnPos() const;
 	public:
 		struct InterpolationData {
 			b2Vec2 _prevPos;
@@ -46,7 +46,7 @@ class Player : public sf::Drawable, public b2ContactListener {
 		sf::Clock				m_JumpCoolDownClock;
 		int						m_CanJump = 0; // how many bodies touch the ball at a time: able to jump if > 0
 		
-		b2Body 					*m_TouchRedBox = nullptr;
-		b2Body 					*m_TouchGreenBox = nullptr;
-		b2Body 					*m_TouchYellowBox = nullptr;
+		b2Body*					m_TouchRedBox = nullptr;
+		b2Body*					m_TouchGreenBox = nullptr;
+		b2Body*					m_TouchYellowBox = nullptr;
 };

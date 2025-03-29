@@ -4,7 +4,7 @@
 #include "../includes/utils.h"
 #include <iostream>
 
-Player::Player(Game *game) : m_Game(game) {
+Player::Player(Game* game) : m_Game(game) {
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     // default start pos if there is no spawn point
@@ -38,7 +38,7 @@ Player::Player(Game *game) : m_Game(game) {
 }
 
 Player::~Player() {
-    delete static_cast<int *>(m_Body->GetUserData());
+    delete static_cast<int*>(m_Body->GetUserData());
 }
 
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -223,12 +223,12 @@ void Player::EndContact(b2Contact* contact) {
     m_CanJump--;
 }
 
-void Player::setInterpolationData(const b2Vec2 &prevPos, float prevAngle) {
+void Player::setInterpolationData(const b2Vec2& prevPos, float prevAngle) {
     m_LerpData._prevPos = prevPos;
     m_LerpData._prevAngle = prevAngle;
 }
 
-void Player::setSpawnPos(const b2Vec2 &spawnPos) {
+void Player::setSpawnPos(const b2Vec2& spawnPos) {
     m_SpawnPos = spawnPos;
 }
 
@@ -236,7 +236,7 @@ b2Body*	Player::getBody() const {
 	return m_Body;
 }
 
-const sf::CircleShape &Player::getShape() const {
+const sf::CircleShape& Player::getShape() const {
 	return m_Shape;
 }
 
@@ -244,6 +244,6 @@ bool Player::getLetsRespawn() const {
     return m_LetsRespawn;
 }
 
-const b2Vec2 &Player::getSpawnPos() const {
+const b2Vec2& Player::getSpawnPos() const {
     return m_SpawnPos;
 }
