@@ -8,7 +8,7 @@ Renderer::~Renderer() {
 
 }
 
-void Renderer::addToRenderQueue(const sf::Drawable &drawable) {
+void Renderer::addToRenderQueue(const sf::Drawable& drawable) {
 	m_Drawables.push_back(&drawable);
 }
 

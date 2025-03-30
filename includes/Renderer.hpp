@@ -8,7 +8,7 @@ class Renderer {
 		Renderer(sf::RenderWindow& window);
 		~Renderer();
 
-		void addToRenderQueue(const sf::Drawable &drawable);
+		void addToRenderQueue(const sf::Drawable& drawable);
 		void renderFrame();
 
 	private:
