@@ -7,7 +7,7 @@ class Game;
 
 class Window {
 	public:
-		Window(Game *game);
+		Window(Game* game);
 		~Window();
 
 		void pollEvents();
@@ -18,16 +18,16 @@ class Window {
 		void				setChangeMode(bool value);
 		void				setViewOnPlayer(bool value);
 
-		sf::RenderWindow	&getWindow();
-		sf::Vector2u 		&getWindowSize();
-		sf::View			&getView();
+		sf::RenderWindow&	getWindow();
+		sf::Vector2u&		getWindowSize();
+		sf::View&			getView();
 		bool				getChangeMode() const;
 		bool				getViewOnPlayer() const;
 	
 	private:
 		void 				handleEditorModeKeys(sf::Keyboard::Key key);
 	private:
-		Game				*m_Game;
+		Game*				m_Game;
 		sf::RenderWindow	m_Window;
 		sf::Vector2u		m_WindowSize;
 		sf::View			m_View;

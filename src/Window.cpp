@@ -3,7 +3,7 @@
 #include "../includes/constants.h"
 #include <iostream>
 
-Window::Window(Game *game) :
+Window::Window(Game* game) :
 	m_Game(game),
     m_Window({800, 600}, "rotate", sf::Style::Close, sf::ContextSettings(0, 0, 8)),
     m_WindowSize(m_Window.getSize()), 
@@ -131,15 +131,15 @@ void Window::setViewOnPlayer(bool value) {
     m_ViewOnPlayer = value;
 }
 
-sf::RenderWindow &Window::getWindow() {
+sf::RenderWindow& Window::getWindow() {
 	return m_Window;
 }
 
-sf::Vector2u &Window::getWindowSize() {
+sf::Vector2u& Window::getWindowSize() {
 	return m_WindowSize;
 }
 
-sf::View &Window::getView() {
+sf::View& Window::getView() {
 	return m_View;
 }
 
