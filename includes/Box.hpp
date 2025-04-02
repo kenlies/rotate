@@ -10,11 +10,11 @@ class Box : public sf::Drawable {
 		Box(Game* game, b2Vec2& checkPos, const sf::Color& color);
 		~Box();
 
-		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-		void			update(float deltaTime);
-		bool 			isInView(const sf::View& view) const;
+		virtual void				draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		void						update(float deltaTime);
+		bool						isInView(const sf::View& view) const;
 
-		void			setInterpolationData(const b2Vec2& prevPos, float prevAngle);
+		void						setInterpolationData(const b2Vec2& prevPos, float prevAngle);
 
 		b2Body*						getBody() const;
 		const sf::RectangleShape&	getShape() const;
@@ -26,9 +26,9 @@ class Box : public sf::Drawable {
 		};
 
 	private:
-		InterpolationData						m_LerpData;
-		Game*									m_Game;
-		b2Body* 								m_Body;
-		sf::RectangleShape						m_Shape;
-		candle::RadialLight						m_Light;
+		InterpolationData			m_LerpData;
+		Game*						m_Game;
+		b2Body*						m_Body;
+		sf::RectangleShape			m_Shape;
+		candle::RadialLight			m_Light;
 };
