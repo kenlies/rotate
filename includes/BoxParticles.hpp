@@ -9,16 +9,16 @@ class BoxParticles : public sf::Drawable, public sf::Transformable {
 		BoxParticles(unsigned int count, sf::Vector2f position);
 		~BoxParticles();
 
-		void 			update(sf::Time elapsed);
-		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const;
+		void					update(sf::Time elapsed);
+		virtual void			draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-		const sf::Time& getCurrLife() const;
+		const sf::Time&			getCurrLife() const;
 		
 	private:
 		struct Particle
 		{
-			sf::Vector2f	_velocity;
-			sf::Time		_lifetime;
+			sf::Vector2f		_velocity;
+			sf::Time			_lifetime;
 		};
 
 		std::vector<Particle>	m_Particles;
