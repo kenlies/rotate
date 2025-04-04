@@ -10,7 +10,7 @@ class Fade : public sf::Drawable {
 		~Fade();
 
 		virtual void		draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-		void 				decrementFadeCounter(float deltaTime);
+		void				decrementFadeCounter(float deltaTime);
 
 		void				setActive();
 
@@ -19,9 +19,9 @@ class Fade : public sf::Drawable {
 		bool				getActive() const;
 		
 	private:
-		Game*								m_Game;
-		sf::RectangleShape					m_Shape;
-		sf::Clock							m_FadeClock;
-		float								m_FadeCounter;
-		bool								m_Active = false;
+		Game*				m_Game;
+		sf::RectangleShape	m_Shape;
+		sf::Clock			m_FadeClock;
+		float				m_FadeCounter;
+		bool				m_Active = false;
 };
