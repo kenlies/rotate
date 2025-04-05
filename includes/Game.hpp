@@ -23,9 +23,9 @@ class Game {
 		Game();
 		~Game();
 
-		void 								run();
-		void 								createBox(const sf::Vector2i& mousePos, const sf::Color& color);
-		void 								removeBox(const sf::Vector2i& mousePos);
+		void								run();
+		void								createBox(const sf::Vector2i& mousePos, const sf::Color& color);
+		void								removeBox(const sf::Vector2i& mousePos);
 
 		void								setSrollWheelInput(scrollWheelInput scrollInput);
 		void								setMode(gameMode mode);
@@ -36,9 +36,9 @@ class Game {
 		void								setTotalScore(unsigned int value);
 
 		Window&								getWindow();
-		b2World& 							getWorld();
+		b2World&							getWorld();
 		std::vector<std::shared_ptr<Box>>&	getBoxes();
-		gameMode 							getMode() const;
+		gameMode							getMode() const;
 		int									getBoxColorIndex() const;
 		unsigned int						getCurrLevel() const;
 		unsigned int						getLevelCoins() const;
@@ -69,8 +69,8 @@ class Game {
 		sf::Time			m_DeltaTime;
 		Player				m_Player;
 		BoxMap				m_BoxMap;
-		Fade 				m_Fade;
-		HUD 				m_Hud;
+		Fade				m_Fade;
+		HUD					m_Hud;
 		SoundManager		m_SoundManager;
 		Renderer			m_Renderer;
 
