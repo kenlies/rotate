@@ -9,7 +9,7 @@ class Grid : public sf::Drawable {
 		Grid(Game* game);
 		~Grid();
 
-		void 			update();
+		void			update();
 		virtual void	draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	private:
