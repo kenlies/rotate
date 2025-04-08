@@ -23,7 +23,7 @@ class HUD : public sf::Drawable {
 
 		unsigned int	m_Frame = 0;
 		unsigned int	m_FPS = 0;
-		sf::Clock 		m_FPSClock;
+		sf::Clock		m_FPSClock;
 		sf::Text		m_FPSText;
 
 		sf::Font		m_ModeFont;
