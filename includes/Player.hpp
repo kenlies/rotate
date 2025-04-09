@@ -11,11 +11,11 @@ class Player : public sf::Drawable, public b2ContactListener {
 		~Player();
 
 		virtual void			draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-		void 					update(float radians);
+		void					update(float radians);
 		void					processInput(float deltaTime);
 
-		void 					BeginContact(b2Contact* contact) override; // override the base class functions
-		void 					EndContact(b2Contact* contact) override;	// override the base class functions PRIVATE??
+		void					BeginContact(b2Contact* contact) override; // override the base class functions
+		void					EndContact(b2Contact* contact) override;	// override the base class functions PRIVATE??
 
 		void					setInterpolationData(const b2Vec2& prevPos, float prevAngle);
 		void					setSpawnPos(const b2Vec2& spawnPos);
@@ -31,18 +31,18 @@ class Player : public sf::Drawable, public b2ContactListener {
 		};
 	
 	private:
-		void 					updateTransform();
+		void					updateTransform();
 	private:
 		InterpolationData		m_LerpData;
 		Game*					m_Game;
-		b2Body* 				m_Body;
+		b2Body*					m_Body;
 		sf::CircleShape			m_Shape;
 		b2Vec2					m_SpawnPos;
 
-		bool 					m_LetsRespawn = false;
+		bool					m_LetsRespawn = false;
 		sf::Clock				m_WaitTilRespawnClock;
 
-		bool 					m_Jump = false;
+		bool					m_Jump = false;
 		sf::Clock				m_JumpCoolDownClock;
 		int						m_CanJump = 0; // how many bodies touch the ball at a time: able to jump if > 0
 		
