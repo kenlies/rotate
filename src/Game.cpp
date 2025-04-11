@@ -149,7 +149,6 @@ void Game::addParticlesToRenderQueue() {
     for (auto it = m_BoxParticles.begin(); it != m_BoxParticles.end();) {
         if ((*it)->getCurrLife().asSeconds() > 3) {
             it = m_BoxParticles.erase(it);
-            std::cout << "removed particles from vector" << "\n";
         } else {
             (*it)->update(m_DeltaTime);
             m_Renderer.addToRenderQueue(*(*it));
@@ -163,7 +162,6 @@ void Game::updateBoxes() {
         (*it)->update(m_DeltaTime.asSeconds());
         if ((*it)->getShape().getFillColor() == sf::Color::Yellow && m_Mode == Play &&
             (*it)->getBody()->GetType() == b2_dynamicBody && !(*it)->isInView(m_Window.getView())) {
-            std::cout << "emit particles" << "\n";
             m_BoxParticles.emplace_back(std::make_unique<BoxParticles>(150, (*it)->getShape().getPosition()));
             m_World.DestroyBody((*it)->getBody());
             it = m_Boxes.erase(it);
@@ -243,7 +241,6 @@ void Game::removeBox(const sf::Vector2i& mousePos) {
             m_World.DestroyBody(m_Boxes[i]->getBody());
             m_Boxes[i] = m_Boxes.back();
             m_Boxes.pop_back();
-            std::cout << "remove block\n";
             break;
         }
     }
