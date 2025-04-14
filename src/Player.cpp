@@ -86,7 +86,6 @@ void Player::update(float radians) {
         m_TouchGreenBox->ApplyLinearImpulseToCenter(Utils::createForce(-Constants::WIN_FORCE, radians), true);
         m_TouchGreenBox->ApplyTorque(m_Body->GetAngle(), true);
         m_TouchGreenBox = nullptr;
-        std::cout << "LEVEL CLEAR\n";
     }
 
     // ---- death by red box ----
@@ -122,7 +121,6 @@ void Player::update(float radians) {
         m_TouchRedBox->ApplyLinearImpulseToCenter(explosionForce, true);
         m_TouchRedBox->ApplyTorque(m_Body->GetAngle(), true);
         m_TouchRedBox = nullptr;
-        std::cout << "DEATH BY RED BOX\n";
     }
 
     // ---- death by void ----
@@ -132,7 +130,6 @@ void Player::update(float radians) {
         m_Game->getWindow().setViewOnPlayer(false);
         m_LetsRespawn = true;
         m_WaitTilRespawnClock.restart();
-        std::cout << "DEATH BY VOID\n"; 
     }
 
     // ---- jump ----
